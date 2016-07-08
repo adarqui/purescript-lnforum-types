@@ -1,0 +1,20 @@
+{
+  "name": "purescript-ln-types",
+  "homepage": "https://github.com/adarqui/purescript-ln-types",
+  "description": "Some core auto-generated types for ln-ui",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/adarqui/purescript-ln-types.git"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-api-helpers": "^1.0.0",
+    "purescript-date-helpers": "^1.0.0"
+  }
+}

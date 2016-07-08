@@ -1,4 +1,6 @@
 module LN.T.Pack.PmIn where
+import LN.T.PmIn
+import LN.T.User
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)

@@ -1,4 +1,8 @@
 module LN.T.Pack.Sanitized.User where
+import LN.T.User
+import LN.T.Like
+import LN.T.Star
+import LN.T.Profile
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)

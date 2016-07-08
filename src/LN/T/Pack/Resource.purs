@@ -1,4 +1,9 @@
 module LN.T.Pack.Resource where
+import LN.T.Resource
+import LN.T.User
+import LN.T.Permission
+import LN.T.Like
+import LN.T.Star
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)

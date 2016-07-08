@@ -1,4 +1,5 @@
 module LN.T.Star where
+import LN.T.Ent
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)

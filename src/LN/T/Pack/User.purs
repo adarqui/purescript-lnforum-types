@@ -1,4 +1,6 @@
 module LN.T.Pack.User where
+import LN.T.Profile
+import LN.T.User
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)

@@ -1,4 +1,6 @@
 module LN.T.GlobalGroup where
+import LN.T.Membership
+import LN.T.Visibility
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)

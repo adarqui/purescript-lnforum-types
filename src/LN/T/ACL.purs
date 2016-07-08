@@ -1,4 +1,5 @@
 module LN.T.ACL where
+import LN.T.Permission
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)

@@ -1,4 +1,5 @@
-module LN.T.Substitution where
+module LN.T.Substitutions where
+
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)

@@ -1,4 +1,10 @@
 module LN.T.Pack.Forum where
+import LN.T.Forum
+import LN.T.User
+import LN.T.Permission
+import LN.T.Organization
+import LN.T.Star
+import LN.T.Like
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)

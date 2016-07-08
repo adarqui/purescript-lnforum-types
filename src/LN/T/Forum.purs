@@ -1,4 +1,5 @@
 module LN.T.Forum where
+import LN.T.Visibility
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)

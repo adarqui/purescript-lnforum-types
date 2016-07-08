@@ -1,4 +1,7 @@
 module LN.T.Leuron where
+import LN.T.DepList
+import LN.T.Splits
+import LN.T.Substitutions
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)

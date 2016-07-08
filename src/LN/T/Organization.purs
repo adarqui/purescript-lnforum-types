@@ -1,4 +1,6 @@
 module LN.T.Organization where
+import LN.T.Membership
+import LN.T.Visibility
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)

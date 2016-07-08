@@ -1,4 +1,8 @@
 module LN.T.Pack.Group where
+import LN.T.Group
+import LN.T.User
+import LN.T.Permission
+import LN.T.Organization
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)

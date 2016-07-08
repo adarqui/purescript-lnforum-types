@@ -1,4 +1,6 @@
 module LN.T.Resource where
+import LN.T.DepList
+import LN.T.Visibility
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)

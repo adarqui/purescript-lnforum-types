@@ -105,24 +105,6 @@ bucketResponseToBucketRequest  (BucketResponse o) =
   }
 
 
-emptyRequestToEmptyResponse :: Int -> Int -> (Maybe Date) -> (Maybe Date) -> EmptyRequest -> EmptyResponse
-emptyRequestToEmptyResponse id userId createdAt modifiedAt (EmptyRequest o) =
-  EmptyResponse {
-    id: id,
-    userId: userId,
-    value: o.value,
-    createdAt: createdAt,
-    modifiedAt: modifiedAt
-  }
-
-
-emptyResponseToEmptyRequest :: EmptyResponse -> EmptyRequest
-emptyResponseToEmptyRequest  (EmptyResponse o) =
-  EmptyRequest {
-    value: o.value
-  }
-
-
 forumRequestToForumResponse :: Int -> Int -> Int -> String -> Boolean -> (Maybe Date) -> (Maybe Int) -> (Maybe Date) -> (Maybe Date) -> ForumRequest -> ForumResponse
 forumRequestToForumResponse id userId orgId name active createdAt modifiedBy modifiedAt activityAt (ForumRequest o) =
   ForumResponse {

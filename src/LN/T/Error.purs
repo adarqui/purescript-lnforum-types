@@ -21,6 +21,7 @@ import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
 import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Data.Default
 
 import Purescript.Api.Helpers
 
@@ -241,6 +242,9 @@ instance applicationErrorEq :: Eq ApplicationError where
   eq Error_Unexpected Error_Unexpected = true
   eq _ _ = false
 
+instance applicationErrorDefault :: Default ApplicationError where
+  def = Error_Unknown
+
 data ValidationError
   = Validate ValidationErrorCode (Maybe String)
 
@@ -310,6 +314,9 @@ instance validationErrorIsForeign :: IsForeign ValidationError where
 instance validationErrorEq :: Eq ValidationError where
   eq (Validate x0a x1a) (Validate x0b x1b) = x0a == x0b && x1a == x1b
 
+
+instance validationErrorDefault :: Default ValidationError where
+  def = Validate Validate_Unknown Nothing
 
 data ValidationErrorCode
   = Validate_Unknown 
@@ -515,4 +522,7 @@ instance validationErrorCodeEq :: Eq ValidationErrorCode where
   eq Validate_SmallerThanMinimum Validate_SmallerThanMinimum = true
   eq (Validate_Reason x0a) (Validate_Reason x0b) = x0a == x0b
   eq _ _ = false
+
+instance validationErrorCodeDefault :: Default ValidationErrorCode where
+  def = Validate_Unknown
 -- footer

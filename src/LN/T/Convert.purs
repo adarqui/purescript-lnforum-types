@@ -4,7 +4,7 @@ module LN.T.Convert where
 import Data.Date.Helpers                (Date)
 import Data.Maybe                       (Maybe)
 
-import LN.T.Internal.Types
+import LN.T
 
 apiRequestToApiResponse :: Int -> Int -> String -> (Maybe Date) -> (Maybe Date) -> ApiRequest -> ApiResponse
 apiRequestToApiResponse id userId key createdAt modifiedAt (ApiRequest o) =

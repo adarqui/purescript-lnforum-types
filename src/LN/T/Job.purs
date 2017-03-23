@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -93,24 +93,24 @@ instance jobRespondable :: Respondable Job where
         r <- readProp "contents" json
         case r of
           [x0, x1] -> Job_Nop <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "Job_Nop" "Respondable"
+          _ -> fail $ TypeMismatch "Job_Nop" "Respondable"
 
 
       "Job_Ping" -> do
         r <- readProp "contents" json
         case r of
           [x0, x1] -> Job_Ping <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "Job_Ping" "Respondable"
+          _ -> fail $ TypeMismatch "Job_Ping" "Respondable"
 
 
       "Job_CreateUserProfile" -> do
         r <- readProp "contents" json
         case r of
           [x0, x1] -> Job_CreateUserProfile <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "Job_CreateUserProfile" "Respondable"
+          _ -> fail $ TypeMismatch "Job_CreateUserProfile" "Respondable"
 
 
-      _ -> Left $ TypeMismatch "Job" "Respondable"
+      _ -> fail $ TypeMismatch "Job" "Respondable"
 
 
 
@@ -122,24 +122,24 @@ instance jobIsForeign :: IsForeign Job where
         r <- readProp "contents" json
         case r of
           [x0, x1] -> Job_Nop <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "Job_Nop" "IsForeign"
+          _ -> fail $ TypeMismatch "Job_Nop" "IsForeign"
 
 
       "Job_Ping" -> do
         r <- readProp "contents" json
         case r of
           [x0, x1] -> Job_Ping <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "Job_Ping" "IsForeign"
+          _ -> fail $ TypeMismatch "Job_Ping" "IsForeign"
 
 
       "Job_CreateUserProfile" -> do
         r <- readProp "contents" json
         case r of
           [x0, x1] -> Job_CreateUserProfile <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "Job_CreateUserProfile" "IsForeign"
+          _ -> fail $ TypeMismatch "Job_CreateUserProfile" "IsForeign"
 
 
-      _ -> Left $ TypeMismatch "Job" "IsForeign"
+      _ -> fail $ TypeMismatch "Job" "IsForeign"
 
 
 
@@ -154,6 +154,10 @@ data Queue
   | QPing 
   | QCreateUserProfile 
   | QCreateUserApi 
+  | QAddThreadPostToSet 
+  | QRemoveThreadPostFromSet 
+  | QFixUserProfiles 
+  | QFixThreadPostSets 
 
 
 
@@ -174,6 +178,22 @@ instance queueEncodeJson :: EncodeJson Queue where
        "tag" := "QCreateUserApi"
     ~> "contents" := ([] :: Array String)
     ~> jsonEmptyObject
+  encodeJson (QAddThreadPostToSet ) =
+       "tag" := "QAddThreadPostToSet"
+    ~> "contents" := ([] :: Array String)
+    ~> jsonEmptyObject
+  encodeJson (QRemoveThreadPostFromSet ) =
+       "tag" := "QRemoveThreadPostFromSet"
+    ~> "contents" := ([] :: Array String)
+    ~> jsonEmptyObject
+  encodeJson (QFixUserProfiles ) =
+       "tag" := "QFixUserProfiles"
+    ~> "contents" := ([] :: Array String)
+    ~> jsonEmptyObject
+  encodeJson (QFixThreadPostSets ) =
+       "tag" := "QFixThreadPostSets"
+    ~> "contents" := ([] :: Array String)
+    ~> jsonEmptyObject
 
 
 instance queueDecodeJson :: DecodeJson Queue where
@@ -192,6 +212,18 @@ instance queueDecodeJson :: DecodeJson Queue where
 
       "QCreateUserApi" -> do
         pure QCreateUserApi
+
+      "QAddThreadPostToSet" -> do
+        pure QAddThreadPostToSet
+
+      "QRemoveThreadPostFromSet" -> do
+        pure QRemoveThreadPostFromSet
+
+      "QFixUserProfiles" -> do
+        pure QFixUserProfiles
+
+      "QFixThreadPostSets" -> do
+        pure QFixThreadPostSets
 
       _ -> Left $ "DecodeJson TypeMismatch for Queue"
 
@@ -221,7 +253,19 @@ instance queueRespondable :: Respondable Queue where
       "QCreateUserApi" -> do
         pure QCreateUserApi
 
-      _ -> Left $ TypeMismatch "Queue" "Respondable"
+      "QAddThreadPostToSet" -> do
+        pure QAddThreadPostToSet
+
+      "QRemoveThreadPostFromSet" -> do
+        pure QRemoveThreadPostFromSet
+
+      "QFixUserProfiles" -> do
+        pure QFixUserProfiles
+
+      "QFixThreadPostSets" -> do
+        pure QFixThreadPostSets
+
+      _ -> fail $ TypeMismatch "Queue" "Respondable"
 
 
 
@@ -241,7 +285,19 @@ instance queueIsForeign :: IsForeign Queue where
       "QCreateUserApi" -> do
         pure QCreateUserApi
 
-      _ -> Left $ TypeMismatch "Queue" "IsForeign"
+      "QAddThreadPostToSet" -> do
+        pure QAddThreadPostToSet
+
+      "QRemoveThreadPostFromSet" -> do
+        pure QRemoveThreadPostFromSet
+
+      "QFixUserProfiles" -> do
+        pure QFixUserProfiles
+
+      "QFixThreadPostSets" -> do
+        pure QFixThreadPostSets
+
+      _ -> fail $ TypeMismatch "Queue" "IsForeign"
 
 
 
@@ -250,5 +306,9 @@ instance queueEq :: Eq Queue where
   eq QPing QPing = true
   eq QCreateUserProfile QCreateUserProfile = true
   eq QCreateUserApi QCreateUserApi = true
+  eq QAddThreadPostToSet QAddThreadPostToSet = true
+  eq QRemoveThreadPostFromSet QRemoveThreadPostFromSet = true
+  eq QFixUserProfiles QFixUserProfiles = true
+  eq QFixThreadPostSets QFixThreadPostSets = true
   eq _ _ = false
 -- footer

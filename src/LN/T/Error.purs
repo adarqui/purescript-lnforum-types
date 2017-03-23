@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -163,7 +163,7 @@ instance applicationErrorRespondable :: Respondable ApplicationError where
         r <- readProp "contents" json
         case r of
           [x0] -> Error_Validation <$> read x0
-          _ -> Left $ TypeMismatch "Error_Validation" "Respondable"
+          _ -> fail $ TypeMismatch "Error_Validation" "Respondable"
 
 
       "Error_NotImplemented" -> do
@@ -173,13 +173,13 @@ instance applicationErrorRespondable :: Respondable ApplicationError where
         r <- readProp "contents" json
         case r of
           [x0] -> Error_InvalidArguments <$> read x0
-          _ -> Left $ TypeMismatch "Error_InvalidArguments" "Respondable"
+          _ -> fail $ TypeMismatch "Error_InvalidArguments" "Respondable"
 
 
       "Error_Unexpected" -> do
         pure Error_Unexpected
 
-      _ -> Left $ TypeMismatch "ApplicationError" "Respondable"
+      _ -> fail $ TypeMismatch "ApplicationError" "Respondable"
 
 
 
@@ -209,7 +209,7 @@ instance applicationErrorIsForeign :: IsForeign ApplicationError where
         r <- readProp "contents" json
         case r of
           [x0] -> Error_Validation <$> read x0
-          _ -> Left $ TypeMismatch "Error_Validation" "IsForeign"
+          _ -> fail $ TypeMismatch "Error_Validation" "IsForeign"
 
 
       "Error_NotImplemented" -> do
@@ -219,13 +219,13 @@ instance applicationErrorIsForeign :: IsForeign ApplicationError where
         r <- readProp "contents" json
         case r of
           [x0] -> Error_InvalidArguments <$> read x0
-          _ -> Left $ TypeMismatch "Error_InvalidArguments" "IsForeign"
+          _ -> fail $ TypeMismatch "Error_InvalidArguments" "IsForeign"
 
 
       "Error_Unexpected" -> do
         pure Error_Unexpected
 
-      _ -> Left $ TypeMismatch "ApplicationError" "IsForeign"
+      _ -> fail $ TypeMismatch "ApplicationError" "IsForeign"
 
 
 
@@ -289,10 +289,10 @@ instance validationErrorRespondable :: Respondable ValidationError where
         r <- readProp "contents" json
         case r of
           [x0, x1] -> Validate <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "Validate" "Respondable"
+          _ -> fail $ TypeMismatch "Validate" "Respondable"
 
 
-      _ -> Left $ TypeMismatch "ValidationError" "Respondable"
+      _ -> fail $ TypeMismatch "ValidationError" "Respondable"
 
 
 
@@ -304,10 +304,10 @@ instance validationErrorIsForeign :: IsForeign ValidationError where
         r <- readProp "contents" json
         case r of
           [x0, x1] -> Validate <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "Validate" "IsForeign"
+          _ -> fail $ TypeMismatch "Validate" "IsForeign"
 
 
-      _ -> Left $ TypeMismatch "ValidationError" "IsForeign"
+      _ -> fail $ TypeMismatch "ValidationError" "IsForeign"
 
 
 
@@ -461,10 +461,10 @@ instance validationErrorCodeRespondable :: Respondable ValidationErrorCode where
         r <- readProp "contents" json
         case r of
           [x0] -> Validate_Reason <$> read x0
-          _ -> Left $ TypeMismatch "Validate_Reason" "Respondable"
+          _ -> fail $ TypeMismatch "Validate_Reason" "Respondable"
 
 
-      _ -> Left $ TypeMismatch "ValidationErrorCode" "Respondable"
+      _ -> fail $ TypeMismatch "ValidationErrorCode" "Respondable"
 
 
 
@@ -503,10 +503,10 @@ instance validationErrorCodeIsForeign :: IsForeign ValidationErrorCode where
         r <- readProp "contents" json
         case r of
           [x0] -> Validate_Reason <$> read x0
-          _ -> Left $ TypeMismatch "Validate_Reason" "IsForeign"
+          _ -> fail $ TypeMismatch "Validate_Reason" "IsForeign"
 
 
-      _ -> Left $ TypeMismatch "ValidationErrorCode" "IsForeign"
+      _ -> fail $ TypeMismatch "ValidationErrorCode" "IsForeign"
 
 
 

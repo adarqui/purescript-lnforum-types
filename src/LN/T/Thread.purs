@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -33,7 +33,8 @@ newtype ThreadRequest = ThreadRequest {
   poll :: (Maybe String),
   icon :: (Maybe String),
   tags :: (Array String),
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String)
 }
 
 
@@ -45,7 +46,8 @@ type ThreadRequestR = {
   poll :: (Maybe String),
   icon :: (Maybe String),
   tags :: (Array String),
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String)
 }
 
 
@@ -57,14 +59,15 @@ _ThreadRequest :: Lens' ThreadRequest {
   poll :: (Maybe String),
   icon :: (Maybe String),
   tags :: (Array String),
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String)
 }
 _ThreadRequest f (ThreadRequest o) = ThreadRequest <$> f o
 
 
-mkThreadRequest :: String -> (Maybe String) -> Boolean -> Boolean -> (Maybe String) -> (Maybe String) -> (Array String) -> Int -> ThreadRequest
-mkThreadRequest displayName description sticky locked poll icon tags guard =
-  ThreadRequest{displayName, description, sticky, locked, poll, icon, tags, guard}
+mkThreadRequest :: String -> (Maybe String) -> Boolean -> Boolean -> (Maybe String) -> (Maybe String) -> (Array String) -> Int -> (Maybe String) -> ThreadRequest
+mkThreadRequest displayName description sticky locked poll icon tags guard stateTag =
+  ThreadRequest{displayName, description, sticky, locked, poll, icon, tags, guard, stateTag}
 
 
 unwrapThreadRequest :: ThreadRequest -> {
@@ -75,7 +78,8 @@ unwrapThreadRequest :: ThreadRequest -> {
   poll :: (Maybe String),
   icon :: (Maybe String),
   tags :: (Array String),
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String)
 }
 unwrapThreadRequest (ThreadRequest r) = r
 
@@ -90,6 +94,7 @@ instance threadRequestEncodeJson :: EncodeJson ThreadRequest where
     ~> "icon" := o.icon
     ~> "tags" := o.tags
     ~> "guard" := o.guard
+    ~> "state_tag" := o.stateTag
     ~> jsonEmptyObject
 
 
@@ -104,6 +109,7 @@ instance threadRequestDecodeJson :: DecodeJson ThreadRequest where
     icon <- obj .? "icon"
     tags <- obj .? "tags"
     guard <- obj .? "guard"
+    stateTag <- obj .? "state_tag"
     pure $ ThreadRequest {
       displayName,
       description,
@@ -112,7 +118,8 @@ instance threadRequestDecodeJson :: DecodeJson ThreadRequest where
       poll,
       icon,
       tags,
-      guard
+      guard,
+      stateTag
     }
 
 
@@ -135,6 +142,7 @@ instance threadRequestRespondable :: Respondable ThreadRequest where
       <*> (unNullOrUndefined <$> readProp "icon" json)
       <*> readProp "tags" json
       <*> readProp "guard" json
+      <*> (unNullOrUndefined <$> readProp "state_tag" json)
 
 
 instance threadRequestIsForeign :: IsForeign ThreadRequest where
@@ -148,6 +156,7 @@ instance threadRequestIsForeign :: IsForeign ThreadRequest where
       <*> (unNullOrUndefined <$> readProp "icon" json)
       <*> readProp "tags" json
       <*> readProp "guard" json
+      <*> (unNullOrUndefined <$> readProp "state_tag" json)
 
 
 newtype ThreadResponse = ThreadResponse {

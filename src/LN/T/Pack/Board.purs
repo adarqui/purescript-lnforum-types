@@ -18,7 +18,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -44,7 +44,8 @@ newtype BoardPackResponse = BoardPackResponse {
   latestThreadPostUser :: (Maybe UserSanitizedResponse),
   withOrganization :: (Maybe OrganizationResponse),
   withForum :: (Maybe ForumResponse),
-  permissions :: Permissions
+  permissions :: Permissions,
+  threadPermissions :: Permissions
 }
 
 
@@ -59,7 +60,8 @@ type BoardPackResponseR = {
   latestThreadPostUser :: (Maybe UserSanitizedResponse),
   withOrganization :: (Maybe OrganizationResponse),
   withForum :: (Maybe ForumResponse),
-  permissions :: Permissions
+  permissions :: Permissions,
+  threadPermissions :: Permissions
 }
 
 
@@ -74,14 +76,15 @@ _BoardPackResponse :: Lens' BoardPackResponse {
   latestThreadPostUser :: (Maybe UserSanitizedResponse),
   withOrganization :: (Maybe OrganizationResponse),
   withForum :: (Maybe ForumResponse),
-  permissions :: Permissions
+  permissions :: Permissions,
+  threadPermissions :: Permissions
 }
 _BoardPackResponse f (BoardPackResponse o) = BoardPackResponse <$> f o
 
 
-mkBoardPackResponse :: BoardResponse -> Int -> BoardStatResponse -> (Maybe LikeResponse) -> (Maybe StarResponse) -> (Maybe ThreadResponse) -> (Maybe ThreadPostResponse) -> (Maybe UserSanitizedResponse) -> (Maybe OrganizationResponse) -> (Maybe ForumResponse) -> Permissions -> BoardPackResponse
-mkBoardPackResponse board boardId stat like star latestThread latestThreadPost latestThreadPostUser withOrganization withForum permissions =
-  BoardPackResponse{board, boardId, stat, like, star, latestThread, latestThreadPost, latestThreadPostUser, withOrganization, withForum, permissions}
+mkBoardPackResponse :: BoardResponse -> Int -> BoardStatResponse -> (Maybe LikeResponse) -> (Maybe StarResponse) -> (Maybe ThreadResponse) -> (Maybe ThreadPostResponse) -> (Maybe UserSanitizedResponse) -> (Maybe OrganizationResponse) -> (Maybe ForumResponse) -> Permissions -> Permissions -> BoardPackResponse
+mkBoardPackResponse board boardId stat like star latestThread latestThreadPost latestThreadPostUser withOrganization withForum permissions threadPermissions =
+  BoardPackResponse{board, boardId, stat, like, star, latestThread, latestThreadPost, latestThreadPostUser, withOrganization, withForum, permissions, threadPermissions}
 
 
 unwrapBoardPackResponse :: BoardPackResponse -> {
@@ -95,7 +98,8 @@ unwrapBoardPackResponse :: BoardPackResponse -> {
   latestThreadPostUser :: (Maybe UserSanitizedResponse),
   withOrganization :: (Maybe OrganizationResponse),
   withForum :: (Maybe ForumResponse),
-  permissions :: Permissions
+  permissions :: Permissions,
+  threadPermissions :: Permissions
 }
 unwrapBoardPackResponse (BoardPackResponse r) = r
 
@@ -113,6 +117,7 @@ instance boardPackResponseEncodeJson :: EncodeJson BoardPackResponse where
     ~> "with_organization" := o.withOrganization
     ~> "with_forum" := o.withForum
     ~> "permissions" := o.permissions
+    ~> "thread_permissions" := o.threadPermissions
     ~> jsonEmptyObject
 
 
@@ -130,6 +135,7 @@ instance boardPackResponseDecodeJson :: DecodeJson BoardPackResponse where
     withOrganization <- obj .? "with_organization"
     withForum <- obj .? "with_forum"
     permissions <- obj .? "permissions"
+    threadPermissions <- obj .? "thread_permissions"
     pure $ BoardPackResponse {
       board,
       boardId,
@@ -141,7 +147,8 @@ instance boardPackResponseDecodeJson :: DecodeJson BoardPackResponse where
       latestThreadPostUser,
       withOrganization,
       withForum,
-      permissions
+      permissions,
+      threadPermissions
     }
 
 
@@ -167,6 +174,7 @@ instance boardPackResponseRespondable :: Respondable BoardPackResponse where
       <*> (unNullOrUndefined <$> readProp "with_organization" json)
       <*> (unNullOrUndefined <$> readProp "with_forum" json)
       <*> readProp "permissions" json
+      <*> readProp "thread_permissions" json
 
 
 instance boardPackResponseIsForeign :: IsForeign BoardPackResponse where
@@ -183,6 +191,7 @@ instance boardPackResponseIsForeign :: IsForeign BoardPackResponse where
       <*> (unNullOrUndefined <$> readProp "with_organization" json)
       <*> (unNullOrUndefined <$> readProp "with_forum" json)
       <*> readProp "permissions" json
+      <*> readProp "thread_permissions" json
 
 
 newtype BoardPackResponses = BoardPackResponses {

@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -97,7 +97,7 @@ instance membershipRespondable :: Respondable Membership where
       "Membership_Locked" -> do
         pure Membership_Locked
 
-      _ -> Left $ TypeMismatch "Membership" "Respondable"
+      _ -> fail $ TypeMismatch "Membership" "Respondable"
 
 
 
@@ -117,7 +117,7 @@ instance membershipIsForeign :: IsForeign Membership where
       "Membership_Locked" -> do
         pure Membership_Locked
 
-      _ -> Left $ TypeMismatch "Membership" "IsForeign"
+      _ -> fail $ TypeMismatch "Membership" "IsForeign"
 
 
 

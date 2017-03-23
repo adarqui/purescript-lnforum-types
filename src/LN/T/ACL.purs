@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -77,13 +77,13 @@ instance aCLRespondable :: Respondable ACL where
         r <- readProp "contents" json
         case r of
           [x0] -> ACL_Grant <$> read x0
-          _ -> Left $ TypeMismatch "ACL_Grant" "Respondable"
+          _ -> fail $ TypeMismatch "ACL_Grant" "Respondable"
 
 
       "ACL_Deny" -> do
         pure ACL_Deny
 
-      _ -> Left $ TypeMismatch "ACL" "Respondable"
+      _ -> fail $ TypeMismatch "ACL" "Respondable"
 
 
 
@@ -95,13 +95,13 @@ instance aCLIsForeign :: IsForeign ACL where
         r <- readProp "contents" json
         case r of
           [x0] -> ACL_Grant <$> read x0
-          _ -> Left $ TypeMismatch "ACL_Grant" "IsForeign"
+          _ -> fail $ TypeMismatch "ACL_Grant" "IsForeign"
 
 
       "ACL_Deny" -> do
         pure ACL_Deny
 
-      _ -> Left $ TypeMismatch "ACL" "IsForeign"
+      _ -> fail $ TypeMismatch "ACL" "IsForeign"
 
 
 

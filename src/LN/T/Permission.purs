@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -108,7 +108,7 @@ instance permissionRespondable :: Respondable Permission where
       "Perm_Execute" -> do
         pure Perm_Execute
 
-      _ -> Left $ TypeMismatch "Permission" "Respondable"
+      _ -> fail $ TypeMismatch "Permission" "Respondable"
 
 
 
@@ -131,7 +131,7 @@ instance permissionIsForeign :: IsForeign Permission where
       "Perm_Execute" -> do
         pure Perm_Execute
 
-      _ -> Left $ TypeMismatch "Permission" "IsForeign"
+      _ -> fail $ TypeMismatch "Permission" "IsForeign"
 
 
 

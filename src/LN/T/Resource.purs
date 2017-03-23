@@ -11,7 +11,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -114,34 +114,34 @@ instance resourceTypeRespondable :: Respondable ResourceType where
         r <- readProp "contents" json
         case r of
           [x0] -> ISBN13 <$> read x0
-          _ -> Left $ TypeMismatch "ISBN13" "Respondable"
+          _ -> fail $ TypeMismatch "ISBN13" "Respondable"
 
 
       "ISBN10" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ISBN10 <$> read x0
-          _ -> Left $ TypeMismatch "ISBN10" "Respondable"
+          _ -> fail $ TypeMismatch "ISBN10" "Respondable"
 
 
       "ISBN" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ISBN <$> read x0
-          _ -> Left $ TypeMismatch "ISBN" "Respondable"
+          _ -> fail $ TypeMismatch "ISBN" "Respondable"
 
 
       "URL" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> URL <$> read x0
-          _ -> Left $ TypeMismatch "URL" "Respondable"
+          _ -> fail $ TypeMismatch "URL" "Respondable"
 
 
       "SourceNone" -> do
         pure SourceNone
 
-      _ -> Left $ TypeMismatch "ResourceType" "Respondable"
+      _ -> fail $ TypeMismatch "ResourceType" "Respondable"
 
 
 
@@ -153,34 +153,34 @@ instance resourceTypeIsForeign :: IsForeign ResourceType where
         r <- readProp "contents" json
         case r of
           [x0] -> ISBN13 <$> read x0
-          _ -> Left $ TypeMismatch "ISBN13" "IsForeign"
+          _ -> fail $ TypeMismatch "ISBN13" "IsForeign"
 
 
       "ISBN10" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ISBN10 <$> read x0
-          _ -> Left $ TypeMismatch "ISBN10" "IsForeign"
+          _ -> fail $ TypeMismatch "ISBN10" "IsForeign"
 
 
       "ISBN" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ISBN <$> read x0
-          _ -> Left $ TypeMismatch "ISBN" "IsForeign"
+          _ -> fail $ TypeMismatch "ISBN" "IsForeign"
 
 
       "URL" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> URL <$> read x0
-          _ -> Left $ TypeMismatch "URL" "IsForeign"
+          _ -> fail $ TypeMismatch "URL" "IsForeign"
 
 
       "SourceNone" -> do
         pure SourceNone
 
-      _ -> Left $ TypeMismatch "ResourceType" "IsForeign"
+      _ -> fail $ TypeMismatch "ResourceType" "IsForeign"
 
 
 
@@ -267,7 +267,7 @@ instance tyResourceTypeRespondable :: Respondable TyResourceType where
       "TySourceNone" -> do
         pure TySourceNone
 
-      _ -> Left $ TypeMismatch "TyResourceType" "Respondable"
+      _ -> fail $ TypeMismatch "TyResourceType" "Respondable"
 
 
 
@@ -290,7 +290,7 @@ instance tyResourceTypeIsForeign :: IsForeign TyResourceType where
       "TySourceNone" -> do
         pure TySourceNone
 
-      _ -> Left $ TypeMismatch "TyResourceType" "IsForeign"
+      _ -> fail $ TypeMismatch "TyResourceType" "IsForeign"
 
 
 

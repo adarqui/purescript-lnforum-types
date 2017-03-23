@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -108,7 +108,7 @@ instance sizeRespondable :: Respondable Size where
       "XLarge" -> do
         pure XLarge
 
-      _ -> Left $ TypeMismatch "Size" "Respondable"
+      _ -> fail $ TypeMismatch "Size" "Respondable"
 
 
 
@@ -131,7 +131,7 @@ instance sizeIsForeign :: IsForeign Size where
       "XLarge" -> do
         pure XLarge
 
-      _ -> Left $ TypeMismatch "Size" "IsForeign"
+      _ -> fail $ TypeMismatch "Size" "IsForeign"
 
 
 

@@ -12,7 +12,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -877,98 +877,98 @@ instance leuronDataRespondable :: Respondable LeuronData where
         r <- readProp "contents" json
         case r of
           [x0] -> LnFact <$> read x0
-          _ -> Left $ TypeMismatch "LnFact" "Respondable"
+          _ -> fail $ TypeMismatch "LnFact" "Respondable"
 
 
       "LnFactList" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnFactList <$> read x0
-          _ -> Left $ TypeMismatch "LnFactList" "Respondable"
+          _ -> fail $ TypeMismatch "LnFactList" "Respondable"
 
 
       "LnCard" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnCard <$> read x0
-          _ -> Left $ TypeMismatch "LnCard" "Respondable"
+          _ -> fail $ TypeMismatch "LnCard" "Respondable"
 
 
       "LnDCard" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnDCard <$> read x0
-          _ -> Left $ TypeMismatch "LnDCard" "Respondable"
+          _ -> fail $ TypeMismatch "LnDCard" "Respondable"
 
 
       "LnDCardX" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnDCardX <$> read x0
-          _ -> Left $ TypeMismatch "LnDCardX" "Respondable"
+          _ -> fail $ TypeMismatch "LnDCardX" "Respondable"
 
 
       "LnAcronym" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnAcronym <$> read x0
-          _ -> Left $ TypeMismatch "LnAcronym" "Respondable"
+          _ -> fail $ TypeMismatch "LnAcronym" "Respondable"
 
 
       "LnSynonym" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnSynonym <$> read x0
-          _ -> Left $ TypeMismatch "LnSynonym" "Respondable"
+          _ -> fail $ TypeMismatch "LnSynonym" "Respondable"
 
 
       "LnAntonym" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnAntonym <$> read x0
-          _ -> Left $ TypeMismatch "LnAntonym" "Respondable"
+          _ -> fail $ TypeMismatch "LnAntonym" "Respondable"
 
 
       "LnTemplate" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnTemplate <$> read x0
-          _ -> Left $ TypeMismatch "LnTemplate" "Respondable"
+          _ -> fail $ TypeMismatch "LnTemplate" "Respondable"
 
 
       "LnImageAssociation" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnImageAssociation <$> read x0
-          _ -> Left $ TypeMismatch "LnImageAssociation" "Respondable"
+          _ -> fail $ TypeMismatch "LnImageAssociation" "Respondable"
 
 
       "LnLinearDemo" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnLinearDemo <$> read x0
-          _ -> Left $ TypeMismatch "LnLinearDemo" "Respondable"
+          _ -> fail $ TypeMismatch "LnLinearDemo" "Respondable"
 
 
       "LnTable" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnTable <$> read x0
-          _ -> Left $ TypeMismatch "LnTable" "Respondable"
+          _ -> fail $ TypeMismatch "LnTable" "Respondable"
 
 
       "LnScript" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnScript <$> read x0
-          _ -> Left $ TypeMismatch "LnScript" "Respondable"
+          _ -> fail $ TypeMismatch "LnScript" "Respondable"
 
 
       "LnQA" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnQA <$> read x0
-          _ -> Left $ TypeMismatch "LnQA" "Respondable"
+          _ -> fail $ TypeMismatch "LnQA" "Respondable"
 
 
       "LnExamples" -> do
@@ -977,7 +977,7 @@ instance leuronDataRespondable :: Respondable LeuronData where
       "LnEmpty" -> do
         pure LnEmpty
 
-      _ -> Left $ TypeMismatch "LeuronData" "Respondable"
+      _ -> fail $ TypeMismatch "LeuronData" "Respondable"
 
 
 
@@ -989,98 +989,98 @@ instance leuronDataIsForeign :: IsForeign LeuronData where
         r <- readProp "contents" json
         case r of
           [x0] -> LnFact <$> read x0
-          _ -> Left $ TypeMismatch "LnFact" "IsForeign"
+          _ -> fail $ TypeMismatch "LnFact" "IsForeign"
 
 
       "LnFactList" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnFactList <$> read x0
-          _ -> Left $ TypeMismatch "LnFactList" "IsForeign"
+          _ -> fail $ TypeMismatch "LnFactList" "IsForeign"
 
 
       "LnCard" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnCard <$> read x0
-          _ -> Left $ TypeMismatch "LnCard" "IsForeign"
+          _ -> fail $ TypeMismatch "LnCard" "IsForeign"
 
 
       "LnDCard" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnDCard <$> read x0
-          _ -> Left $ TypeMismatch "LnDCard" "IsForeign"
+          _ -> fail $ TypeMismatch "LnDCard" "IsForeign"
 
 
       "LnDCardX" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnDCardX <$> read x0
-          _ -> Left $ TypeMismatch "LnDCardX" "IsForeign"
+          _ -> fail $ TypeMismatch "LnDCardX" "IsForeign"
 
 
       "LnAcronym" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnAcronym <$> read x0
-          _ -> Left $ TypeMismatch "LnAcronym" "IsForeign"
+          _ -> fail $ TypeMismatch "LnAcronym" "IsForeign"
 
 
       "LnSynonym" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnSynonym <$> read x0
-          _ -> Left $ TypeMismatch "LnSynonym" "IsForeign"
+          _ -> fail $ TypeMismatch "LnSynonym" "IsForeign"
 
 
       "LnAntonym" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnAntonym <$> read x0
-          _ -> Left $ TypeMismatch "LnAntonym" "IsForeign"
+          _ -> fail $ TypeMismatch "LnAntonym" "IsForeign"
 
 
       "LnTemplate" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnTemplate <$> read x0
-          _ -> Left $ TypeMismatch "LnTemplate" "IsForeign"
+          _ -> fail $ TypeMismatch "LnTemplate" "IsForeign"
 
 
       "LnImageAssociation" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnImageAssociation <$> read x0
-          _ -> Left $ TypeMismatch "LnImageAssociation" "IsForeign"
+          _ -> fail $ TypeMismatch "LnImageAssociation" "IsForeign"
 
 
       "LnLinearDemo" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnLinearDemo <$> read x0
-          _ -> Left $ TypeMismatch "LnLinearDemo" "IsForeign"
+          _ -> fail $ TypeMismatch "LnLinearDemo" "IsForeign"
 
 
       "LnTable" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnTable <$> read x0
-          _ -> Left $ TypeMismatch "LnTable" "IsForeign"
+          _ -> fail $ TypeMismatch "LnTable" "IsForeign"
 
 
       "LnScript" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnScript <$> read x0
-          _ -> Left $ TypeMismatch "LnScript" "IsForeign"
+          _ -> fail $ TypeMismatch "LnScript" "IsForeign"
 
 
       "LnQA" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnQA <$> read x0
-          _ -> Left $ TypeMismatch "LnQA" "IsForeign"
+          _ -> fail $ TypeMismatch "LnQA" "IsForeign"
 
 
       "LnExamples" -> do
@@ -1089,7 +1089,7 @@ instance leuronDataIsForeign :: IsForeign LeuronData where
       "LnEmpty" -> do
         pure LnEmpty
 
-      _ -> Left $ TypeMismatch "LeuronData" "IsForeign"
+      _ -> fail $ TypeMismatch "LeuronData" "IsForeign"
 
 
 
@@ -1297,7 +1297,7 @@ instance tyLeuronRespondable :: Respondable TyLeuron where
       "TyLnEmpty" -> do
         pure TyLnEmpty
 
-      _ -> Left $ TypeMismatch "TyLeuron" "Respondable"
+      _ -> fail $ TypeMismatch "TyLeuron" "Respondable"
 
 
 
@@ -1353,7 +1353,7 @@ instance tyLeuronIsForeign :: IsForeign TyLeuron where
       "TyLnEmpty" -> do
         pure TyLnEmpty
 
-      _ -> Left $ TypeMismatch "TyLeuron" "IsForeign"
+      _ -> fail $ TypeMismatch "TyLeuron" "IsForeign"
 
 
 

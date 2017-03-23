@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -166,7 +166,7 @@ instance profileGenderRespondable :: Respondable ProfileGender where
       "GenderUnknown" -> do
         pure GenderUnknown
 
-      _ -> Left $ TypeMismatch "ProfileGender" "Respondable"
+      _ -> fail $ TypeMismatch "ProfileGender" "Respondable"
 
 
 
@@ -183,7 +183,7 @@ instance profileGenderIsForeign :: IsForeign ProfileGender where
       "GenderUnknown" -> do
         pure GenderUnknown
 
-      _ -> Left $ TypeMismatch "ProfileGender" "IsForeign"
+      _ -> fail $ TypeMismatch "ProfileGender" "IsForeign"
 
 
 
@@ -203,10 +203,12 @@ newtype ProfileRequest = ProfileRequest {
   gender :: ProfileGender,
   birthdate :: Date,
   website :: (Maybe String),
+  websites :: (Array String),
   location :: (Maybe String),
   signature :: (Maybe String),
   debug :: Boolean,
-  guard :: Int
+  guard :: Int,
+  stateWebsites :: (Maybe String)
 }
 
 
@@ -214,10 +216,12 @@ type ProfileRequestR = {
   gender :: ProfileGender,
   birthdate :: Date,
   website :: (Maybe String),
+  websites :: (Array String),
   location :: (Maybe String),
   signature :: (Maybe String),
   debug :: Boolean,
-  guard :: Int
+  guard :: Int,
+  stateWebsites :: (Maybe String)
 }
 
 
@@ -225,27 +229,31 @@ _ProfileRequest :: Lens' ProfileRequest {
   gender :: ProfileGender,
   birthdate :: Date,
   website :: (Maybe String),
+  websites :: (Array String),
   location :: (Maybe String),
   signature :: (Maybe String),
   debug :: Boolean,
-  guard :: Int
+  guard :: Int,
+  stateWebsites :: (Maybe String)
 }
 _ProfileRequest f (ProfileRequest o) = ProfileRequest <$> f o
 
 
-mkProfileRequest :: ProfileGender -> Date -> (Maybe String) -> (Maybe String) -> (Maybe String) -> Boolean -> Int -> ProfileRequest
-mkProfileRequest gender birthdate website location signature debug guard =
-  ProfileRequest{gender, birthdate, website, location, signature, debug, guard}
+mkProfileRequest :: ProfileGender -> Date -> (Maybe String) -> (Array String) -> (Maybe String) -> (Maybe String) -> Boolean -> Int -> (Maybe String) -> ProfileRequest
+mkProfileRequest gender birthdate website websites location signature debug guard stateWebsites =
+  ProfileRequest{gender, birthdate, website, websites, location, signature, debug, guard, stateWebsites}
 
 
 unwrapProfileRequest :: ProfileRequest -> {
   gender :: ProfileGender,
   birthdate :: Date,
   website :: (Maybe String),
+  websites :: (Array String),
   location :: (Maybe String),
   signature :: (Maybe String),
   debug :: Boolean,
-  guard :: Int
+  guard :: Int,
+  stateWebsites :: (Maybe String)
 }
 unwrapProfileRequest (ProfileRequest r) = r
 
@@ -255,10 +263,12 @@ instance profileRequestEncodeJson :: EncodeJson ProfileRequest where
     ~> "gender" := o.gender
     ~> "birthdate" := o.birthdate
     ~> "website" := o.website
+    ~> "websites" := o.websites
     ~> "location" := o.location
     ~> "signature" := o.signature
     ~> "debug" := o.debug
     ~> "guard" := o.guard
+    ~> "state_websites" := o.stateWebsites
     ~> jsonEmptyObject
 
 
@@ -268,18 +278,22 @@ instance profileRequestDecodeJson :: DecodeJson ProfileRequest where
     gender <- obj .? "gender"
     birthdate <- obj .? "birthdate"
     website <- obj .? "website"
+    websites <- obj .? "websites"
     location <- obj .? "location"
     signature <- obj .? "signature"
     debug <- obj .? "debug"
     guard <- obj .? "guard"
+    stateWebsites <- obj .? "state_websites"
     pure $ ProfileRequest {
       gender,
       birthdate,
       website,
+      websites,
       location,
       signature,
       debug,
-      guard
+      guard,
+      stateWebsites
     }
 
 
@@ -297,10 +311,12 @@ instance profileRequestRespondable :: Respondable ProfileRequest where
       <$> readProp "gender" json
       <*> readProp "birthdate" json
       <*> (unNullOrUndefined <$> readProp "website" json)
+      <*> readProp "websites" json
       <*> (unNullOrUndefined <$> readProp "location" json)
       <*> (unNullOrUndefined <$> readProp "signature" json)
       <*> readProp "debug" json
       <*> readProp "guard" json
+      <*> (unNullOrUndefined <$> readProp "state_websites" json)
 
 
 instance profileRequestIsForeign :: IsForeign ProfileRequest where
@@ -309,10 +325,12 @@ instance profileRequestIsForeign :: IsForeign ProfileRequest where
       <$> readProp "gender" json
       <*> readProp "birthdate" json
       <*> (unNullOrUndefined <$> readProp "website" json)
+      <*> readProp "websites" json
       <*> (unNullOrUndefined <$> readProp "location" json)
       <*> (unNullOrUndefined <$> readProp "signature" json)
       <*> readProp "debug" json
       <*> readProp "guard" json
+      <*> (unNullOrUndefined <$> readProp "state_websites" json)
 
 
 newtype ProfileResponse = ProfileResponse {

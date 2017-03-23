@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -77,13 +77,13 @@ instance splitsRespondable :: Respondable Splits where
         r <- readProp "contents" json
         case r of
           [x0, x1, x2] -> SplitAt <$> read x0 <*> read x1 <*> read x2
-          _ -> Left $ TypeMismatch "SplitAt" "Respondable"
+          _ -> fail $ TypeMismatch "SplitAt" "Respondable"
 
 
       "SplitNone" -> do
         pure SplitNone
 
-      _ -> Left $ TypeMismatch "Splits" "Respondable"
+      _ -> fail $ TypeMismatch "Splits" "Respondable"
 
 
 
@@ -95,13 +95,13 @@ instance splitsIsForeign :: IsForeign Splits where
         r <- readProp "contents" json
         case r of
           [x0, x1, x2] -> SplitAt <$> read x0 <*> read x1 <*> read x2
-          _ -> Left $ TypeMismatch "SplitAt" "IsForeign"
+          _ -> fail $ TypeMismatch "SplitAt" "IsForeign"
 
 
       "SplitNone" -> do
         pure SplitNone
 
-      _ -> Left $ TypeMismatch "Splits" "IsForeign"
+      _ -> fail $ TypeMismatch "Splits" "IsForeign"
 
 
 
@@ -155,7 +155,7 @@ instance tySplitsRespondable :: Respondable TySplits where
       "TySplitNone" -> do
         pure TySplitNone
 
-      _ -> Left $ TypeMismatch "TySplits" "Respondable"
+      _ -> fail $ TypeMismatch "TySplits" "Respondable"
 
 
 
@@ -169,7 +169,7 @@ instance tySplitsIsForeign :: IsForeign TySplits where
       "TySplitNone" -> do
         pure TySplitNone
 
-      _ -> Left $ TypeMismatch "TySplits" "IsForeign"
+      _ -> fail $ TypeMismatch "TySplits" "IsForeign"
 
 
 

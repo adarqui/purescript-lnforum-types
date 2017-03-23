@@ -53,8 +53,8 @@ boardRequestToBoardResponse id userId orgId forumId parentId name active created
   }
 
 
-boardResponseToBoardRequest :: BoardResponse -> BoardRequest
-boardResponseToBoardRequest  (BoardResponse o) =
+boardResponseToBoardRequest :: (Maybe String) -> (Maybe String) -> BoardResponse -> BoardRequest
+boardResponseToBoardRequest stateSuggestedTag stateTag (BoardResponse o) =
   BoardRequest {
     displayName: o.displayName,
     description: o.description,
@@ -64,7 +64,9 @@ boardResponseToBoardRequest  (BoardResponse o) =
     suggestedTags: o.suggestedTags,
     icon: o.icon,
     tags: o.tags,
-    guard: o.guard
+    guard: o.guard,
+    stateSuggestedTag: stateSuggestedTag,
+    stateTag: stateTag
   }
 
 
@@ -131,8 +133,8 @@ forumRequestToForumResponse id userId orgId name active createdAt modifiedBy mod
   }
 
 
-forumResponseToForumRequest :: ForumResponse -> ForumRequest
-forumResponseToForumRequest  (ForumResponse o) =
+forumResponseToForumRequest :: (Maybe String) -> ForumResponse -> ForumRequest
+forumResponseToForumRequest stateTag (ForumResponse o) =
   ForumRequest {
     displayName: o.displayName,
     description: o.description,
@@ -144,7 +146,8 @@ forumResponseToForumRequest  (ForumResponse o) =
     icon: o.icon,
     tags: o.tags,
     visibility: o.visibility,
-    guard: o.guard
+    guard: o.guard,
+    stateTag: stateTag
   }
 
 
@@ -265,8 +268,8 @@ organizationRequestToOrganizationResponse id userId name emailMD5 active created
   }
 
 
-organizationResponseToOrganizationRequest :: OrganizationResponse -> OrganizationRequest
-organizationResponseToOrganizationRequest  (OrganizationResponse o) =
+organizationResponseToOrganizationRequest :: (Maybe String) -> OrganizationResponse -> OrganizationRequest
+organizationResponseToOrganizationRequest stateTag (OrganizationResponse o) =
   OrganizationRequest {
     displayName: o.displayName,
     description: o.description,
@@ -277,7 +280,8 @@ organizationResponseToOrganizationRequest  (OrganizationResponse o) =
     tags: o.tags,
     icon: o.icon,
     visibility: o.visibility,
-    guard: o.guard
+    guard: o.guard,
+    stateTag: stateTag
   }
 
 
@@ -377,16 +381,18 @@ profileRequestToProfileResponse id ent entId karmaGood karmaBad createdAt modifi
   }
 
 
-profileResponseToProfileRequest :: ProfileResponse -> ProfileRequest
-profileResponseToProfileRequest  (ProfileResponse o) =
+profileResponseToProfileRequest :: (Array String) -> (Maybe String) -> ProfileResponse -> ProfileRequest
+profileResponseToProfileRequest websites stateWebsites (ProfileResponse o) =
   ProfileRequest {
     gender: o.gender,
     birthdate: o.birthdate,
     website: o.website,
+    websites: websites,
     location: o.location,
     signature: o.signature,
     debug: o.debug,
-    guard: o.guard
+    guard: o.guard,
+    stateWebsites: stateWebsites
   }
 
 
@@ -518,7 +524,6 @@ teamRequestToTeamResponse id userId orgId system active createdAt modifiedBy mod
     system: system,
     membership: o.membership,
     icon: o.icon,
-    tags: o.tags,
     visibility: o.visibility,
     active: active,
     guard: o.guard,
@@ -534,7 +539,6 @@ teamResponseToTeamRequest  (TeamResponse o) =
   TeamRequest {
     membership: o.membership,
     icon: o.icon,
-    tags: o.tags,
     visibility: o.visibility,
     guard: o.guard
   }
@@ -565,8 +569,8 @@ threadRequestToThreadResponse id userId orgId forumId boardId name active create
   }
 
 
-threadResponseToThreadRequest :: ThreadResponse -> ThreadRequest
-threadResponseToThreadRequest  (ThreadResponse o) =
+threadResponseToThreadRequest :: (Maybe String) -> ThreadResponse -> ThreadRequest
+threadResponseToThreadRequest stateTag (ThreadResponse o) =
   ThreadRequest {
     displayName: o.displayName,
     description: o.description,
@@ -575,7 +579,8 @@ threadResponseToThreadRequest  (ThreadResponse o) =
     poll: o.poll,
     icon: o.icon,
     tags: o.tags,
-    guard: o.guard
+    guard: o.guard,
+    stateTag: stateTag
   }
 
 
@@ -602,19 +607,21 @@ threadPostRequestToThreadPostResponse id userId orgId forumId boardId threadId p
   }
 
 
-threadPostResponseToThreadPostRequest :: ThreadPostResponse -> ThreadPostRequest
-threadPostResponseToThreadPostRequest  (ThreadPostResponse o) =
+threadPostResponseToThreadPostRequest :: (Maybe String) -> (Maybe String) -> ThreadPostResponse -> ThreadPostRequest
+threadPostResponseToThreadPostRequest stateTag statePrivateTag (ThreadPostResponse o) =
   ThreadPostRequest {
     title: o.title,
     body: o.body,
     tags: o.tags,
     privateTags: o.privateTags,
-    guard: o.guard
+    guard: o.guard,
+    stateTag: stateTag,
+    statePrivateTag: statePrivateTag
   }
 
 
-userRequestToUserResponse :: Int -> String -> String -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> UserRequest -> UserResponse
-userRequestToUserResponse id name emailMD5 active guard createdAt modifiedAt deactivatedAt activityAt (UserRequest o) =
+userRequestToUserResponse :: Int -> String -> String -> (Maybe String) -> (Maybe Date) -> (Maybe String) -> (Maybe Date) -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> UserRequest -> UserResponse
+userRequestToUserResponse id name emailMD5 githubIdent githubCreatedAt googleIdent googleCreatedAt active guard createdAt modifiedAt deactivatedAt activityAt (UserRequest o) =
   UserResponse {
     id: id,
     name: name,
@@ -623,7 +630,10 @@ userRequestToUserResponse id name emailMD5 active guard createdAt modifiedAt dea
     email: o.email,
     emailMD5: emailMD5,
     plugin: o.plugin,
-    ident: o.ident,
+    githubIdent: githubIdent,
+    githubCreatedAt: githubCreatedAt,
+    googleIdent: googleIdent,
+    googleCreatedAt: googleCreatedAt,
     acceptTOS: o.acceptTOS,
     active: active,
     guard: guard,
@@ -641,7 +651,6 @@ userResponseToUserRequest  (UserResponse o) =
     fullName: o.fullName,
     email: o.email,
     plugin: o.plugin,
-    ident: o.ident,
     acceptTOS: o.acceptTOS
   }
 
@@ -660,14 +669,13 @@ userRequestToUserSanitizedResponse id name emailMD5 active guard createdAt activ
   }
 
 
-userSanitizedResponseToUserRequest :: String -> String -> String -> String -> (Maybe Date) -> UserSanitizedResponse -> UserRequest
-userSanitizedResponseToUserRequest fullName email plugin ident acceptTOS (UserSanitizedResponse o) =
+userSanitizedResponseToUserRequest :: String -> String -> String -> (Maybe Date) -> UserSanitizedResponse -> UserRequest
+userSanitizedResponseToUserRequest fullName email plugin acceptTOS (UserSanitizedResponse o) =
   UserRequest {
     displayName: o.displayName,
     fullName: fullName,
     email: email,
     plugin: plugin,
-    ident: ident,
     acceptTOS: acceptTOS
   }
 

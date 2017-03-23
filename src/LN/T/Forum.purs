@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -36,7 +36,8 @@ newtype ForumRequest = ForumRequest {
   icon :: (Maybe String),
   tags :: (Array String),
   visibility :: Visibility,
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String)
 }
 
 
@@ -51,7 +52,8 @@ type ForumRequestR = {
   icon :: (Maybe String),
   tags :: (Array String),
   visibility :: Visibility,
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String)
 }
 
 
@@ -66,14 +68,15 @@ _ForumRequest :: Lens' ForumRequest {
   icon :: (Maybe String),
   tags :: (Array String),
   visibility :: Visibility,
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String)
 }
 _ForumRequest f (ForumRequest o) = ForumRequest <$> f o
 
 
-mkForumRequest :: String -> (Maybe String) -> Int -> Int -> Int -> Int -> Int -> (Maybe String) -> (Array String) -> Visibility -> Int -> ForumRequest
-mkForumRequest displayName description threadsPerBoard threadPostsPerThread recentThreadsLimit recentPostsLimit motwLimit icon tags visibility guard =
-  ForumRequest{displayName, description, threadsPerBoard, threadPostsPerThread, recentThreadsLimit, recentPostsLimit, motwLimit, icon, tags, visibility, guard}
+mkForumRequest :: String -> (Maybe String) -> Int -> Int -> Int -> Int -> Int -> (Maybe String) -> (Array String) -> Visibility -> Int -> (Maybe String) -> ForumRequest
+mkForumRequest displayName description threadsPerBoard threadPostsPerThread recentThreadsLimit recentPostsLimit motwLimit icon tags visibility guard stateTag =
+  ForumRequest{displayName, description, threadsPerBoard, threadPostsPerThread, recentThreadsLimit, recentPostsLimit, motwLimit, icon, tags, visibility, guard, stateTag}
 
 
 unwrapForumRequest :: ForumRequest -> {
@@ -87,7 +90,8 @@ unwrapForumRequest :: ForumRequest -> {
   icon :: (Maybe String),
   tags :: (Array String),
   visibility :: Visibility,
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String)
 }
 unwrapForumRequest (ForumRequest r) = r
 
@@ -105,6 +109,7 @@ instance forumRequestEncodeJson :: EncodeJson ForumRequest where
     ~> "tags" := o.tags
     ~> "visibility" := o.visibility
     ~> "guard" := o.guard
+    ~> "state_tag" := o.stateTag
     ~> jsonEmptyObject
 
 
@@ -122,6 +127,7 @@ instance forumRequestDecodeJson :: DecodeJson ForumRequest where
     tags <- obj .? "tags"
     visibility <- obj .? "visibility"
     guard <- obj .? "guard"
+    stateTag <- obj .? "state_tag"
     pure $ ForumRequest {
       displayName,
       description,
@@ -133,7 +139,8 @@ instance forumRequestDecodeJson :: DecodeJson ForumRequest where
       icon,
       tags,
       visibility,
-      guard
+      guard,
+      stateTag
     }
 
 
@@ -159,6 +166,7 @@ instance forumRequestRespondable :: Respondable ForumRequest where
       <*> readProp "tags" json
       <*> readProp "visibility" json
       <*> readProp "guard" json
+      <*> (unNullOrUndefined <$> readProp "state_tag" json)
 
 
 instance forumRequestIsForeign :: IsForeign ForumRequest where
@@ -175,6 +183,7 @@ instance forumRequestIsForeign :: IsForeign ForumRequest where
       <*> readProp "tags" json
       <*> readProp "visibility" json
       <*> readProp "guard" json
+      <*> (unNullOrUndefined <$> readProp "state_tag" json)
 
 
 newtype ForumResponse = ForumResponse {

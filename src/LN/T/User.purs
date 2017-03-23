@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -30,7 +30,6 @@ newtype UserRequest = UserRequest {
   fullName :: String,
   email :: String,
   plugin :: String,
-  ident :: String,
   acceptTOS :: (Maybe Date)
 }
 
@@ -40,7 +39,6 @@ type UserRequestR = {
   fullName :: String,
   email :: String,
   plugin :: String,
-  ident :: String,
   acceptTOS :: (Maybe Date)
 }
 
@@ -50,15 +48,14 @@ _UserRequest :: Lens' UserRequest {
   fullName :: String,
   email :: String,
   plugin :: String,
-  ident :: String,
   acceptTOS :: (Maybe Date)
 }
 _UserRequest f (UserRequest o) = UserRequest <$> f o
 
 
-mkUserRequest :: String -> String -> String -> String -> String -> (Maybe Date) -> UserRequest
-mkUserRequest displayName fullName email plugin ident acceptTOS =
-  UserRequest{displayName, fullName, email, plugin, ident, acceptTOS}
+mkUserRequest :: String -> String -> String -> String -> (Maybe Date) -> UserRequest
+mkUserRequest displayName fullName email plugin acceptTOS =
+  UserRequest{displayName, fullName, email, plugin, acceptTOS}
 
 
 unwrapUserRequest :: UserRequest -> {
@@ -66,7 +63,6 @@ unwrapUserRequest :: UserRequest -> {
   fullName :: String,
   email :: String,
   plugin :: String,
-  ident :: String,
   acceptTOS :: (Maybe Date)
 }
 unwrapUserRequest (UserRequest r) = r
@@ -78,7 +74,6 @@ instance userRequestEncodeJson :: EncodeJson UserRequest where
     ~> "full_name" := o.fullName
     ~> "email" := o.email
     ~> "plugin" := o.plugin
-    ~> "ident" := o.ident
     ~> "accept_tos" := o.acceptTOS
     ~> jsonEmptyObject
 
@@ -90,14 +85,12 @@ instance userRequestDecodeJson :: DecodeJson UserRequest where
     fullName <- obj .? "full_name"
     email <- obj .? "email"
     plugin <- obj .? "plugin"
-    ident <- obj .? "ident"
     acceptTOS <- obj .? "accept_tos"
     pure $ UserRequest {
       displayName,
       fullName,
       email,
       plugin,
-      ident,
       acceptTOS
     }
 
@@ -117,7 +110,6 @@ instance userRequestRespondable :: Respondable UserRequest where
       <*> readProp "full_name" json
       <*> readProp "email" json
       <*> readProp "plugin" json
-      <*> readProp "ident" json
       <*> (unNullOrUndefined <$> readProp "accept_tos" json)
 
 
@@ -128,7 +120,6 @@ instance userRequestIsForeign :: IsForeign UserRequest where
       <*> readProp "full_name" json
       <*> readProp "email" json
       <*> readProp "plugin" json
-      <*> readProp "ident" json
       <*> (unNullOrUndefined <$> readProp "accept_tos" json)
 
 
@@ -140,7 +131,10 @@ newtype UserResponse = UserResponse {
   email :: String,
   emailMD5 :: String,
   plugin :: String,
-  ident :: String,
+  githubIdent :: (Maybe String),
+  githubCreatedAt :: (Maybe Date),
+  googleIdent :: (Maybe String),
+  googleCreatedAt :: (Maybe Date),
   acceptTOS :: (Maybe Date),
   active :: Boolean,
   guard :: Int,
@@ -159,7 +153,10 @@ type UserResponseR = {
   email :: String,
   emailMD5 :: String,
   plugin :: String,
-  ident :: String,
+  githubIdent :: (Maybe String),
+  githubCreatedAt :: (Maybe Date),
+  googleIdent :: (Maybe String),
+  googleCreatedAt :: (Maybe Date),
   acceptTOS :: (Maybe Date),
   active :: Boolean,
   guard :: Int,
@@ -178,7 +175,10 @@ _UserResponse :: Lens' UserResponse {
   email :: String,
   emailMD5 :: String,
   plugin :: String,
-  ident :: String,
+  githubIdent :: (Maybe String),
+  githubCreatedAt :: (Maybe Date),
+  googleIdent :: (Maybe String),
+  googleCreatedAt :: (Maybe Date),
   acceptTOS :: (Maybe Date),
   active :: Boolean,
   guard :: Int,
@@ -190,9 +190,9 @@ _UserResponse :: Lens' UserResponse {
 _UserResponse f (UserResponse o) = UserResponse <$> f o
 
 
-mkUserResponse :: Int -> String -> String -> String -> String -> String -> String -> String -> (Maybe Date) -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> UserResponse
-mkUserResponse id name displayName fullName email emailMD5 plugin ident acceptTOS active guard createdAt modifiedAt deactivatedAt activityAt =
-  UserResponse{id, name, displayName, fullName, email, emailMD5, plugin, ident, acceptTOS, active, guard, createdAt, modifiedAt, deactivatedAt, activityAt}
+mkUserResponse :: Int -> String -> String -> String -> String -> String -> String -> (Maybe String) -> (Maybe Date) -> (Maybe String) -> (Maybe Date) -> (Maybe Date) -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> UserResponse
+mkUserResponse id name displayName fullName email emailMD5 plugin githubIdent githubCreatedAt googleIdent googleCreatedAt acceptTOS active guard createdAt modifiedAt deactivatedAt activityAt =
+  UserResponse{id, name, displayName, fullName, email, emailMD5, plugin, githubIdent, githubCreatedAt, googleIdent, googleCreatedAt, acceptTOS, active, guard, createdAt, modifiedAt, deactivatedAt, activityAt}
 
 
 unwrapUserResponse :: UserResponse -> {
@@ -203,7 +203,10 @@ unwrapUserResponse :: UserResponse -> {
   email :: String,
   emailMD5 :: String,
   plugin :: String,
-  ident :: String,
+  githubIdent :: (Maybe String),
+  githubCreatedAt :: (Maybe Date),
+  googleIdent :: (Maybe String),
+  googleCreatedAt :: (Maybe Date),
   acceptTOS :: (Maybe Date),
   active :: Boolean,
   guard :: Int,
@@ -224,7 +227,10 @@ instance userResponseEncodeJson :: EncodeJson UserResponse where
     ~> "email" := o.email
     ~> "email_md5" := o.emailMD5
     ~> "plugin" := o.plugin
-    ~> "ident" := o.ident
+    ~> "github_ident" := o.githubIdent
+    ~> "github_created_at" := o.githubCreatedAt
+    ~> "google_ident" := o.googleIdent
+    ~> "google_created_at" := o.googleCreatedAt
     ~> "accept_tos" := o.acceptTOS
     ~> "active" := o.active
     ~> "guard" := o.guard
@@ -245,7 +251,10 @@ instance userResponseDecodeJson :: DecodeJson UserResponse where
     email <- obj .? "email"
     emailMD5 <- obj .? "email_md5"
     plugin <- obj .? "plugin"
-    ident <- obj .? "ident"
+    githubIdent <- obj .? "github_ident"
+    githubCreatedAt <- obj .? "github_created_at"
+    googleIdent <- obj .? "google_ident"
+    googleCreatedAt <- obj .? "google_created_at"
     acceptTOS <- obj .? "accept_tos"
     active <- obj .? "active"
     guard <- obj .? "guard"
@@ -261,7 +270,10 @@ instance userResponseDecodeJson :: DecodeJson UserResponse where
       email,
       emailMD5,
       plugin,
-      ident,
+      githubIdent,
+      githubCreatedAt,
+      googleIdent,
+      googleCreatedAt,
       acceptTOS,
       active,
       guard,
@@ -290,7 +302,10 @@ instance userResponseRespondable :: Respondable UserResponse where
       <*> readProp "email" json
       <*> readProp "email_md5" json
       <*> readProp "plugin" json
-      <*> readProp "ident" json
+      <*> (unNullOrUndefined <$> readProp "github_ident" json)
+      <*> (unNullOrUndefined <$> readProp "github_created_at" json)
+      <*> (unNullOrUndefined <$> readProp "google_ident" json)
+      <*> (unNullOrUndefined <$> readProp "google_created_at" json)
       <*> (unNullOrUndefined <$> readProp "accept_tos" json)
       <*> readProp "active" json
       <*> readProp "guard" json
@@ -310,7 +325,10 @@ instance userResponseIsForeign :: IsForeign UserResponse where
       <*> readProp "email" json
       <*> readProp "email_md5" json
       <*> readProp "plugin" json
-      <*> readProp "ident" json
+      <*> (unNullOrUndefined <$> readProp "github_ident" json)
+      <*> (unNullOrUndefined <$> readProp "github_created_at" json)
+      <*> (unNullOrUndefined <$> readProp "google_ident" json)
+      <*> (unNullOrUndefined <$> readProp "google_created_at" json)
       <*> (unNullOrUndefined <$> readProp "accept_tos" json)
       <*> readProp "active" json
       <*> readProp "guard" json

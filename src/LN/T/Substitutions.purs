@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -105,31 +105,31 @@ instance substitutionsRespondable :: Respondable Substitutions where
         r <- readProp "contents" json
         case r of
           [x0, x1] -> SubsExpr <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "SubsExpr" "Respondable"
+          _ -> fail $ TypeMismatch "SubsExpr" "Respondable"
 
 
       "SubsOneOf" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> SubsOneOf <$> read x0
-          _ -> Left $ TypeMismatch "SubsOneOf" "Respondable"
+          _ -> fail $ TypeMismatch "SubsOneOf" "Respondable"
 
 
       "SubsAllOf" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> SubsAllOf <$> read x0
-          _ -> Left $ TypeMismatch "SubsAllOf" "Respondable"
+          _ -> fail $ TypeMismatch "SubsAllOf" "Respondable"
 
 
       "SubsBoth" -> do
         r <- readProp "contents" json
         case r of
           [x0, x1] -> SubsBoth <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "SubsBoth" "Respondable"
+          _ -> fail $ TypeMismatch "SubsBoth" "Respondable"
 
 
-      _ -> Left $ TypeMismatch "Substitutions" "Respondable"
+      _ -> fail $ TypeMismatch "Substitutions" "Respondable"
 
 
 
@@ -141,31 +141,31 @@ instance substitutionsIsForeign :: IsForeign Substitutions where
         r <- readProp "contents" json
         case r of
           [x0, x1] -> SubsExpr <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "SubsExpr" "IsForeign"
+          _ -> fail $ TypeMismatch "SubsExpr" "IsForeign"
 
 
       "SubsOneOf" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> SubsOneOf <$> read x0
-          _ -> Left $ TypeMismatch "SubsOneOf" "IsForeign"
+          _ -> fail $ TypeMismatch "SubsOneOf" "IsForeign"
 
 
       "SubsAllOf" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> SubsAllOf <$> read x0
-          _ -> Left $ TypeMismatch "SubsAllOf" "IsForeign"
+          _ -> fail $ TypeMismatch "SubsAllOf" "IsForeign"
 
 
       "SubsBoth" -> do
         r <- readProp "contents" json
         case r of
           [x0, x1] -> SubsBoth <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "SubsBoth" "IsForeign"
+          _ -> fail $ TypeMismatch "SubsBoth" "IsForeign"
 
 
-      _ -> Left $ TypeMismatch "Substitutions" "IsForeign"
+      _ -> fail $ TypeMismatch "Substitutions" "IsForeign"
 
 
 
@@ -241,7 +241,7 @@ instance tySubstitutionsRespondable :: Respondable TySubstitutions where
       "TySubsBoth" -> do
         pure TySubsBoth
 
-      _ -> Left $ TypeMismatch "TySubstitutions" "Respondable"
+      _ -> fail $ TypeMismatch "TySubstitutions" "Respondable"
 
 
 
@@ -261,7 +261,7 @@ instance tySubstitutionsIsForeign :: IsForeign TySubstitutions where
       "TySubsBoth" -> do
         pure TySubsBoth
 
-      _ -> Left $ TypeMismatch "TySubstitutions" "IsForeign"
+      _ -> fail $ TypeMismatch "TySubstitutions" "IsForeign"
 
 
 

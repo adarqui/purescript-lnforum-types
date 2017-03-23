@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -295,7 +295,7 @@ instance entRespondable :: Respondable Ent where
       "Ent_None" -> do
         pure Ent_None
 
-      _ -> Left $ TypeMismatch "Ent" "Respondable"
+      _ -> fail $ TypeMismatch "Ent" "Respondable"
 
 
 
@@ -369,7 +369,7 @@ instance entIsForeign :: IsForeign Ent where
       "Ent_None" -> do
         pure Ent_None
 
-      _ -> Left $ TypeMismatch "Ent" "IsForeign"
+      _ -> fail $ TypeMismatch "Ent" "IsForeign"
 
 
 

@@ -18,7 +18,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -45,6 +45,9 @@ newtype ThreadPostPackResponse = ThreadPostPackResponse {
   withForum :: (Maybe ForumResponse),
   withBoard :: (Maybe BoardResponse),
   withThread :: (Maybe ThreadResponse),
+  withThreadPosts :: (Maybe (Array Int)),
+  withThreadPostsOffset :: (Maybe Int),
+  withThreadPostsLimit :: (Maybe Int),
   permissions :: Permissions
 }
 
@@ -61,6 +64,9 @@ type ThreadPostPackResponseR = {
   withForum :: (Maybe ForumResponse),
   withBoard :: (Maybe BoardResponse),
   withThread :: (Maybe ThreadResponse),
+  withThreadPosts :: (Maybe (Array Int)),
+  withThreadPostsOffset :: (Maybe Int),
+  withThreadPostsLimit :: (Maybe Int),
   permissions :: Permissions
 }
 
@@ -77,14 +83,17 @@ _ThreadPostPackResponse :: Lens' ThreadPostPackResponse {
   withForum :: (Maybe ForumResponse),
   withBoard :: (Maybe BoardResponse),
   withThread :: (Maybe ThreadResponse),
+  withThreadPosts :: (Maybe (Array Int)),
+  withThreadPostsOffset :: (Maybe Int),
+  withThreadPostsLimit :: (Maybe Int),
   permissions :: Permissions
 }
 _ThreadPostPackResponse f (ThreadPostPackResponse o) = ThreadPostPackResponse <$> f o
 
 
-mkThreadPostPackResponse :: ThreadPostResponse -> Int -> UserSanitizedResponse -> Int -> ThreadPostStatResponse -> (Maybe LikeResponse) -> (Maybe StarResponse) -> (Maybe OrganizationResponse) -> (Maybe ForumResponse) -> (Maybe BoardResponse) -> (Maybe ThreadResponse) -> Permissions -> ThreadPostPackResponse
-mkThreadPostPackResponse threadPost threadPostId user userId stat like star withOrganization withForum withBoard withThread permissions =
-  ThreadPostPackResponse{threadPost, threadPostId, user, userId, stat, like, star, withOrganization, withForum, withBoard, withThread, permissions}
+mkThreadPostPackResponse :: ThreadPostResponse -> Int -> UserSanitizedResponse -> Int -> ThreadPostStatResponse -> (Maybe LikeResponse) -> (Maybe StarResponse) -> (Maybe OrganizationResponse) -> (Maybe ForumResponse) -> (Maybe BoardResponse) -> (Maybe ThreadResponse) -> (Maybe (Array Int)) -> (Maybe Int) -> (Maybe Int) -> Permissions -> ThreadPostPackResponse
+mkThreadPostPackResponse threadPost threadPostId user userId stat like star withOrganization withForum withBoard withThread withThreadPosts withThreadPostsOffset withThreadPostsLimit permissions =
+  ThreadPostPackResponse{threadPost, threadPostId, user, userId, stat, like, star, withOrganization, withForum, withBoard, withThread, withThreadPosts, withThreadPostsOffset, withThreadPostsLimit, permissions}
 
 
 unwrapThreadPostPackResponse :: ThreadPostPackResponse -> {
@@ -99,6 +108,9 @@ unwrapThreadPostPackResponse :: ThreadPostPackResponse -> {
   withForum :: (Maybe ForumResponse),
   withBoard :: (Maybe BoardResponse),
   withThread :: (Maybe ThreadResponse),
+  withThreadPosts :: (Maybe (Array Int)),
+  withThreadPostsOffset :: (Maybe Int),
+  withThreadPostsLimit :: (Maybe Int),
   permissions :: Permissions
 }
 unwrapThreadPostPackResponse (ThreadPostPackResponse r) = r
@@ -117,6 +129,9 @@ instance threadPostPackResponseEncodeJson :: EncodeJson ThreadPostPackResponse w
     ~> "with_forum" := o.withForum
     ~> "with_board" := o.withBoard
     ~> "with_thread" := o.withThread
+    ~> "with_thread_posts" := o.withThreadPosts
+    ~> "with_thread_posts_offset" := o.withThreadPostsOffset
+    ~> "with_thread_posts_limit" := o.withThreadPostsLimit
     ~> "permissions" := o.permissions
     ~> jsonEmptyObject
 
@@ -135,6 +150,9 @@ instance threadPostPackResponseDecodeJson :: DecodeJson ThreadPostPackResponse w
     withForum <- obj .? "with_forum"
     withBoard <- obj .? "with_board"
     withThread <- obj .? "with_thread"
+    withThreadPosts <- obj .? "with_thread_posts"
+    withThreadPostsOffset <- obj .? "with_thread_posts_offset"
+    withThreadPostsLimit <- obj .? "with_thread_posts_limit"
     permissions <- obj .? "permissions"
     pure $ ThreadPostPackResponse {
       threadPost,
@@ -148,6 +166,9 @@ instance threadPostPackResponseDecodeJson :: DecodeJson ThreadPostPackResponse w
       withForum,
       withBoard,
       withThread,
+      withThreadPosts,
+      withThreadPostsOffset,
+      withThreadPostsLimit,
       permissions
     }
 
@@ -174,6 +195,9 @@ instance threadPostPackResponseRespondable :: Respondable ThreadPostPackResponse
       <*> (unNullOrUndefined <$> readProp "with_forum" json)
       <*> (unNullOrUndefined <$> readProp "with_board" json)
       <*> (unNullOrUndefined <$> readProp "with_thread" json)
+      <*> (unNullOrUndefined <$> readProp "with_thread_posts" json)
+      <*> (unNullOrUndefined <$> readProp "with_thread_posts_offset" json)
+      <*> (unNullOrUndefined <$> readProp "with_thread_posts_limit" json)
       <*> readProp "permissions" json
 
 
@@ -191,6 +215,9 @@ instance threadPostPackResponseIsForeign :: IsForeign ThreadPostPackResponse whe
       <*> (unNullOrUndefined <$> readProp "with_forum" json)
       <*> (unNullOrUndefined <$> readProp "with_board" json)
       <*> (unNullOrUndefined <$> readProp "with_thread" json)
+      <*> (unNullOrUndefined <$> readProp "with_thread_posts" json)
+      <*> (unNullOrUndefined <$> readProp "with_thread_posts_offset" json)
+      <*> (unNullOrUndefined <$> readProp "with_thread_posts_limit" json)
       <*> readProp "permissions" json
 
 

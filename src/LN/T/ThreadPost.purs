@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -125,41 +125,41 @@ instance postDataRespondable :: Respondable PostData where
         r <- readProp "contents" json
         case r of
           [x0] -> PostDataRaw <$> read x0
-          _ -> Left $ TypeMismatch "PostDataRaw" "Respondable"
+          _ -> fail $ TypeMismatch "PostDataRaw" "Respondable"
 
 
       "PostDataMarkdown" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> PostDataMarkdown <$> read x0
-          _ -> Left $ TypeMismatch "PostDataMarkdown" "Respondable"
+          _ -> fail $ TypeMismatch "PostDataMarkdown" "Respondable"
 
 
       "PostDataBBCode" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> PostDataBBCode <$> read x0
-          _ -> Left $ TypeMismatch "PostDataBBCode" "Respondable"
+          _ -> fail $ TypeMismatch "PostDataBBCode" "Respondable"
 
 
       "PostDataCode" -> do
         r <- readProp "contents" json
         case r of
           [x0, x1] -> PostDataCode <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "PostDataCode" "Respondable"
+          _ -> fail $ TypeMismatch "PostDataCode" "Respondable"
 
 
       "PostDataOther" -> do
         r <- readProp "contents" json
         case r of
           [x0, x1] -> PostDataOther <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "PostDataOther" "Respondable"
+          _ -> fail $ TypeMismatch "PostDataOther" "Respondable"
 
 
       "PostDataEmpty" -> do
         pure PostDataEmpty
 
-      _ -> Left $ TypeMismatch "PostData" "Respondable"
+      _ -> fail $ TypeMismatch "PostData" "Respondable"
 
 
 
@@ -171,41 +171,41 @@ instance postDataIsForeign :: IsForeign PostData where
         r <- readProp "contents" json
         case r of
           [x0] -> PostDataRaw <$> read x0
-          _ -> Left $ TypeMismatch "PostDataRaw" "IsForeign"
+          _ -> fail $ TypeMismatch "PostDataRaw" "IsForeign"
 
 
       "PostDataMarkdown" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> PostDataMarkdown <$> read x0
-          _ -> Left $ TypeMismatch "PostDataMarkdown" "IsForeign"
+          _ -> fail $ TypeMismatch "PostDataMarkdown" "IsForeign"
 
 
       "PostDataBBCode" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> PostDataBBCode <$> read x0
-          _ -> Left $ TypeMismatch "PostDataBBCode" "IsForeign"
+          _ -> fail $ TypeMismatch "PostDataBBCode" "IsForeign"
 
 
       "PostDataCode" -> do
         r <- readProp "contents" json
         case r of
           [x0, x1] -> PostDataCode <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "PostDataCode" "IsForeign"
+          _ -> fail $ TypeMismatch "PostDataCode" "IsForeign"
 
 
       "PostDataOther" -> do
         r <- readProp "contents" json
         case r of
           [x0, x1] -> PostDataOther <$> read x0 <*> read x1
-          _ -> Left $ TypeMismatch "PostDataOther" "IsForeign"
+          _ -> fail $ TypeMismatch "PostDataOther" "IsForeign"
 
 
       "PostDataEmpty" -> do
         pure PostDataEmpty
 
-      _ -> Left $ TypeMismatch "PostData" "IsForeign"
+      _ -> fail $ TypeMismatch "PostData" "IsForeign"
 
 
 
@@ -223,7 +223,9 @@ newtype ThreadPostRequest = ThreadPostRequest {
   body :: PostData,
   tags :: (Array String),
   privateTags :: (Array String),
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String),
+  statePrivateTag :: (Maybe String)
 }
 
 
@@ -232,7 +234,9 @@ type ThreadPostRequestR = {
   body :: PostData,
   tags :: (Array String),
   privateTags :: (Array String),
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String),
+  statePrivateTag :: (Maybe String)
 }
 
 
@@ -241,14 +245,16 @@ _ThreadPostRequest :: Lens' ThreadPostRequest {
   body :: PostData,
   tags :: (Array String),
   privateTags :: (Array String),
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String),
+  statePrivateTag :: (Maybe String)
 }
 _ThreadPostRequest f (ThreadPostRequest o) = ThreadPostRequest <$> f o
 
 
-mkThreadPostRequest :: (Maybe String) -> PostData -> (Array String) -> (Array String) -> Int -> ThreadPostRequest
-mkThreadPostRequest title body tags privateTags guard =
-  ThreadPostRequest{title, body, tags, privateTags, guard}
+mkThreadPostRequest :: (Maybe String) -> PostData -> (Array String) -> (Array String) -> Int -> (Maybe String) -> (Maybe String) -> ThreadPostRequest
+mkThreadPostRequest title body tags privateTags guard stateTag statePrivateTag =
+  ThreadPostRequest{title, body, tags, privateTags, guard, stateTag, statePrivateTag}
 
 
 unwrapThreadPostRequest :: ThreadPostRequest -> {
@@ -256,7 +262,9 @@ unwrapThreadPostRequest :: ThreadPostRequest -> {
   body :: PostData,
   tags :: (Array String),
   privateTags :: (Array String),
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String),
+  statePrivateTag :: (Maybe String)
 }
 unwrapThreadPostRequest (ThreadPostRequest r) = r
 
@@ -268,6 +276,8 @@ instance threadPostRequestEncodeJson :: EncodeJson ThreadPostRequest where
     ~> "tags" := o.tags
     ~> "private_tags" := o.privateTags
     ~> "guard" := o.guard
+    ~> "state_tag" := o.stateTag
+    ~> "state_private_tag" := o.statePrivateTag
     ~> jsonEmptyObject
 
 
@@ -279,12 +289,16 @@ instance threadPostRequestDecodeJson :: DecodeJson ThreadPostRequest where
     tags <- obj .? "tags"
     privateTags <- obj .? "private_tags"
     guard <- obj .? "guard"
+    stateTag <- obj .? "state_tag"
+    statePrivateTag <- obj .? "state_private_tag"
     pure $ ThreadPostRequest {
       title,
       body,
       tags,
       privateTags,
-      guard
+      guard,
+      stateTag,
+      statePrivateTag
     }
 
 
@@ -304,6 +318,8 @@ instance threadPostRequestRespondable :: Respondable ThreadPostRequest where
       <*> readProp "tags" json
       <*> readProp "private_tags" json
       <*> readProp "guard" json
+      <*> (unNullOrUndefined <$> readProp "state_tag" json)
+      <*> (unNullOrUndefined <$> readProp "state_private_tag" json)
 
 
 instance threadPostRequestIsForeign :: IsForeign ThreadPostRequest where
@@ -314,6 +330,8 @@ instance threadPostRequestIsForeign :: IsForeign ThreadPostRequest where
       <*> readProp "tags" json
       <*> readProp "private_tags" json
       <*> readProp "guard" json
+      <*> (unNullOrUndefined <$> readProp "state_tag" json)
+      <*> (unNullOrUndefined <$> readProp "state_private_tag" json)
 
 
 newtype ThreadPostResponse = ThreadPostResponse {

@@ -11,7 +11,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -36,7 +36,8 @@ newtype OrganizationRequest = OrganizationRequest {
   tags :: (Array String),
   icon :: (Maybe String),
   visibility :: Visibility,
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String)
 }
 
 
@@ -50,7 +51,8 @@ type OrganizationRequestR = {
   tags :: (Array String),
   icon :: (Maybe String),
   visibility :: Visibility,
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String)
 }
 
 
@@ -64,14 +66,15 @@ _OrganizationRequest :: Lens' OrganizationRequest {
   tags :: (Array String),
   icon :: (Maybe String),
   visibility :: Visibility,
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String)
 }
 _OrganizationRequest f (OrganizationRequest o) = OrganizationRequest <$> f o
 
 
-mkOrganizationRequest :: String -> (Maybe String) -> String -> String -> String -> Membership -> (Array String) -> (Maybe String) -> Visibility -> Int -> OrganizationRequest
-mkOrganizationRequest displayName description company location email membership tags icon visibility guard =
-  OrganizationRequest{displayName, description, company, location, email, membership, tags, icon, visibility, guard}
+mkOrganizationRequest :: String -> (Maybe String) -> String -> String -> String -> Membership -> (Array String) -> (Maybe String) -> Visibility -> Int -> (Maybe String) -> OrganizationRequest
+mkOrganizationRequest displayName description company location email membership tags icon visibility guard stateTag =
+  OrganizationRequest{displayName, description, company, location, email, membership, tags, icon, visibility, guard, stateTag}
 
 
 unwrapOrganizationRequest :: OrganizationRequest -> {
@@ -84,7 +87,8 @@ unwrapOrganizationRequest :: OrganizationRequest -> {
   tags :: (Array String),
   icon :: (Maybe String),
   visibility :: Visibility,
-  guard :: Int
+  guard :: Int,
+  stateTag :: (Maybe String)
 }
 unwrapOrganizationRequest (OrganizationRequest r) = r
 
@@ -101,6 +105,7 @@ instance organizationRequestEncodeJson :: EncodeJson OrganizationRequest where
     ~> "icon" := o.icon
     ~> "visibility" := o.visibility
     ~> "guard" := o.guard
+    ~> "state_tag" := o.stateTag
     ~> jsonEmptyObject
 
 
@@ -117,6 +122,7 @@ instance organizationRequestDecodeJson :: DecodeJson OrganizationRequest where
     icon <- obj .? "icon"
     visibility <- obj .? "visibility"
     guard <- obj .? "guard"
+    stateTag <- obj .? "state_tag"
     pure $ OrganizationRequest {
       displayName,
       description,
@@ -127,7 +133,8 @@ instance organizationRequestDecodeJson :: DecodeJson OrganizationRequest where
       tags,
       icon,
       visibility,
-      guard
+      guard,
+      stateTag
     }
 
 
@@ -152,6 +159,7 @@ instance organizationRequestRespondable :: Respondable OrganizationRequest where
       <*> (unNullOrUndefined <$> readProp "icon" json)
       <*> readProp "visibility" json
       <*> readProp "guard" json
+      <*> (unNullOrUndefined <$> readProp "state_tag" json)
 
 
 instance organizationRequestIsForeign :: IsForeign OrganizationRequest where
@@ -167,6 +175,7 @@ instance organizationRequestIsForeign :: IsForeign OrganizationRequest where
       <*> (unNullOrUndefined <$> readProp "icon" json)
       <*> readProp "visibility" json
       <*> readProp "guard" json
+      <*> (unNullOrUndefined <$> readProp "state_tag" json)
 
 
 newtype OrganizationResponse = OrganizationResponse {

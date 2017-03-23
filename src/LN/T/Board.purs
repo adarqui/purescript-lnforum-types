@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -34,7 +34,9 @@ newtype BoardRequest = BoardRequest {
   suggestedTags :: (Array String),
   icon :: (Maybe String),
   tags :: (Array String),
-  guard :: Int
+  guard :: Int,
+  stateSuggestedTag :: (Maybe String),
+  stateTag :: (Maybe String)
 }
 
 
@@ -47,7 +49,9 @@ type BoardRequestR = {
   suggestedTags :: (Array String),
   icon :: (Maybe String),
   tags :: (Array String),
-  guard :: Int
+  guard :: Int,
+  stateSuggestedTag :: (Maybe String),
+  stateTag :: (Maybe String)
 }
 
 
@@ -60,14 +64,16 @@ _BoardRequest :: Lens' BoardRequest {
   suggestedTags :: (Array String),
   icon :: (Maybe String),
   tags :: (Array String),
-  guard :: Int
+  guard :: Int,
+  stateSuggestedTag :: (Maybe String),
+  stateTag :: (Maybe String)
 }
 _BoardRequest f (BoardRequest o) = BoardRequest <$> f o
 
 
-mkBoardRequest :: String -> (Maybe String) -> Boolean -> Boolean -> Boolean -> (Array String) -> (Maybe String) -> (Array String) -> Int -> BoardRequest
-mkBoardRequest displayName description isAnonymous canCreateSubBoards canCreateThreads suggestedTags icon tags guard =
-  BoardRequest{displayName, description, isAnonymous, canCreateSubBoards, canCreateThreads, suggestedTags, icon, tags, guard}
+mkBoardRequest :: String -> (Maybe String) -> Boolean -> Boolean -> Boolean -> (Array String) -> (Maybe String) -> (Array String) -> Int -> (Maybe String) -> (Maybe String) -> BoardRequest
+mkBoardRequest displayName description isAnonymous canCreateSubBoards canCreateThreads suggestedTags icon tags guard stateSuggestedTag stateTag =
+  BoardRequest{displayName, description, isAnonymous, canCreateSubBoards, canCreateThreads, suggestedTags, icon, tags, guard, stateSuggestedTag, stateTag}
 
 
 unwrapBoardRequest :: BoardRequest -> {
@@ -79,7 +85,9 @@ unwrapBoardRequest :: BoardRequest -> {
   suggestedTags :: (Array String),
   icon :: (Maybe String),
   tags :: (Array String),
-  guard :: Int
+  guard :: Int,
+  stateSuggestedTag :: (Maybe String),
+  stateTag :: (Maybe String)
 }
 unwrapBoardRequest (BoardRequest r) = r
 
@@ -95,6 +103,8 @@ instance boardRequestEncodeJson :: EncodeJson BoardRequest where
     ~> "icon" := o.icon
     ~> "tags" := o.tags
     ~> "guard" := o.guard
+    ~> "state_suggested_tag" := o.stateSuggestedTag
+    ~> "state_tag" := o.stateTag
     ~> jsonEmptyObject
 
 
@@ -110,6 +120,8 @@ instance boardRequestDecodeJson :: DecodeJson BoardRequest where
     icon <- obj .? "icon"
     tags <- obj .? "tags"
     guard <- obj .? "guard"
+    stateSuggestedTag <- obj .? "state_suggested_tag"
+    stateTag <- obj .? "state_tag"
     pure $ BoardRequest {
       displayName,
       description,
@@ -119,7 +131,9 @@ instance boardRequestDecodeJson :: DecodeJson BoardRequest where
       suggestedTags,
       icon,
       tags,
-      guard
+      guard,
+      stateSuggestedTag,
+      stateTag
     }
 
 
@@ -143,6 +157,8 @@ instance boardRequestRespondable :: Respondable BoardRequest where
       <*> (unNullOrUndefined <$> readProp "icon" json)
       <*> readProp "tags" json
       <*> readProp "guard" json
+      <*> (unNullOrUndefined <$> readProp "state_suggested_tag" json)
+      <*> (unNullOrUndefined <$> readProp "state_tag" json)
 
 
 instance boardRequestIsForeign :: IsForeign BoardRequest where
@@ -157,6 +173,8 @@ instance boardRequestIsForeign :: IsForeign BoardRequest where
       <*> (unNullOrUndefined <$> readProp "icon" json)
       <*> readProp "tags" json
       <*> readProp "guard" json
+      <*> (unNullOrUndefined <$> readProp "state_suggested_tag" json)
+      <*> (unNullOrUndefined <$> readProp "state_tag" json)
 
 
 newtype BoardResponse = BoardResponse {

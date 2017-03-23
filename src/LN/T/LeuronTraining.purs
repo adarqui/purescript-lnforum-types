@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -130,7 +130,7 @@ instance leuronTrainingSummaryRespondable :: Respondable LeuronTrainingSummary w
       "LTS_Protest" -> do
         pure LTS_Protest
 
-      _ -> Left $ TypeMismatch "LeuronTrainingSummary" "Respondable"
+      _ -> fail $ TypeMismatch "LeuronTrainingSummary" "Respondable"
 
 
 
@@ -159,7 +159,7 @@ instance leuronTrainingSummaryIsForeign :: IsForeign LeuronTrainingSummary where
       "LTS_Protest" -> do
         pure LTS_Protest
 
-      _ -> Left $ TypeMismatch "LeuronTrainingSummary" "IsForeign"
+      _ -> fail $ TypeMismatch "LeuronTrainingSummary" "IsForeign"
 
 
 

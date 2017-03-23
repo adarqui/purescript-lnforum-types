@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -75,7 +75,7 @@ instance visibilityRespondable :: Respondable Visibility where
       "Private" -> do
         pure Private
 
-      _ -> Left $ TypeMismatch "Visibility" "Respondable"
+      _ -> fail $ TypeMismatch "Visibility" "Respondable"
 
 
 
@@ -89,7 +89,7 @@ instance visibilityIsForeign :: IsForeign Visibility where
       "Private" -> do
         pure Private
 
-      _ -> Left $ TypeMismatch "Visibility" "IsForeign"
+      _ -> fail $ TypeMismatch "Visibility" "IsForeign"
 
 
 

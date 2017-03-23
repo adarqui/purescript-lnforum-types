@@ -11,7 +11,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -76,7 +76,7 @@ instance systemTeamRespondable :: Respondable SystemTeam where
       "Team_Members" -> do
         pure Team_Members
 
-      _ -> Left $ TypeMismatch "SystemTeam" "Respondable"
+      _ -> fail $ TypeMismatch "SystemTeam" "Respondable"
 
 
 
@@ -90,7 +90,7 @@ instance systemTeamIsForeign :: IsForeign SystemTeam where
       "Team_Members" -> do
         pure Team_Members
 
-      _ -> Left $ TypeMismatch "SystemTeam" "IsForeign"
+      _ -> fail $ TypeMismatch "SystemTeam" "IsForeign"
 
 
 
@@ -107,7 +107,6 @@ readSystemTeam _ = Nothing
 newtype TeamRequest = TeamRequest {
   membership :: Membership,
   icon :: (Maybe String),
-  tags :: (Array String),
   visibility :: Visibility,
   guard :: Int
 }
@@ -116,7 +115,6 @@ newtype TeamRequest = TeamRequest {
 type TeamRequestR = {
   membership :: Membership,
   icon :: (Maybe String),
-  tags :: (Array String),
   visibility :: Visibility,
   guard :: Int
 }
@@ -125,22 +123,20 @@ type TeamRequestR = {
 _TeamRequest :: Lens' TeamRequest {
   membership :: Membership,
   icon :: (Maybe String),
-  tags :: (Array String),
   visibility :: Visibility,
   guard :: Int
 }
 _TeamRequest f (TeamRequest o) = TeamRequest <$> f o
 
 
-mkTeamRequest :: Membership -> (Maybe String) -> (Array String) -> Visibility -> Int -> TeamRequest
-mkTeamRequest membership icon tags visibility guard =
-  TeamRequest{membership, icon, tags, visibility, guard}
+mkTeamRequest :: Membership -> (Maybe String) -> Visibility -> Int -> TeamRequest
+mkTeamRequest membership icon visibility guard =
+  TeamRequest{membership, icon, visibility, guard}
 
 
 unwrapTeamRequest :: TeamRequest -> {
   membership :: Membership,
   icon :: (Maybe String),
-  tags :: (Array String),
   visibility :: Visibility,
   guard :: Int
 }
@@ -151,7 +147,6 @@ instance teamRequestEncodeJson :: EncodeJson TeamRequest where
        "tag" := "TeamRequest"
     ~> "membership" := o.membership
     ~> "icon" := o.icon
-    ~> "tags" := o.tags
     ~> "visibility" := o.visibility
     ~> "guard" := o.guard
     ~> jsonEmptyObject
@@ -162,13 +157,11 @@ instance teamRequestDecodeJson :: DecodeJson TeamRequest where
     obj <- decodeJson o
     membership <- obj .? "membership"
     icon <- obj .? "icon"
-    tags <- obj .? "tags"
     visibility <- obj .? "visibility"
     guard <- obj .? "guard"
     pure $ TeamRequest {
       membership,
       icon,
-      tags,
       visibility,
       guard
     }
@@ -187,7 +180,6 @@ instance teamRequestRespondable :: Respondable TeamRequest where
       mkTeamRequest
       <$> readProp "membership" json
       <*> (unNullOrUndefined <$> readProp "icon" json)
-      <*> readProp "tags" json
       <*> readProp "visibility" json
       <*> readProp "guard" json
 
@@ -197,7 +189,6 @@ instance teamRequestIsForeign :: IsForeign TeamRequest where
       mkTeamRequest
       <$> readProp "membership" json
       <*> (unNullOrUndefined <$> readProp "icon" json)
-      <*> readProp "tags" json
       <*> readProp "visibility" json
       <*> readProp "guard" json
 
@@ -209,7 +200,6 @@ newtype TeamResponse = TeamResponse {
   system :: SystemTeam,
   membership :: Membership,
   icon :: (Maybe String),
-  tags :: (Array String),
   visibility :: Visibility,
   active :: Boolean,
   guard :: Int,
@@ -227,7 +217,6 @@ type TeamResponseR = {
   system :: SystemTeam,
   membership :: Membership,
   icon :: (Maybe String),
-  tags :: (Array String),
   visibility :: Visibility,
   active :: Boolean,
   guard :: Int,
@@ -245,7 +234,6 @@ _TeamResponse :: Lens' TeamResponse {
   system :: SystemTeam,
   membership :: Membership,
   icon :: (Maybe String),
-  tags :: (Array String),
   visibility :: Visibility,
   active :: Boolean,
   guard :: Int,
@@ -257,9 +245,9 @@ _TeamResponse :: Lens' TeamResponse {
 _TeamResponse f (TeamResponse o) = TeamResponse <$> f o
 
 
-mkTeamResponse :: Int -> Int -> Int -> SystemTeam -> Membership -> (Maybe String) -> (Array String) -> Visibility -> Boolean -> Int -> (Maybe Date) -> (Maybe Int) -> (Maybe Date) -> (Maybe Date) -> TeamResponse
-mkTeamResponse id userId orgId system membership icon tags visibility active guard createdAt modifiedBy modifiedAt activityAt =
-  TeamResponse{id, userId, orgId, system, membership, icon, tags, visibility, active, guard, createdAt, modifiedBy, modifiedAt, activityAt}
+mkTeamResponse :: Int -> Int -> Int -> SystemTeam -> Membership -> (Maybe String) -> Visibility -> Boolean -> Int -> (Maybe Date) -> (Maybe Int) -> (Maybe Date) -> (Maybe Date) -> TeamResponse
+mkTeamResponse id userId orgId system membership icon visibility active guard createdAt modifiedBy modifiedAt activityAt =
+  TeamResponse{id, userId, orgId, system, membership, icon, visibility, active, guard, createdAt, modifiedBy, modifiedAt, activityAt}
 
 
 unwrapTeamResponse :: TeamResponse -> {
@@ -269,7 +257,6 @@ unwrapTeamResponse :: TeamResponse -> {
   system :: SystemTeam,
   membership :: Membership,
   icon :: (Maybe String),
-  tags :: (Array String),
   visibility :: Visibility,
   active :: Boolean,
   guard :: Int,
@@ -289,7 +276,6 @@ instance teamResponseEncodeJson :: EncodeJson TeamResponse where
     ~> "system" := o.system
     ~> "membership" := o.membership
     ~> "icon" := o.icon
-    ~> "tags" := o.tags
     ~> "visibility" := o.visibility
     ~> "active" := o.active
     ~> "guard" := o.guard
@@ -309,7 +295,6 @@ instance teamResponseDecodeJson :: DecodeJson TeamResponse where
     system <- obj .? "system"
     membership <- obj .? "membership"
     icon <- obj .? "icon"
-    tags <- obj .? "tags"
     visibility <- obj .? "visibility"
     active <- obj .? "active"
     guard <- obj .? "guard"
@@ -324,7 +309,6 @@ instance teamResponseDecodeJson :: DecodeJson TeamResponse where
       system,
       membership,
       icon,
-      tags,
       visibility,
       active,
       guard,
@@ -352,7 +336,6 @@ instance teamResponseRespondable :: Respondable TeamResponse where
       <*> readProp "system" json
       <*> readProp "membership" json
       <*> (unNullOrUndefined <$> readProp "icon" json)
-      <*> readProp "tags" json
       <*> readProp "visibility" json
       <*> readProp "active" json
       <*> readProp "guard" json
@@ -371,7 +354,6 @@ instance teamResponseIsForeign :: IsForeign TeamResponse where
       <*> readProp "system" json
       <*> readProp "membership" json
       <*> (unNullOrUndefined <$> readProp "icon" json)
-      <*> readProp "tags" json
       <*> readProp "visibility" json
       <*> readProp "active" json
       <*> readProp "guard" json

@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -86,7 +86,7 @@ instance likeOptRespondable :: Respondable LikeOpt where
       "Dislike" -> do
         pure Dislike
 
-      _ -> Left $ TypeMismatch "LikeOpt" "Respondable"
+      _ -> fail $ TypeMismatch "LikeOpt" "Respondable"
 
 
 
@@ -103,7 +103,7 @@ instance likeOptIsForeign :: IsForeign LikeOpt where
       "Dislike" -> do
         pure Dislike
 
-      _ -> Left $ TypeMismatch "LikeOpt" "IsForeign"
+      _ -> fail $ TypeMismatch "LikeOpt" "IsForeign"
 
 
 

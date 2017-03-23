@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -304,7 +304,7 @@ instance groupMemberStatResponseRespondable :: Respondable GroupMemberStatRespon
       "GroupMemberStatResponse" -> do
         pure GroupMemberStatResponse
 
-      _ -> Left $ TypeMismatch "GroupMemberStatResponse" "Respondable"
+      _ -> fail $ TypeMismatch "GroupMemberStatResponse" "Respondable"
 
 
 
@@ -315,7 +315,7 @@ instance groupMemberStatResponseIsForeign :: IsForeign GroupMemberStatResponse w
       "GroupMemberStatResponse" -> do
         pure GroupMemberStatResponse
 
-      _ -> Left $ TypeMismatch "GroupMemberStatResponse" "IsForeign"
+      _ -> fail $ TypeMismatch "GroupMemberStatResponse" "IsForeign"
 
 
 
@@ -358,7 +358,7 @@ instance groupMemberStatResponsesRespondable :: Respondable GroupMemberStatRespo
       "GroupMemberStatResponses" -> do
         pure GroupMemberStatResponses
 
-      _ -> Left $ TypeMismatch "GroupMemberStatResponses" "Respondable"
+      _ -> fail $ TypeMismatch "GroupMemberStatResponses" "Respondable"
 
 
 
@@ -369,7 +369,7 @@ instance groupMemberStatResponsesIsForeign :: IsForeign GroupMemberStatResponses
       "GroupMemberStatResponses" -> do
         pure GroupMemberStatResponses
 
-      _ -> Left $ TypeMismatch "GroupMemberStatResponses" "IsForeign"
+      _ -> fail $ TypeMismatch "GroupMemberStatResponses" "IsForeign"
 
 
 -- footer

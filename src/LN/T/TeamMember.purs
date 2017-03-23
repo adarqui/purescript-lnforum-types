@@ -10,7 +10,7 @@ import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..))
+import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class IsForeign, read, readProp)
 import Data.Maybe                       (Maybe(..))
@@ -367,7 +367,7 @@ instance teamMemberStatResponseRespondable :: Respondable TeamMemberStatResponse
       "TeamMemberStatResponse" -> do
         pure TeamMemberStatResponse
 
-      _ -> Left $ TypeMismatch "TeamMemberStatResponse" "Respondable"
+      _ -> fail $ TypeMismatch "TeamMemberStatResponse" "Respondable"
 
 
 
@@ -378,7 +378,7 @@ instance teamMemberStatResponseIsForeign :: IsForeign TeamMemberStatResponse whe
       "TeamMemberStatResponse" -> do
         pure TeamMemberStatResponse
 
-      _ -> Left $ TypeMismatch "TeamMemberStatResponse" "IsForeign"
+      _ -> fail $ TypeMismatch "TeamMemberStatResponse" "IsForeign"
 
 
 

@@ -1,5 +1,6 @@
 {
   "name": "purescript-lnotes-types",
+  "version": "1.2.0",
   "homepage": "https://github.com/adarqui/purescript-ln-types",
   "description": "Some core auto-generated types for ln-ui",
   "license": "MIT",

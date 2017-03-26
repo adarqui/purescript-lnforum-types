@@ -1,5 +1,6 @@
 module LN.T (
-  module A
+  module A,
+  SpecificApiOptions (..)
 ) where
 
 

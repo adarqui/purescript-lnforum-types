@@ -26,3 +26,5 @@ import           LN.T.Splits              as A
 import           LN.T.Substitutions       as A
 import           LN.T.User                as A
 import           LN.T.Visibility          as A
+
+import           LN.T.Internal.Lens       as A

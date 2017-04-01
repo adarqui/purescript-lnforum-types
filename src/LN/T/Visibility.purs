@@ -102,4 +102,9 @@ readVisibility :: String -> Maybe Visibility
 readVisibility "public" = Just Public
 readVisibility "private" = Just Private
 readVisibility _ = Nothing
+
+instance visibilityShow :: Show Visibility where
+  show Public = "public"
+  show Private = "private"
+
 -- footer

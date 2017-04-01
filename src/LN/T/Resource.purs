@@ -302,6 +302,14 @@ instance tyResourceTypeEq :: Eq TyResourceType where
   eq TySourceNone TySourceNone = true
   eq _ _ = false
 
+instance tyResourceTypeShow :: Show TyResourceType where
+  show TyISBN13 = "ty_isbn13"
+  show TyISBN10 = "ty_isbn10"
+  show TyISBN = "ty_isbn"
+  show TyURL = "ty_url"
+  show TySourceNone = "ty_source_none"
+
+
 newtype ResourceRequest = ResourceRequest {
   displayName :: String,
   description :: String,

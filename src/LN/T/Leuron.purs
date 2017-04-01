@@ -1376,6 +1376,25 @@ instance tyLeuronEq :: Eq TyLeuron where
   eq TyLnEmpty TyLnEmpty = true
   eq _ _ = false
 
+instance tyLeuronShow :: Show TyLeuron where
+  show TyLnFact = "ty_ln_fact"
+  show TyLnFactList = "ty_ln_fact_list"
+  show TyLnCard = "ty_ln_card"
+  show TyLnDCard = "ty_ln_dcard"
+  show TyLnDCardX = "ty_ln_dcard_x"
+  show TyLnAcronym = "ty_ln_acronym"
+  show TyLnSynonym = "ty_ln_synonym"
+  show TyLnAntonym = "ty_ln_antonym"
+  show TyLnTemplate = "ty_ln_template"
+  show TyLnImageAssociation = "ty_ln_image_association"
+  show TyLnLinearDemo = "ty_ln_linear_demo"
+  show TyLnTable = "ty_ln_table"
+  show TyLnScript = "ty_ln_script"
+  show TyLnQA = "ty_ln_qa"
+  show TyLnExamples = "ty_ln_examples"
+  show TyLnEmpty = "ty_ln_empty"
+
+
 newtype Fact = Fact {
   text :: String
 }

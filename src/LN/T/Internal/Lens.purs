@@ -85,30 +85,6 @@ blockedAt_ :: forall b a r. Lens { blockedAt :: a | r } { blockedAt :: b | r } a
 blockedAt_ f o = o { blockedAt = _ } <$> f o.blockedAt
 
 
-board_ :: forall b a r. Lens { board :: a | r } { board :: b | r } a b
-board_ f o = o { board = _ } <$> f o.board
-
-
-boardId_ :: forall b a r. Lens { boardId :: a | r } { boardId :: b | r } a b
-boardId_ f o = o { boardId = _ } <$> f o.boardId
-
-
-boardPackResponses_ :: forall b a r. Lens { boardPackResponses :: a | r } { boardPackResponses :: b | r } a b
-boardPackResponses_ f o = o { boardPackResponses = _ } <$> f o.boardPackResponses
-
-
-boardResponses_ :: forall b a r. Lens { boardResponses :: a | r } { boardResponses :: b | r } a b
-boardResponses_ f o = o { boardResponses = _ } <$> f o.boardResponses
-
-
-boardStatResponses_ :: forall b a r. Lens { boardStatResponses :: a | r } { boardStatResponses :: b | r } a b
-boardStatResponses_ f o = o { boardStatResponses = _ } <$> f o.boardStatResponses
-
-
-boards_ :: forall b a r. Lens { boards :: a | r } { boards :: b | r } a b
-boards_ f o = o { boards = _ } <$> f o.boards
-
-
 body_ :: forall b a r. Lens { body :: a | r } { body :: b | r } a b
 body_ f o = o { body = _ } <$> f o.body
 
@@ -117,12 +93,8 @@ bucketResponses_ :: forall b a r. Lens { bucketResponses :: a | r } { bucketResp
 bucketResponses_ f o = o { bucketResponses = _ } <$> f o.bucketResponses
 
 
-canCreateSubBoards_ :: forall b a r. Lens { canCreateSubBoards :: a | r } { canCreateSubBoards :: b | r } a b
-canCreateSubBoards_ f o = o { canCreateSubBoards = _ } <$> f o.canCreateSubBoards
-
-
-canCreateThreads_ :: forall b a r. Lens { canCreateThreads :: a | r } { canCreateThreads :: b | r } a b
-canCreateThreads_ f o = o { canCreateThreads = _ } <$> f o.canCreateThreads
+bucket_ :: forall b a r. Lens { bucket :: a | r } { bucket :: b | r } a b
+bucket_ f o = o { bucket = _ } <$> f o.bucket
 
 
 categories_ :: forall b a r. Lens { categories :: a | r } { categories :: b | r } a b
@@ -221,30 +193,6 @@ filters_ :: forall b a r. Lens { filters :: a | r } { filters :: b | r } a b
 filters_ f o = o { filters = _ } <$> f o.filters
 
 
-forum_ :: forall b a r. Lens { forum :: a | r } { forum :: b | r } a b
-forum_ f o = o { forum = _ } <$> f o.forum
-
-
-forumId_ :: forall b a r. Lens { forumId :: a | r } { forumId :: b | r } a b
-forumId_ f o = o { forumId = _ } <$> f o.forumId
-
-
-forumPackResponses_ :: forall b a r. Lens { forumPackResponses :: a | r } { forumPackResponses :: b | r } a b
-forumPackResponses_ f o = o { forumPackResponses = _ } <$> f o.forumPackResponses
-
-
-forumResponses_ :: forall b a r. Lens { forumResponses :: a | r } { forumResponses :: b | r } a b
-forumResponses_ f o = o { forumResponses = _ } <$> f o.forumResponses
-
-
-forumStatResponses_ :: forall b a r. Lens { forumStatResponses :: a | r } { forumStatResponses :: b | r } a b
-forumStatResponses_ f o = o { forumStatResponses = _ } <$> f o.forumStatResponses
-
-
-forums_ :: forall b a r. Lens { forums :: a | r } { forums :: b | r } a b
-forums_ f o = o { forums = _ } <$> f o.forums
-
-
 front_ :: forall b a r. Lens { front :: a | r } { front :: b | r } a b
 front_ f o = o { front = _ } <$> f o.front
 
@@ -255,66 +203,6 @@ fullName_ f o = o { fullName = _ } <$> f o.fullName
 
 gender_ :: forall b a r. Lens { gender :: a | r } { gender :: b | r } a b
 gender_ f o = o { gender = _ } <$> f o.gender
-
-
-globalGroup_ :: forall b a r. Lens { globalGroup :: a | r } { globalGroup :: b | r } a b
-globalGroup_ f o = o { globalGroup = _ } <$> f o.globalGroup
-
-
-globalGroupId_ :: forall b a r. Lens { globalGroupId :: a | r } { globalGroupId :: b | r } a b
-globalGroupId_ f o = o { globalGroupId = _ } <$> f o.globalGroupId
-
-
-globalGroupPackResponses_ :: forall b a r. Lens { globalGroupPackResponses :: a | r } { globalGroupPackResponses :: b | r } a b
-globalGroupPackResponses_ f o = o { globalGroupPackResponses = _ } <$> f o.globalGroupPackResponses
-
-
-globalGroupResponses_ :: forall b a r. Lens { globalGroupResponses :: a | r } { globalGroupResponses :: b | r } a b
-globalGroupResponses_ f o = o { globalGroupResponses = _ } <$> f o.globalGroupResponses
-
-
-globalGroupStatResponses_ :: forall b a r. Lens { globalGroupStatResponses :: a | r } { globalGroupStatResponses :: b | r } a b
-globalGroupStatResponses_ f o = o { globalGroupStatResponses = _ } <$> f o.globalGroupStatResponses
-
-
-group_ :: forall b a r. Lens { group :: a | r } { group :: b | r } a b
-group_ f o = o { group = _ } <$> f o.group
-
-
-groupId_ :: forall b a r. Lens { groupId :: a | r } { groupId :: b | r } a b
-groupId_ f o = o { groupId = _ } <$> f o.groupId
-
-
-groupMember_ :: forall b a r. Lens { groupMember :: a | r } { groupMember :: b | r } a b
-groupMember_ f o = o { groupMember = _ } <$> f o.groupMember
-
-
-groupMemberId_ :: forall b a r. Lens { groupMemberId :: a | r } { groupMemberId :: b | r } a b
-groupMemberId_ f o = o { groupMemberId = _ } <$> f o.groupMemberId
-
-
-groupMemberPackResponses_ :: forall b a r. Lens { groupMemberPackResponses :: a | r } { groupMemberPackResponses :: b | r } a b
-groupMemberPackResponses_ f o = o { groupMemberPackResponses = _ } <$> f o.groupMemberPackResponses
-
-
-groupMemberResponses_ :: forall b a r. Lens { groupMemberResponses :: a | r } { groupMemberResponses :: b | r } a b
-groupMemberResponses_ f o = o { groupMemberResponses = _ } <$> f o.groupMemberResponses
-
-
-groupPackResponses_ :: forall b a r. Lens { groupPackResponses :: a | r } { groupPackResponses :: b | r } a b
-groupPackResponses_ f o = o { groupPackResponses = _ } <$> f o.groupPackResponses
-
-
-groupResponses_ :: forall b a r. Lens { groupResponses :: a | r } { groupResponses :: b | r } a b
-groupResponses_ f o = o { groupResponses = _ } <$> f o.groupResponses
-
-
-groupStatResponses_ :: forall b a r. Lens { groupStatResponses :: a | r } { groupStatResponses :: b | r } a b
-groupStatResponses_ f o = o { groupStatResponses = _ } <$> f o.groupStatResponses
-
-
-groups_ :: forall b a r. Lens { groups :: a | r } { groups :: b | r } a b
-groups_ f o = o { groups = _ } <$> f o.groups
 
 
 guard_ :: forall b a r. Lens { guard :: a | r } { guard :: b | r } a b
@@ -383,18 +271,6 @@ key_ f o = o { key = _ } <$> f o.key
 
 label_ :: forall b a r. Lens { label :: a | r } { label :: b | r } a b
 label_ f o = o { label = _ } <$> f o.label
-
-
-latestThread_ :: forall b a r. Lens { latestThread :: a | r } { latestThread :: b | r } a b
-latestThread_ f o = o { latestThread = _ } <$> f o.latestThread
-
-
-latestThreadPost_ :: forall b a r. Lens { latestThreadPost :: a | r } { latestThreadPost :: b | r } a b
-latestThreadPost_ f o = o { latestThreadPost = _ } <$> f o.latestThreadPost
-
-
-latestThreadPostUser_ :: forall b a r. Lens { latestThreadPostUser :: a | r } { latestThreadPostUser :: b | r } a b
-latestThreadPostUser_ f o = o { latestThreadPostUser = _ } <$> f o.latestThreadPostUser
 
 
 leuron_ :: forall b a r. Lens { leuron :: a | r } { leuron :: b | r } a b
@@ -505,30 +381,6 @@ opt_ :: forall b a r. Lens { opt :: a | r } { opt :: b | r } a b
 opt_ f o = o { opt = _ } <$> f o.opt
 
 
-orgId_ :: forall b a r. Lens { orgId :: a | r } { orgId :: b | r } a b
-orgId_ f o = o { orgId = _ } <$> f o.orgId
-
-
-organization_ :: forall b a r. Lens { organization :: a | r } { organization :: b | r } a b
-organization_ f o = o { organization = _ } <$> f o.organization
-
-
-organizationId_ :: forall b a r. Lens { organizationId :: a | r } { organizationId :: b | r } a b
-organizationId_ f o = o { organizationId = _ } <$> f o.organizationId
-
-
-organizationPackResponses_ :: forall b a r. Lens { organizationPackResponses :: a | r } { organizationPackResponses :: b | r } a b
-organizationPackResponses_ f o = o { organizationPackResponses = _ } <$> f o.organizationPackResponses
-
-
-organizationResponses_ :: forall b a r. Lens { organizationResponses :: a | r } { organizationResponses :: b | r } a b
-organizationResponses_ f o = o { organizationResponses = _ } <$> f o.organizationResponses
-
-
-organizationStatResponses_ :: forall b a r. Lens { organizationStatResponses :: a | r } { organizationStatResponses :: b | r } a b
-organizationStatResponses_ f o = o { organizationStatResponses = _ } <$> f o.organizationStatResponses
-
-
 page_ :: forall b a r. Lens { page :: a | r } { page :: b | r } a b
 page_ f o = o { page = _ } <$> f o.page
 
@@ -547,46 +399,6 @@ permissions_ f o = o { permissions = _ } <$> f o.permissions
 
 plugin_ :: forall b a r. Lens { plugin :: a | r } { plugin :: b | r } a b
 plugin_ f o = o { plugin = _ } <$> f o.plugin
-
-
-pmId_ :: forall b a r. Lens { pmId :: a | r } { pmId :: b | r } a b
-pmId_ f o = o { pmId = _ } <$> f o.pmId
-
-
-pmIn_ :: forall b a r. Lens { pmIn :: a | r } { pmIn :: b | r } a b
-pmIn_ f o = o { pmIn = _ } <$> f o.pmIn
-
-
-pmInId_ :: forall b a r. Lens { pmInId :: a | r } { pmInId :: b | r } a b
-pmInId_ f o = o { pmInId = _ } <$> f o.pmInId
-
-
-pmInPackResponses_ :: forall b a r. Lens { pmInPackResponses :: a | r } { pmInPackResponses :: b | r } a b
-pmInPackResponses_ f o = o { pmInPackResponses = _ } <$> f o.pmInPackResponses
-
-
-pmInResponses_ :: forall b a r. Lens { pmInResponses :: a | r } { pmInResponses :: b | r } a b
-pmInResponses_ f o = o { pmInResponses = _ } <$> f o.pmInResponses
-
-
-pmOut_ :: forall b a r. Lens { pmOut :: a | r } { pmOut :: b | r } a b
-pmOut_ f o = o { pmOut = _ } <$> f o.pmOut
-
-
-pmOutId_ :: forall b a r. Lens { pmOutId :: a | r } { pmOutId :: b | r } a b
-pmOutId_ f o = o { pmOutId = _ } <$> f o.pmOutId
-
-
-pmOutPackResponses_ :: forall b a r. Lens { pmOutPackResponses :: a | r } { pmOutPackResponses :: b | r } a b
-pmOutPackResponses_ f o = o { pmOutPackResponses = _ } <$> f o.pmOutPackResponses
-
-
-pmOutResponses_ :: forall b a r. Lens { pmOutResponses :: a | r } { pmOutResponses :: b | r } a b
-pmOutResponses_ f o = o { pmOutResponses = _ } <$> f o.pmOutResponses
-
-
-pmResponses_ :: forall b a r. Lens { pmResponses :: a | r } { pmResponses :: b | r } a b
-pmResponses_ f o = o { pmResponses = _ } <$> f o.pmResponses
 
 
 poll_ :: forall b a r. Lens { poll :: a | r } { poll :: b | r } a b
@@ -631,22 +443,6 @@ question_ f o = o { question = _ } <$> f o.question
 
 reason_ :: forall b a r. Lens { reason :: a | r } { reason :: b | r } a b
 reason_ f o = o { reason = _ } <$> f o.reason
-
-
-recentPostsLimit_ :: forall b a r. Lens { recentPostsLimit :: a | r } { recentPostsLimit :: b | r } a b
-recentPostsLimit_ f o = o { recentPostsLimit = _ } <$> f o.recentPostsLimit
-
-
-recentThreadsLimit_ :: forall b a r. Lens { recentThreadsLimit :: a | r } { recentThreadsLimit :: b | r } a b
-recentThreadsLimit_ f o = o { recentThreadsLimit = _ } <$> f o.recentThreadsLimit
-
-
-reminderFolderResponses_ :: forall b a r. Lens { reminderFolderResponses :: a | r } { reminderFolderResponses :: b | r } a b
-reminderFolderResponses_ f o = o { reminderFolderResponses = _ } <$> f o.reminderFolderResponses
-
-
-reminderResponses_ :: forall b a r. Lens { reminderResponses :: a | r } { reminderResponses :: b | r } a b
-reminderResponses_ f o = o { reminderResponses = _ } <$> f o.reminderResponses
 
 
 resource_ :: forall b a r. Lens { resource :: a | r } { resource :: b | r } a b
@@ -765,50 +561,6 @@ tags_ :: forall b a r. Lens { tags :: a | r } { tags :: b | r } a b
 tags_ f o = o { tags = _ } <$> f o.tags
 
 
-team_ :: forall b a r. Lens { team :: a | r } { team :: b | r } a b
-team_ f o = o { team = _ } <$> f o.team
-
-
-teamId_ :: forall b a r. Lens { teamId :: a | r } { teamId :: b | r } a b
-teamId_ f o = o { teamId = _ } <$> f o.teamId
-
-
-teamMember_ :: forall b a r. Lens { teamMember :: a | r } { teamMember :: b | r } a b
-teamMember_ f o = o { teamMember = _ } <$> f o.teamMember
-
-
-teamMemberId_ :: forall b a r. Lens { teamMemberId :: a | r } { teamMemberId :: b | r } a b
-teamMemberId_ f o = o { teamMemberId = _ } <$> f o.teamMemberId
-
-
-teamMemberPackResponses_ :: forall b a r. Lens { teamMemberPackResponses :: a | r } { teamMemberPackResponses :: b | r } a b
-teamMemberPackResponses_ f o = o { teamMemberPackResponses = _ } <$> f o.teamMemberPackResponses
-
-
-teamMemberResponses_ :: forall b a r. Lens { teamMemberResponses :: a | r } { teamMemberResponses :: b | r } a b
-teamMemberResponses_ f o = o { teamMemberResponses = _ } <$> f o.teamMemberResponses
-
-
-teamMemberStatResponses_ :: forall b a r. Lens { teamMemberStatResponses :: a | r } { teamMemberStatResponses :: b | r } a b
-teamMemberStatResponses_ f o = o { teamMemberStatResponses = _ } <$> f o.teamMemberStatResponses
-
-
-teamPackResponses_ :: forall b a r. Lens { teamPackResponses :: a | r } { teamPackResponses :: b | r } a b
-teamPackResponses_ f o = o { teamPackResponses = _ } <$> f o.teamPackResponses
-
-
-teamResponses_ :: forall b a r. Lens { teamResponses :: a | r } { teamResponses :: b | r } a b
-teamResponses_ f o = o { teamResponses = _ } <$> f o.teamResponses
-
-
-teamStatResponses_ :: forall b a r. Lens { teamStatResponses :: a | r } { teamStatResponses :: b | r } a b
-teamStatResponses_ f o = o { teamStatResponses = _ } <$> f o.teamStatResponses
-
-
-teams_ :: forall b a r. Lens { teams :: a | r } { teams :: b | r } a b
-teams_ f o = o { teams = _ } <$> f o.teams
-
-
 template_ :: forall b a r. Lens { template :: a | r } { template :: b | r } a b
 template_ f o = o { template = _ } <$> f o.template
 
@@ -819,62 +571,6 @@ testResponses_ f o = o { testResponses = _ } <$> f o.testResponses
 
 text_ :: forall b a r. Lens { text :: a | r } { text :: b | r } a b
 text_ f o = o { text = _ } <$> f o.text
-
-
-thread_ :: forall b a r. Lens { thread :: a | r } { thread :: b | r } a b
-thread_ f o = o { thread = _ } <$> f o.thread
-
-
-threadId_ :: forall b a r. Lens { threadId :: a | r } { threadId :: b | r } a b
-threadId_ f o = o { threadId = _ } <$> f o.threadId
-
-
-threadPackResponses_ :: forall b a r. Lens { threadPackResponses :: a | r } { threadPackResponses :: b | r } a b
-threadPackResponses_ f o = o { threadPackResponses = _ } <$> f o.threadPackResponses
-
-
-threadPost_ :: forall b a r. Lens { threadPost :: a | r } { threadPost :: b | r } a b
-threadPost_ f o = o { threadPost = _ } <$> f o.threadPost
-
-
-threadPostId_ :: forall b a r. Lens { threadPostId :: a | r } { threadPostId :: b | r } a b
-threadPostId_ f o = o { threadPostId = _ } <$> f o.threadPostId
-
-
-threadPostPackResponses_ :: forall b a r. Lens { threadPostPackResponses :: a | r } { threadPostPackResponses :: b | r } a b
-threadPostPackResponses_ f o = o { threadPostPackResponses = _ } <$> f o.threadPostPackResponses
-
-
-threadPostResponses_ :: forall b a r. Lens { threadPostResponses :: a | r } { threadPostResponses :: b | r } a b
-threadPostResponses_ f o = o { threadPostResponses = _ } <$> f o.threadPostResponses
-
-
-threadPostStatResponses_ :: forall b a r. Lens { threadPostStatResponses :: a | r } { threadPostStatResponses :: b | r } a b
-threadPostStatResponses_ f o = o { threadPostStatResponses = _ } <$> f o.threadPostStatResponses
-
-
-threadPosts_ :: forall b a r. Lens { threadPosts :: a | r } { threadPosts :: b | r } a b
-threadPosts_ f o = o { threadPosts = _ } <$> f o.threadPosts
-
-
-threadPostsPerThread_ :: forall b a r. Lens { threadPostsPerThread :: a | r } { threadPostsPerThread :: b | r } a b
-threadPostsPerThread_ f o = o { threadPostsPerThread = _ } <$> f o.threadPostsPerThread
-
-
-threadResponses_ :: forall b a r. Lens { threadResponses :: a | r } { threadResponses :: b | r } a b
-threadResponses_ f o = o { threadResponses = _ } <$> f o.threadResponses
-
-
-threadStatResponses_ :: forall b a r. Lens { threadStatResponses :: a | r } { threadStatResponses :: b | r } a b
-threadStatResponses_ f o = o { threadStatResponses = _ } <$> f o.threadStatResponses
-
-
-threads_ :: forall b a r. Lens { threads :: a | r } { threads :: b | r } a b
-threads_ f o = o { threads = _ } <$> f o.threads
-
-
-threadsPerBoard_ :: forall b a r. Lens { threadsPerBoard :: a | r } { threadsPerBoard :: b | r } a b
-threadsPerBoard_ f o = o { threadsPerBoard = _ } <$> f o.threadsPerBoard
 
 
 title_ :: forall b a r. Lens { title :: a | r } { title :: b | r } a b
@@ -947,25 +643,5 @@ visibility_ f o = o { visibility = _ } <$> f o.visibility
 
 website_ :: forall b a r. Lens { website :: a | r } { website :: b | r } a b
 website_ f o = o { website = _ } <$> f o.website
-
-
-withBoard_ :: forall b a r. Lens { withBoard :: a | r } { withBoard :: b | r } a b
-withBoard_ f o = o { withBoard = _ } <$> f o.withBoard
-
-
-withForum_ :: forall b a r. Lens { withForum :: a | r } { withForum :: b | r } a b
-withForum_ f o = o { withForum = _ } <$> f o.withForum
-
-
-withOrganization_ :: forall b a r. Lens { withOrganization :: a | r } { withOrganization :: b | r } a b
-withOrganization_ f o = o { withOrganization = _ } <$> f o.withOrganization
-
-
-withThread_ :: forall b a r. Lens { withThread :: a | r } { withThread :: b | r } a b
-withThread_ f o = o { withThread = _ } <$> f o.withThread
-
-
-workouts_ :: forall b a r. Lens { workouts :: a | r } { workouts :: b | r } a b
-workouts_ f o = o { workouts = _ } <$> f o.workouts
 
 -- footer

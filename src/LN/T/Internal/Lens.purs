@@ -221,6 +221,10 @@ ident_ :: forall b a r. Lens { ident :: a | r } { ident :: b | r } a b
 ident_ f o = o { ident = _ } <$> f o.ident
 
 
+idTarget_ :: forall b a r. Lens { idTarget :: a | r } { idTarget :: b | r } a b
+idTarget_ f o = o { idTarget = _ } <$> f o.idTarget
+
+
 imageUrl_ :: forall b a r. Lens { imageUrl :: a | r } { imageUrl :: b | r } a b
 imageUrl_ f o = o { imageUrl = _ } <$> f o.imageUrl
 

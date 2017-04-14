@@ -109,6 +109,27 @@ leuronResponseToLeuronRequest  (LeuronResponse o) =
   }
 
 
+idRequestToIdResponse :: Int -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> IdRequest -> IdResponse
+idRequestToIdResponse id userId createdAt modifiedAt activityAt (IdRequest o) =
+  IdResponse {
+    id: id,
+    userId: userId,
+    targetId: o.targetId,
+    guard: o.guard,
+    createdAt: createdAt,
+    modifiedAt: modifiedAt,
+    activityAt: activityAt
+  }
+
+
+idResponseToIdRequest :: IdResponse -> IdRequest
+idResponseToIdRequest  (IdResponse o) =
+  IdRequest {
+    targetId: o.targetId,
+    guard: o.guard
+  }
+
+
 leuronTrainingRequestToLeuronTrainingResponse :: Int -> Int -> Int -> (Maybe Date) -> (Maybe Date) -> LeuronTrainingRequest -> LeuronTrainingResponse
 leuronTrainingRequestToLeuronTrainingResponse id userId leuronId createdAt modifiedAt (LeuronTrainingRequest o) =
   LeuronTrainingResponse {

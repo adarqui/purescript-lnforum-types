@@ -291,5 +291,19 @@ userSanitizedResponseToUserRequest fullName email plugin acceptTOS (UserSanitize
   }
 
 
+simpleStringRequestToSimpleStringResponse :: String -> SimpleStringRequest -> SimpleStringResponse
+simpleStringRequestToSimpleStringResponse simpleStringResponse (SimpleStringRequest o) =
+  SimpleStringResponse {
+    simpleStringResponse: simpleStringResponse
+  }
+
+
+simpleStringsRequestToSimpleStringsResponse :: (Array String) -> SimpleStringsRequest -> SimpleStringsResponse
+simpleStringsRequestToSimpleStringsResponse simpleStringsResponse (SimpleStringsRequest o) =
+  SimpleStringsResponse {
+    simpleStringsResponse: simpleStringsResponse
+  }
+
+
 
 -- footer

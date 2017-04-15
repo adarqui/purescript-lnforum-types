@@ -501,6 +501,22 @@ signature_ :: forall b a r. Lens { signature :: a | r } { signature :: b | r } a
 signature_ f o = o { signature = _ } <$> f o.signature
 
 
+simpleInt_ :: forall b a r. Lens { simpleInt :: a | r } { simpleInt :: b | r } a b
+simpleInt_ f o = o { simpleInt = _ } <$> f o.simpleInt
+
+
+simpleInts_ :: forall b a r. Lens { simpleInts :: a | r } { simpleInts :: b | r } a b
+simpleInts_ f o = o { simpleInts = _ } <$> f o.simpleInts
+
+
+simpleString_ :: forall b a r. Lens { simpleString :: a | r } { simpleString :: b | r } a b
+simpleString_ f o = o { simpleString = _ } <$> f o.simpleString
+
+
+simpleStrings_ :: forall b a r. Lens { simpleStrings :: a | r } { simpleStrings :: b | r } a b
+simpleStrings_ f o = o { simpleStrings = _ } <$> f o.simpleStrings
+
+
 source_ :: forall b a r. Lens { source :: a | r } { source :: b | r } a b
 source_ f o = o { source = _ } <$> f o.source
 

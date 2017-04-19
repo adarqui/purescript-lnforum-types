@@ -1,5 +1,5 @@
 module LN.T.Bucket where
-
+import LN.T.Training
 
 
 import Data.Argonaut.Core               (jsonEmptyObject)
@@ -171,6 +171,7 @@ newtype BucketResponse = BucketResponse {
   resources :: (Array Int),
   categories :: (Array String),
   filters :: (Array Int),
+  trainingNode :: TrainingNode,
   active :: Boolean,
   guard :: Int,
   createdAt :: (Maybe Date),
@@ -191,6 +192,7 @@ type BucketResponseR = {
   resources :: (Array Int),
   categories :: (Array String),
   filters :: (Array Int),
+  trainingNode :: TrainingNode,
   active :: Boolean,
   guard :: Int,
   createdAt :: (Maybe Date),
@@ -211,6 +213,7 @@ _BucketResponse :: Lens' BucketResponse {
   resources :: (Array Int),
   categories :: (Array String),
   filters :: (Array Int),
+  trainingNode :: TrainingNode,
   active :: Boolean,
   guard :: Int,
   createdAt :: (Maybe Date),
@@ -220,9 +223,9 @@ _BucketResponse :: Lens' BucketResponse {
 _BucketResponse f (BucketResponse o) = BucketResponse <$> f o
 
 
-mkBucketResponse :: Int -> Int -> String -> String -> (Maybe String) -> Int -> Int -> (Array Int) -> (Array Int) -> (Array String) -> (Array Int) -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> BucketResponse
-mkBucketResponse id userId name displayName description scoreLo scoreHi leurons resources categories filters active guard createdAt modifiedAt activityAt =
-  BucketResponse{id, userId, name, displayName, description, scoreLo, scoreHi, leurons, resources, categories, filters, active, guard, createdAt, modifiedAt, activityAt}
+mkBucketResponse :: Int -> Int -> String -> String -> (Maybe String) -> Int -> Int -> (Array Int) -> (Array Int) -> (Array String) -> (Array Int) -> TrainingNode -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> BucketResponse
+mkBucketResponse id userId name displayName description scoreLo scoreHi leurons resources categories filters trainingNode active guard createdAt modifiedAt activityAt =
+  BucketResponse{id, userId, name, displayName, description, scoreLo, scoreHi, leurons, resources, categories, filters, trainingNode, active, guard, createdAt, modifiedAt, activityAt}
 
 
 unwrapBucketResponse :: BucketResponse -> {
@@ -237,6 +240,7 @@ unwrapBucketResponse :: BucketResponse -> {
   resources :: (Array Int),
   categories :: (Array String),
   filters :: (Array Int),
+  trainingNode :: TrainingNode,
   active :: Boolean,
   guard :: Int,
   createdAt :: (Maybe Date),
@@ -259,6 +263,7 @@ instance bucketResponseEncodeJson :: EncodeJson BucketResponse where
     ~> "resources" := o.resources
     ~> "categories" := o.categories
     ~> "filters" := o.filters
+    ~> "training_node" := o.trainingNode
     ~> "active" := o.active
     ~> "guard" := o.guard
     ~> "created_at" := o.createdAt
@@ -281,6 +286,7 @@ instance bucketResponseDecodeJson :: DecodeJson BucketResponse where
     resources <- obj .? "resources"
     categories <- obj .? "categories"
     filters <- obj .? "filters"
+    trainingNode <- obj .? "training_node"
     active <- obj .? "active"
     guard <- obj .? "guard"
     createdAt <- obj .? "created_at"
@@ -298,6 +304,7 @@ instance bucketResponseDecodeJson :: DecodeJson BucketResponse where
       resources,
       categories,
       filters,
+      trainingNode,
       active,
       guard,
       createdAt,
@@ -328,6 +335,7 @@ instance bucketResponseRespondable :: Respondable BucketResponse where
       <*> readProp "resources" json
       <*> readProp "categories" json
       <*> readProp "filters" json
+      <*> readProp "training_node" json
       <*> readProp "active" json
       <*> readProp "guard" json
       <*> (unNullOrUndefined <$> readProp "created_at" json)
@@ -349,6 +357,7 @@ instance bucketResponseIsForeign :: IsForeign BucketResponse where
       <*> readProp "resources" json
       <*> readProp "categories" json
       <*> readProp "filters" json
+      <*> readProp "training_node" json
       <*> readProp "active" json
       <*> readProp "guard" json
       <*> (unNullOrUndefined <$> readProp "created_at" json)

@@ -26,65 +26,65 @@ import Data.Default
 import Purescript.Api.Helpers
 
 newtype BucketRoundRequest = BucketRoundRequest {
-  styles :: (Array String),
+  trainingStyles :: (Array TrainingStyle),
   threshold :: Int,
   timeLimit :: Int,
-  requestGuard :: Int
+  guard :: Int
 }
 
 
 type BucketRoundRequestR = {
-  styles :: (Array String),
+  trainingStyles :: (Array TrainingStyle),
   threshold :: Int,
   timeLimit :: Int,
-  requestGuard :: Int
+  guard :: Int
 }
 
 
 _BucketRoundRequest :: Lens' BucketRoundRequest {
-  styles :: (Array String),
+  trainingStyles :: (Array TrainingStyle),
   threshold :: Int,
   timeLimit :: Int,
-  requestGuard :: Int
+  guard :: Int
 }
 _BucketRoundRequest f (BucketRoundRequest o) = BucketRoundRequest <$> f o
 
 
-mkBucketRoundRequest :: (Array String) -> Int -> Int -> Int -> BucketRoundRequest
-mkBucketRoundRequest styles threshold timeLimit requestGuard =
-  BucketRoundRequest{styles, threshold, timeLimit, requestGuard}
+mkBucketRoundRequest :: (Array TrainingStyle) -> Int -> Int -> Int -> BucketRoundRequest
+mkBucketRoundRequest trainingStyles threshold timeLimit guard =
+  BucketRoundRequest{trainingStyles, threshold, timeLimit, guard}
 
 
 unwrapBucketRoundRequest :: BucketRoundRequest -> {
-  styles :: (Array String),
+  trainingStyles :: (Array TrainingStyle),
   threshold :: Int,
   timeLimit :: Int,
-  requestGuard :: Int
+  guard :: Int
 }
 unwrapBucketRoundRequest (BucketRoundRequest r) = r
 
 instance bucketRoundRequestEncodeJson :: EncodeJson BucketRoundRequest where
   encodeJson (BucketRoundRequest o) =
        "tag" := "BucketRoundRequest"
-    ~> "styles" := o.styles
+    ~> "training_styles" := o.trainingStyles
     ~> "threshold" := o.threshold
     ~> "time_limit" := o.timeLimit
-    ~> "request_guard" := o.requestGuard
+    ~> "guard" := o.guard
     ~> jsonEmptyObject
 
 
 instance bucketRoundRequestDecodeJson :: DecodeJson BucketRoundRequest where
   decodeJson o = do
     obj <- decodeJson o
-    styles <- obj .? "styles"
+    trainingStyles <- obj .? "training_styles"
     threshold <- obj .? "threshold"
     timeLimit <- obj .? "time_limit"
-    requestGuard <- obj .? "request_guard"
+    guard <- obj .? "guard"
     pure $ BucketRoundRequest {
-      styles,
+      trainingStyles,
       threshold,
       timeLimit,
-      requestGuard
+      guard
     }
 
 
@@ -99,27 +99,26 @@ instance bucketRoundRequestRespondable :: Respondable BucketRoundRequest where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkBucketRoundRequest
-      <$> readProp "styles" json
+      <$> readProp "training_styles" json
       <*> readProp "threshold" json
       <*> readProp "time_limit" json
-      <*> readProp "request_guard" json
+      <*> readProp "guard" json
 
 
 instance bucketRoundRequestIsForeign :: IsForeign BucketRoundRequest where
   read json =
       mkBucketRoundRequest
-      <$> readProp "styles" json
+      <$> readProp "training_styles" json
       <*> readProp "threshold" json
       <*> readProp "time_limit" json
-      <*> readProp "request_guard" json
+      <*> readProp "guard" json
 
 
 newtype BucketRoundResponse = BucketRoundResponse {
   id :: Int,
   userId :: Int,
   bucketId :: Int,
-  bucketTrainingId :: Int,
-  styles :: (Array String),
+  trainingStyles :: (Array TrainingStyle),
   threshold :: Int,
   timeLimit :: Int,
   trainingNode :: TrainingNode,
@@ -135,8 +134,7 @@ type BucketRoundResponseR = {
   id :: Int,
   userId :: Int,
   bucketId :: Int,
-  bucketTrainingId :: Int,
-  styles :: (Array String),
+  trainingStyles :: (Array TrainingStyle),
   threshold :: Int,
   timeLimit :: Int,
   trainingNode :: TrainingNode,
@@ -152,8 +150,7 @@ _BucketRoundResponse :: Lens' BucketRoundResponse {
   id :: Int,
   userId :: Int,
   bucketId :: Int,
-  bucketTrainingId :: Int,
-  styles :: (Array String),
+  trainingStyles :: (Array TrainingStyle),
   threshold :: Int,
   timeLimit :: Int,
   trainingNode :: TrainingNode,
@@ -166,17 +163,16 @@ _BucketRoundResponse :: Lens' BucketRoundResponse {
 _BucketRoundResponse f (BucketRoundResponse o) = BucketRoundResponse <$> f o
 
 
-mkBucketRoundResponse :: Int -> Int -> Int -> Int -> (Array String) -> Int -> Int -> TrainingNode -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> BucketRoundResponse
-mkBucketRoundResponse id userId bucketId bucketTrainingId styles threshold timeLimit trainingNode active guard createdAt modifiedAt activityAt =
-  BucketRoundResponse{id, userId, bucketId, bucketTrainingId, styles, threshold, timeLimit, trainingNode, active, guard, createdAt, modifiedAt, activityAt}
+mkBucketRoundResponse :: Int -> Int -> Int -> (Array TrainingStyle) -> Int -> Int -> TrainingNode -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> BucketRoundResponse
+mkBucketRoundResponse id userId bucketId trainingStyles threshold timeLimit trainingNode active guard createdAt modifiedAt activityAt =
+  BucketRoundResponse{id, userId, bucketId, trainingStyles, threshold, timeLimit, trainingNode, active, guard, createdAt, modifiedAt, activityAt}
 
 
 unwrapBucketRoundResponse :: BucketRoundResponse -> {
   id :: Int,
   userId :: Int,
   bucketId :: Int,
-  bucketTrainingId :: Int,
-  styles :: (Array String),
+  trainingStyles :: (Array TrainingStyle),
   threshold :: Int,
   timeLimit :: Int,
   trainingNode :: TrainingNode,
@@ -194,8 +190,7 @@ instance bucketRoundResponseEncodeJson :: EncodeJson BucketRoundResponse where
     ~> "id" := o.id
     ~> "user_id" := o.userId
     ~> "bucket_id" := o.bucketId
-    ~> "bucket_training_id" := o.bucketTrainingId
-    ~> "styles" := o.styles
+    ~> "training_styles" := o.trainingStyles
     ~> "threshold" := o.threshold
     ~> "time_limit" := o.timeLimit
     ~> "training_node" := o.trainingNode
@@ -213,8 +208,7 @@ instance bucketRoundResponseDecodeJson :: DecodeJson BucketRoundResponse where
     id <- obj .? "id"
     userId <- obj .? "user_id"
     bucketId <- obj .? "bucket_id"
-    bucketTrainingId <- obj .? "bucket_training_id"
-    styles <- obj .? "styles"
+    trainingStyles <- obj .? "training_styles"
     threshold <- obj .? "threshold"
     timeLimit <- obj .? "time_limit"
     trainingNode <- obj .? "training_node"
@@ -227,8 +221,7 @@ instance bucketRoundResponseDecodeJson :: DecodeJson BucketRoundResponse where
       id,
       userId,
       bucketId,
-      bucketTrainingId,
-      styles,
+      trainingStyles,
       threshold,
       timeLimit,
       trainingNode,
@@ -254,8 +247,7 @@ instance bucketRoundResponseRespondable :: Respondable BucketRoundResponse where
       <$> readProp "id" json
       <*> readProp "user_id" json
       <*> readProp "bucket_id" json
-      <*> readProp "bucket_training_id" json
-      <*> readProp "styles" json
+      <*> readProp "training_styles" json
       <*> readProp "threshold" json
       <*> readProp "time_limit" json
       <*> readProp "training_node" json
@@ -272,8 +264,7 @@ instance bucketRoundResponseIsForeign :: IsForeign BucketRoundResponse where
       <$> readProp "id" json
       <*> readProp "user_id" json
       <*> readProp "bucket_id" json
-      <*> readProp "bucket_training_id" json
-      <*> readProp "styles" json
+      <*> readProp "training_styles" json
       <*> readProp "threshold" json
       <*> readProp "time_limit" json
       <*> readProp "training_node" json

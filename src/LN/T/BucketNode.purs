@@ -91,7 +91,6 @@ newtype BucketNodeResponse = BucketNodeResponse {
   id :: Int,
   userId :: Int,
   bucketId :: Int,
-  bucketTrainingId :: Int,
   leuronId :: Int,
   timeLimit :: Int,
   timeLimitExceeded :: Int,
@@ -107,7 +106,6 @@ type BucketNodeResponseR = {
   id :: Int,
   userId :: Int,
   bucketId :: Int,
-  bucketTrainingId :: Int,
   leuronId :: Int,
   timeLimit :: Int,
   timeLimitExceeded :: Int,
@@ -123,7 +121,6 @@ _BucketNodeResponse :: Lens' BucketNodeResponse {
   id :: Int,
   userId :: Int,
   bucketId :: Int,
-  bucketTrainingId :: Int,
   leuronId :: Int,
   timeLimit :: Int,
   timeLimitExceeded :: Int,
@@ -136,16 +133,15 @@ _BucketNodeResponse :: Lens' BucketNodeResponse {
 _BucketNodeResponse f (BucketNodeResponse o) = BucketNodeResponse <$> f o
 
 
-mkBucketNodeResponse :: Int -> Int -> Int -> Int -> Int -> Int -> Int -> String -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> BucketNodeResponse
-mkBucketNodeResponse id userId bucketId bucketTrainingId leuronId timeLimit timeLimitExceeded style active guard createdAt modifiedAt =
-  BucketNodeResponse{id, userId, bucketId, bucketTrainingId, leuronId, timeLimit, timeLimitExceeded, style, active, guard, createdAt, modifiedAt}
+mkBucketNodeResponse :: Int -> Int -> Int -> Int -> Int -> Int -> String -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> BucketNodeResponse
+mkBucketNodeResponse id userId bucketId leuronId timeLimit timeLimitExceeded style active guard createdAt modifiedAt =
+  BucketNodeResponse{id, userId, bucketId, leuronId, timeLimit, timeLimitExceeded, style, active, guard, createdAt, modifiedAt}
 
 
 unwrapBucketNodeResponse :: BucketNodeResponse -> {
   id :: Int,
   userId :: Int,
   bucketId :: Int,
-  bucketTrainingId :: Int,
   leuronId :: Int,
   timeLimit :: Int,
   timeLimitExceeded :: Int,
@@ -163,7 +159,6 @@ instance bucketNodeResponseEncodeJson :: EncodeJson BucketNodeResponse where
     ~> "id" := o.id
     ~> "user_id" := o.userId
     ~> "bucket_id" := o.bucketId
-    ~> "bucket_training_id" := o.bucketTrainingId
     ~> "leuron_id" := o.leuronId
     ~> "time_limit" := o.timeLimit
     ~> "time_limit_exceeded" := o.timeLimitExceeded
@@ -181,7 +176,6 @@ instance bucketNodeResponseDecodeJson :: DecodeJson BucketNodeResponse where
     id <- obj .? "id"
     userId <- obj .? "user_id"
     bucketId <- obj .? "bucket_id"
-    bucketTrainingId <- obj .? "bucket_training_id"
     leuronId <- obj .? "leuron_id"
     timeLimit <- obj .? "time_limit"
     timeLimitExceeded <- obj .? "time_limit_exceeded"
@@ -194,7 +188,6 @@ instance bucketNodeResponseDecodeJson :: DecodeJson BucketNodeResponse where
       id,
       userId,
       bucketId,
-      bucketTrainingId,
       leuronId,
       timeLimit,
       timeLimitExceeded,
@@ -220,7 +213,6 @@ instance bucketNodeResponseRespondable :: Respondable BucketNodeResponse where
       <$> readProp "id" json
       <*> readProp "user_id" json
       <*> readProp "bucket_id" json
-      <*> readProp "bucket_training_id" json
       <*> readProp "leuron_id" json
       <*> readProp "time_limit" json
       <*> readProp "time_limit_exceeded" json
@@ -237,7 +229,6 @@ instance bucketNodeResponseIsForeign :: IsForeign BucketNodeResponse where
       <$> readProp "id" json
       <*> readProp "user_id" json
       <*> readProp "bucket_id" json
-      <*> readProp "bucket_training_id" json
       <*> readProp "leuron_id" json
       <*> readProp "time_limit" json
       <*> readProp "time_limit_exceeded" json

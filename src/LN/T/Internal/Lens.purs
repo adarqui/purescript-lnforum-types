@@ -101,6 +101,10 @@ categories_ :: forall b a r. Lens { categories :: a | r } { categories :: b | r 
 categories_ f o = o { categories = _ } <$> f o.categories
 
 
+checksum_ :: forall b a r. Lens { checksum :: a | r } { checksum :: b | r } a b
+checksum_ f o = o { checksum = _ } <$> f o.checksum
+
+
 columns_ :: forall b a r. Lens { columns :: a | r } { columns :: b | r } a b
 columns_ f o = o { columns = _ } <$> f o.columns
 
@@ -665,3 +669,193 @@ website_ :: forall b a r. Lens { website :: a | r } { website :: b | r } a b
 website_ f o = o { website = _ } <$> f o.website
 
 -- footer
+
+
+
+
+
+
+
+
+
+--
+-- manual
+--
+
+
+bucketNode_ :: forall b a r. Lens { bucketNode :: a | r } { bucketNode :: b | r } a b
+bucketNode_ f o = o { bucketNode = _ } <$> f o.bucketNode
+
+
+bucketRound_ :: forall b a r. Lens { bucketRound :: a | r } { bucketRound :: b | r } a b
+bucketRound_ f o = o { bucketRound = _ } <$> f o.bucketRound
+
+
+trainingStyles_ :: forall b a r. Lens { trainingStyles :: a | r } { trainingStyles :: b | r } a b
+trainingStyles_ f o = o { trainingStyles = _ } <$> f o.trainingStyles
+
+
+threshold_ :: forall b a r. Lens { threshold :: a | r } { threshold :: b | r } a b
+threshold_ f o = o { threshold = _ } <$> f o.threshold
+
+
+timeLimit_ :: forall b a r. Lens { timeLimit :: a | r } { timeLimit :: b | r } a b
+timeLimit_ f o = o { timeLimit = _ } <$> f o.timeLimit
+
+
+timeLimitExceeded_ :: forall b a r. Lens { timeLimitExceeded :: a | r } { timeLimitExceeded :: b | r } a b
+timeLimitExceeded_ f o = o { timeLimitExceeded = _ } <$> f o.timeLimitExceeded
+
+
+trainingNode_ :: forall b a r. Lens { trainingNode :: a | r } { trainingNode :: b | r } a b
+trainingNode_ f o = o { trainingNode = _ } <$> f o.trainingNode
+
+
+numTotal_ :: forall b a r. Lens { numTotal :: a | r } { numTotal :: b | r } a b
+numTotal_ f o = o { numTotal = _ } <$> f o.numTotal
+
+
+numKnow_ :: forall b a r. Lens { numKnow :: a | r } { numKnow :: b | r } a b
+numKnow_ f o = o { numKnow = _ } <$> f o.numKnow
+
+
+numDontKnow_ :: forall b a r. Lens { numDontKnow :: a | r } { numDontKnow :: b | r } a b
+numDontKnow_ f o = o { numDontKnow = _ } <$> f o.numDontKnow
+
+
+numDontCare_ :: forall b a r. Lens { numDontCare :: a | r } { numDontCare :: b | r } a b
+numDontCare_ f o = o { numDontCare = _ } <$> f o.numDontCare
+
+
+numProtest_ :: forall b a r. Lens { numProtest :: a | r } { numProtest :: b | r } a b
+numProtest_ f o = o { numProtest = _ } <$> f o.numProtest
+
+
+honorKnow_ :: forall b a r. Lens { honorKnow :: a | r } { honorKnow :: b | r } a b
+honorKnow_ f o = o { honorKnow = _ } <$> f o.honorKnow
+
+honorDontKnow_ :: forall b a r. Lens { honorDontKnow :: a | r } { honorDontKnow :: b | r } a b
+honorDontKnow_ f o = o { honorDontKnow = _ } <$> f o.honorDontKnow
+
+honorDontCare_ :: forall b a r. Lens { honorDontCare :: a | r } { honorDontCare :: b | r } a b
+honorDontCare_ f o = o { honorDontCare = _ } <$> f o.honorDontCare
+
+honorProtest_ :: forall b a r. Lens { honorProtest :: a | r } { honorProtest :: b | r } a b
+honorProtest_ f o = o { honorProtest = _ } <$> f o.honorProtest
+
+honorKnowAt_ :: forall b a r. Lens { honorKnowAt :: a | r } { honorKnowAt :: b | r } a b
+honorKnowAt_ f o = o { honorKnowAt = _ } <$> f o.honorKnowAt
+
+honorDontKnowAt_ :: forall b a r. Lens { honorDontKnowAt :: a | r } { honorDontKnowAt :: b | r } a b
+honorDontKnowAt_ f o = o { honorDontKnowAt = _ } <$> f o.honorDontKnowAt
+
+honorDontCareAt_ :: forall b a r. Lens { honorDontCareAt :: a | r } { honorDontCareAt :: b | r } a b
+honorDontCareAt_ f o = o { honorDontCareAt = _ } <$> f o.honorDontCareAt
+
+honorProtestAt_ :: forall b a r. Lens { honorProtestAt :: a | r } { honorProtestAt :: b | r } a b
+honorProtestAt_ f o = o { honorProtestAt = _ } <$> f o.honorProtestAt
+
+
+
+booleanKnow_ :: forall b a r. Lens { booleanKnow :: a | r } { booleanKnow :: b | r } a b
+booleanKnow_ f o = o { booleanKnow = _ } <$> f o.booleanKnow
+
+booleanDontKnow_ :: forall b a r. Lens { booleanDontKnow :: a | r } { booleanDontKnow :: b | r } a b
+booleanDontKnow_ f o = o { booleanDontKnow = _ } <$> f o.booleanDontKnow
+
+booleanDontCare_ :: forall b a r. Lens { booleanDontCare :: a | r } { booleanDontCare :: b | r } a b
+booleanDontCare_ f o = o { booleanDontCare = _ } <$> f o.booleanDontCare
+
+booleanProtest_ :: forall b a r. Lens { booleanProtest :: a | r } { booleanProtest :: b | r } a b
+booleanProtest_ f o = o { booleanProtest = _ } <$> f o.booleanProtest
+
+booleanKnowAt_ :: forall b a r. Lens { booleanKnowAt :: a | r } { booleanKnowAt :: b | r } a b
+booleanKnowAt_ f o = o { booleanKnowAt = _ } <$> f o.booleanKnowAt
+
+booleanDontKnowAt_ :: forall b a r. Lens { booleanDontKnowAt :: a | r } { booleanDontKnowAt :: b | r } a b
+booleanDontKnowAt_ f o = o { booleanDontKnowAt = _ } <$> f o.booleanDontKnowAt
+
+booleanDontCareAt_ :: forall b a r. Lens { booleanDontCareAt :: a | r } { booleanDontCareAt :: b | r } a b
+booleanDontCareAt_ f o = o { booleanDontCareAt = _ } <$> f o.booleanDontCareAt
+
+booleanProtestAt_ :: forall b a r. Lens { booleanProtestAt :: a | r } { booleanProtestAt :: b | r } a b
+booleanProtestAt_ f o = o { booleanProtestAt = _ } <$> f o.booleanProtestAt
+
+
+
+matchKnow_ :: forall b a r. Lens { matchKnow :: a | r } { matchKnow :: b | r } a b
+matchKnow_ f o = o { matchKnow = _ } <$> f o.matchKnow
+
+matchDontKnow_ :: forall b a r. Lens { matchDontKnow :: a | r } { matchDontKnow :: b | r } a b
+matchDontKnow_ f o = o { matchDontKnow = _ } <$> f o.matchDontKnow
+
+matchDontCare_ :: forall b a r. Lens { matchDontCare :: a | r } { matchDontCare :: b | r } a b
+matchDontCare_ f o = o { matchDontCare = _ } <$> f o.matchDontCare
+
+matchProtest_ :: forall b a r. Lens { matchProtest :: a | r } { matchProtest :: b | r } a b
+matchProtest_ f o = o { matchProtest = _ } <$> f o.matchProtest
+
+matchKnowAt_ :: forall b a r. Lens { matchKnowAt :: a | r } { matchKnowAt :: b | r } a b
+matchKnowAt_ f o = o { matchKnowAt = _ } <$> f o.matchKnowAt
+
+matchDontKnowAt_ :: forall b a r. Lens { matchDontKnowAt :: a | r } { matchDontKnowAt :: b | r } a b
+matchDontKnowAt_ f o = o { matchDontKnowAt = _ } <$> f o.matchDontKnowAt
+
+matchDontCareAt_ :: forall b a r. Lens { matchDontCareAt :: a | r } { matchDontCareAt :: b | r } a b
+matchDontCareAt_ f o = o { matchDontCareAt = _ } <$> f o.matchDontCareAt
+
+matchProtestAt_ :: forall b a r. Lens { matchProtestAt :: a | r } { matchProtestAt :: b | r } a b
+matchProtestAt_ f o = o { matchProtestAt = _ } <$> f o.matchProtestAt
+
+
+
+subsKnow_ :: forall b a r. Lens { subsKnow :: a | r } { subsKnow :: b | r } a b
+subsKnow_ f o = o { subsKnow = _ } <$> f o.subsKnow
+
+subsDontKnow_ :: forall b a r. Lens { subsDontKnow :: a | r } { subsDontKnow :: b | r } a b
+subsDontKnow_ f o = o { subsDontKnow = _ } <$> f o.subsDontKnow
+
+subsDontCare_ :: forall b a r. Lens { subsDontCare :: a | r } { subsDontCare :: b | r } a b
+subsDontCare_ f o = o { subsDontCare = _ } <$> f o.subsDontCare
+
+subsProtest_ :: forall b a r. Lens { subsProtest :: a | r } { subsProtest :: b | r } a b
+subsProtest_ f o = o { subsProtest = _ } <$> f o.subsProtest
+
+subsKnowAt_ :: forall b a r. Lens { subsKnowAt :: a | r } { subsKnowAt :: b | r } a b
+subsKnowAt_ f o = o { subsKnowAt = _ } <$> f o.subsKnowAt
+
+subsDontKnowAt_ :: forall b a r. Lens { subsDontKnowAt :: a | r } { subsDontKnowAt :: b | r } a b
+subsDontKnowAt_ f o = o { subsDontKnowAt = _ } <$> f o.subsDontKnowAt
+
+subsDontCareAt_ :: forall b a r. Lens { subsDontCareAt :: a | r } { subsDontCareAt :: b | r } a b
+subsDontCareAt_ f o = o { subsDontCareAt = _ } <$> f o.subsDontCareAt
+
+subsProtestAt_ :: forall b a r. Lens { subsProtestAt :: a | r } { subsProtestAt :: b | r } a b
+subsProtestAt_ f o = o { subsProtestAt = _ } <$> f o.subsProtestAt
+
+
+
+splitsKnow_ :: forall b a r. Lens { splitsKnow :: a | r } { splitsKnow :: b | r } a b
+splitsKnow_ f o = o { splitsKnow = _ } <$> f o.splitsKnow
+
+splitsDontKnow_ :: forall b a r. Lens { splitsDontKnow :: a | r } { splitsDontKnow :: b | r } a b
+splitsDontKnow_ f o = o { splitsDontKnow = _ } <$> f o.splitsDontKnow
+
+splitsDontCare_ :: forall b a r. Lens { splitsDontCare :: a | r } { splitsDontCare :: b | r } a b
+splitsDontCare_ f o = o { splitsDontCare = _ } <$> f o.splitsDontCare
+
+splitsProtest_ :: forall b a r. Lens { splitsProtest :: a | r } { splitsProtest :: b | r } a b
+splitsProtest_ f o = o { splitsProtest = _ } <$> f o.splitsProtest
+
+splitsKnowAt_ :: forall b a r. Lens { splitsKnowAt :: a | r } { splitsKnowAt :: b | r } a b
+splitsKnowAt_ f o = o { splitsKnowAt = _ } <$> f o.splitsKnowAt
+
+splitsDontKnowAt_ :: forall b a r. Lens { splitsDontKnowAt :: a | r } { splitsDontKnowAt :: b | r } a b
+splitsDontKnowAt_ f o = o { splitsDontKnowAt = _ } <$> f o.splitsDontKnowAt
+
+splitsDontCareAt_ :: forall b a r. Lens { splitsDontCareAt :: a | r } { splitsDontCareAt :: b | r } a b
+splitsDontCareAt_ f o = o { splitsDontCareAt = _ } <$> f o.splitsDontCareAt
+
+splitsProtestAt_ :: forall b a r. Lens { splitsProtestAt :: a | r } { splitsProtestAt :: b | r } a b
+splitsProtestAt_ f o = o { splitsProtestAt = _ } <$> f o.splitsProtestAt
+

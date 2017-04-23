@@ -65,42 +65,40 @@ bucketResponseToBucketRequest  (BucketResponse o) =
   }
 
 
-bucketRoundRequestToBucketRoundResponse :: Int -> Int -> Int -> Int -> TrainingNode -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> BucketRoundRequest -> BucketRoundResponse
-bucketRoundRequestToBucketRoundResponse id userId bucketId bucketTrainingId trainingNode active guard createdAt modifiedAt activityAt (BucketRoundRequest o) =
+bucketRoundRequestToBucketRoundResponse :: Int -> Int -> Int -> TrainingNode -> Boolean -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> BucketRoundRequest -> BucketRoundResponse
+bucketRoundRequestToBucketRoundResponse id userId bucketId trainingNode active createdAt modifiedAt activityAt (BucketRoundRequest o) =
   BucketRoundResponse {
     id: id,
     userId: userId,
     bucketId: bucketId,
-    bucketTrainingId: bucketTrainingId,
-    styles: o.styles,
+    trainingStyles: o.trainingStyles,
     threshold: o.threshold,
     timeLimit: o.timeLimit,
     trainingNode: trainingNode,
     active: active,
-    guard: guard,
+    guard: o.guard,
     createdAt: createdAt,
     modifiedAt: modifiedAt,
     activityAt: activityAt
   }
 
 
-bucketRoundResponseToBucketRoundRequest :: Int -> BucketRoundResponse -> BucketRoundRequest
-bucketRoundResponseToBucketRoundRequest requestGuard (BucketRoundResponse o) =
+bucketRoundResponseToBucketRoundRequest :: BucketRoundResponse -> BucketRoundRequest
+bucketRoundResponseToBucketRoundRequest  (BucketRoundResponse o) =
   BucketRoundRequest {
-    styles: o.styles,
+    trainingStyles: o.trainingStyles,
     threshold: o.threshold,
     timeLimit: o.timeLimit,
-    requestGuard: requestGuard
+    guard: o.guard
   }
 
 
-bucketNodeRequestToBucketNodeResponse :: Int -> Int -> Int -> Int -> Int -> Int -> Int -> String -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> BucketNodeRequest -> BucketNodeResponse
-bucketNodeRequestToBucketNodeResponse id userId bucketId bucketTrainingId leuronId timeLimit timeLimitExceeded style active guard createdAt modifiedAt (BucketNodeRequest o) =
+bucketNodeRequestToBucketNodeResponse :: Int -> Int -> Int -> Int -> Int -> Int -> String -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> BucketNodeRequest -> BucketNodeResponse
+bucketNodeRequestToBucketNodeResponse id userId bucketId leuronId timeLimit timeLimitExceeded style active guard createdAt modifiedAt (BucketNodeRequest o) =
   BucketNodeResponse {
     id: id,
     userId: userId,
     bucketId: bucketId,
-    bucketTrainingId: bucketTrainingId,
     leuronId: leuronId,
     timeLimit: timeLimit,
     timeLimitExceeded: timeLimitExceeded,
@@ -140,8 +138,8 @@ idResponseToIdRequest  (IdResponse o) =
   }
 
 
-leuronRequestToLeuronResponse :: Int -> Int -> Int -> Boolean -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> LeuronRequest -> LeuronResponse
-leuronRequestToLeuronResponse id userId resourceId active createdAt modifiedAt activityAt (LeuronRequest o) =
+leuronRequestToLeuronResponse :: Int -> Int -> Int -> String -> Boolean -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> LeuronRequest -> LeuronResponse
+leuronRequestToLeuronResponse id userId resourceId checksum active createdAt modifiedAt activityAt (LeuronRequest o) =
   LeuronResponse {
     id: id,
     userId: userId,
@@ -158,6 +156,7 @@ leuronRequestToLeuronResponse id userId resourceId active createdAt modifiedAt a
     substitutions: o.substitutions,
     tags: o.tags,
     style: o.style,
+    checksum: checksum,
     active: active,
     guard: o.guard,
     createdAt: createdAt,

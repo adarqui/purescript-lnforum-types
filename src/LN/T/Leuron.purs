@@ -213,6 +213,7 @@ newtype LeuronResponse = LeuronResponse {
   substitutions :: (Maybe (Array Substitutions)),
   tags :: (Array String),
   style :: (Maybe (Array String)),
+  checksum :: String,
   active :: Boolean,
   guard :: Int,
   createdAt :: (Maybe Date),
@@ -237,6 +238,7 @@ type LeuronResponseR = {
   substitutions :: (Maybe (Array Substitutions)),
   tags :: (Array String),
   style :: (Maybe (Array String)),
+  checksum :: String,
   active :: Boolean,
   guard :: Int,
   createdAt :: (Maybe Date),
@@ -261,6 +263,7 @@ _LeuronResponse :: Lens' LeuronResponse {
   substitutions :: (Maybe (Array Substitutions)),
   tags :: (Array String),
   style :: (Maybe (Array String)),
+  checksum :: String,
   active :: Boolean,
   guard :: Int,
   createdAt :: (Maybe Date),
@@ -270,9 +273,9 @@ _LeuronResponse :: Lens' LeuronResponse {
 _LeuronResponse f (LeuronResponse o) = LeuronResponse <$> f o
 
 
-mkLeuronResponse :: Int -> Int -> Int -> LeuronData -> (Maybe String) -> (Maybe String) -> (Maybe String) -> (Maybe String) -> (Maybe (Array String)) -> (Maybe (Array String)) -> (DepList String) -> (Maybe (Array Splits)) -> (Maybe (Array Substitutions)) -> (Array String) -> (Maybe (Array String)) -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> LeuronResponse
-mkLeuronResponse id userId resourceId dataP title description section page examples strengths categories splits substitutions tags style active guard createdAt modifiedAt activityAt =
-  LeuronResponse{id, userId, resourceId, dataP, title, description, section, page, examples, strengths, categories, splits, substitutions, tags, style, active, guard, createdAt, modifiedAt, activityAt}
+mkLeuronResponse :: Int -> Int -> Int -> LeuronData -> (Maybe String) -> (Maybe String) -> (Maybe String) -> (Maybe String) -> (Maybe (Array String)) -> (Maybe (Array String)) -> (DepList String) -> (Maybe (Array Splits)) -> (Maybe (Array Substitutions)) -> (Array String) -> (Maybe (Array String)) -> String -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> LeuronResponse
+mkLeuronResponse id userId resourceId dataP title description section page examples strengths categories splits substitutions tags style checksum active guard createdAt modifiedAt activityAt =
+  LeuronResponse{id, userId, resourceId, dataP, title, description, section, page, examples, strengths, categories, splits, substitutions, tags, style, checksum, active, guard, createdAt, modifiedAt, activityAt}
 
 
 unwrapLeuronResponse :: LeuronResponse -> {
@@ -291,6 +294,7 @@ unwrapLeuronResponse :: LeuronResponse -> {
   substitutions :: (Maybe (Array Substitutions)),
   tags :: (Array String),
   style :: (Maybe (Array String)),
+  checksum :: String,
   active :: Boolean,
   guard :: Int,
   createdAt :: (Maybe Date),
@@ -317,6 +321,7 @@ instance leuronResponseEncodeJson :: EncodeJson LeuronResponse where
     ~> "substitutions" := o.substitutions
     ~> "tags" := o.tags
     ~> "style" := o.style
+    ~> "checksum" := o.checksum
     ~> "active" := o.active
     ~> "guard" := o.guard
     ~> "created_at" := o.createdAt
@@ -343,6 +348,7 @@ instance leuronResponseDecodeJson :: DecodeJson LeuronResponse where
     substitutions <- obj .? "substitutions"
     tags <- obj .? "tags"
     style <- obj .? "style"
+    checksum <- obj .? "checksum"
     active <- obj .? "active"
     guard <- obj .? "guard"
     createdAt <- obj .? "created_at"
@@ -364,6 +370,7 @@ instance leuronResponseDecodeJson :: DecodeJson LeuronResponse where
       substitutions,
       tags,
       style,
+      checksum,
       active,
       guard,
       createdAt,
@@ -398,6 +405,7 @@ instance leuronResponseRespondable :: Respondable LeuronResponse where
       <*> (unNullOrUndefined <$> readProp "substitutions" json)
       <*> readProp "tags" json
       <*> (unNullOrUndefined <$> readProp "style" json)
+      <*> readProp "checksum" json
       <*> readProp "active" json
       <*> readProp "guard" json
       <*> (unNullOrUndefined <$> readProp "created_at" json)
@@ -423,6 +431,7 @@ instance leuronResponseIsForeign :: IsForeign LeuronResponse where
       <*> (unNullOrUndefined <$> readProp "substitutions" json)
       <*> readProp "tags" json
       <*> (unNullOrUndefined <$> readProp "style" json)
+      <*> readProp "checksum" json
       <*> readProp "active" json
       <*> readProp "guard" json
       <*> (unNullOrUndefined <$> readProp "created_at" json)

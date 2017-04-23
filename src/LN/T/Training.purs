@@ -608,4 +608,12 @@ instance trainingStyleShow :: Show TrainingStyle where
   show TS_Subs = "ts_subs"
   show TS_Splits = "ts_splits"
 
+
+readTrainingStyle :: String -> Maybe TrainingStyle
+readTrainingStyle "ts_simple" = Just TS_Simple
+readTrainingStyle "ts_boolean" = Just TS_Boolean
+readTrainingStyle "ts_matching" = Just TS_Matching
+readTrainingStyle "ts_subs" = Just TS_Subs
+readTrainingStyle "ts_splits" = Just TS_Splits
+readTrainingStyle _ = Nothing
 -- footer

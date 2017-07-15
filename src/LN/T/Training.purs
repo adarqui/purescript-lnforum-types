@@ -484,25 +484,25 @@ instance trainingNodeIsForeign :: IsForeign TrainingNode where
 
 
 data TrainingStyle
-  = TS_Simple 
+  = TS_Honor 
   | TS_Boolean 
-  | TS_Matching 
+  | TS_Match 
   | TS_Subs 
   | TS_Splits 
 
 
 
 instance trainingStyleEncodeJson :: EncodeJson TrainingStyle where
-  encodeJson (TS_Simple ) =
-       "tag" := "TS_Simple"
+  encodeJson (TS_Honor ) =
+       "tag" := "TS_Honor"
     ~> "contents" := ([] :: Array String)
     ~> jsonEmptyObject
   encodeJson (TS_Boolean ) =
        "tag" := "TS_Boolean"
     ~> "contents" := ([] :: Array String)
     ~> jsonEmptyObject
-  encodeJson (TS_Matching ) =
-       "tag" := "TS_Matching"
+  encodeJson (TS_Match ) =
+       "tag" := "TS_Match"
     ~> "contents" := ([] :: Array String)
     ~> jsonEmptyObject
   encodeJson (TS_Subs ) =
@@ -520,14 +520,14 @@ instance trainingStyleDecodeJson :: DecodeJson TrainingStyle where
     obj <- decodeJson json
     tag <- obj .? "tag"
     case tag of
-      "TS_Simple" -> do
-        pure TS_Simple
+      "TS_Honor" -> do
+        pure TS_Honor
 
       "TS_Boolean" -> do
         pure TS_Boolean
 
-      "TS_Matching" -> do
-        pure TS_Matching
+      "TS_Match" -> do
+        pure TS_Match
 
       "TS_Subs" -> do
         pure TS_Subs
@@ -551,14 +551,14 @@ instance trainingStyleRespondable :: Respondable TrainingStyle where
   fromResponse json = do
     tag <- readProp "tag" json
     case tag of
-      "TS_Simple" -> do
-        pure TS_Simple
+      "TS_Honor" -> do
+        pure TS_Honor
 
       "TS_Boolean" -> do
         pure TS_Boolean
 
-      "TS_Matching" -> do
-        pure TS_Matching
+      "TS_Match" -> do
+        pure TS_Match
 
       "TS_Subs" -> do
         pure TS_Subs
@@ -574,14 +574,14 @@ instance trainingStyleIsForeign :: IsForeign TrainingStyle where
   read json = do
     tag <- readProp "tag" json
     case tag of
-      "TS_Simple" -> do
-        pure TS_Simple
+      "TS_Honor" -> do
+        pure TS_Honor
 
       "TS_Boolean" -> do
         pure TS_Boolean
 
-      "TS_Matching" -> do
-        pure TS_Matching
+      "TS_Match" -> do
+        pure TS_Match
 
       "TS_Subs" -> do
         pure TS_Subs
@@ -594,25 +594,25 @@ instance trainingStyleIsForeign :: IsForeign TrainingStyle where
 
 
 instance trainingStyleEq :: Eq TrainingStyle where
-  eq TS_Simple TS_Simple = true
+  eq TS_Honor TS_Honor = true
   eq TS_Boolean TS_Boolean = true
-  eq TS_Matching TS_Matching = true
+  eq TS_Match TS_Match = true
   eq TS_Subs TS_Subs = true
   eq TS_Splits TS_Splits = true
   eq _ _ = false
 
 instance trainingStyleShow :: Show TrainingStyle where
-  show TS_Simple = "ts_simple"
+  show TS_Honor = "ts_honor"
   show TS_Boolean = "ts_boolean"
-  show TS_Matching = "ts_matching"
+  show TS_Match = "ts_match"
   show TS_Subs = "ts_subs"
   show TS_Splits = "ts_splits"
 
 
 readTrainingStyle :: String -> Maybe TrainingStyle
-readTrainingStyle "ts_simple" = Just TS_Simple
+readTrainingStyle "ts_honor" = Just TS_Honor
 readTrainingStyle "ts_boolean" = Just TS_Boolean
-readTrainingStyle "ts_matching" = Just TS_Matching
+readTrainingStyle "ts_match" = Just TS_Match
 readTrainingStyle "ts_subs" = Just TS_Subs
 readTrainingStyle "ts_splits" = Just TS_Splits
 readTrainingStyle _ = Nothing

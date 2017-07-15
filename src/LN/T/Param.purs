@@ -65,6 +65,7 @@ data Param
   | ByThreadPostStarId Int
   | ByThreadPostStarsIds (Array Int)
   | ByBucketId Int
+  | ByBucketRoundId Int
   | ByResourceId Int
   | ByResourcesIds (Array Int)
   | ByResourceName String
@@ -250,6 +251,10 @@ instance paramEncodeJson :: EncodeJson Param where
     ~> jsonEmptyObject
   encodeJson (ByBucketId x0) =
        "tag" := "ByBucketId"
+    ~> "contents" := [encodeJson x0]
+    ~> jsonEmptyObject
+  encodeJson (ByBucketRoundId x0) =
+       "tag" := "ByBucketRoundId"
     ~> "contents" := [encodeJson x0]
     ~> jsonEmptyObject
   encodeJson (ByResourceId x0) =
@@ -638,6 +643,13 @@ instance paramDecodeJson :: DecodeJson Param where
         case r of
           [x0] -> ByBucketId <$> decodeJson x0
           _ -> Left $ "DecodeJson TypeMismatch for ByBucketId"
+
+
+      "ByBucketRoundId" -> do
+        r <- obj .? "contents"
+        case r of
+          [x0] -> ByBucketRoundId <$> decodeJson x0
+          _ -> Left $ "DecodeJson TypeMismatch for ByBucketRoundId"
 
 
       "ByResourceId" -> do
@@ -1118,6 +1130,13 @@ instance paramRespondable :: Respondable Param where
           _ -> fail $ TypeMismatch "ByBucketId" "Respondable"
 
 
+      "ByBucketRoundId" -> do
+        r <- readProp "contents" json
+        case r of
+          [x0] -> ByBucketRoundId <$> read x0
+          _ -> fail $ TypeMismatch "ByBucketRoundId" "Respondable"
+
+
       "ByResourceId" -> do
         r <- readProp "contents" json
         case r of
@@ -1588,6 +1607,13 @@ instance paramIsForeign :: IsForeign Param where
           _ -> fail $ TypeMismatch "ByBucketId" "IsForeign"
 
 
+      "ByBucketRoundId" -> do
+        r <- readProp "contents" json
+        case r of
+          [x0] -> ByBucketRoundId <$> read x0
+          _ -> fail $ TypeMismatch "ByBucketRoundId" "IsForeign"
+
+
       "ByResourceId" -> do
         r <- readProp "contents" json
         case r of
@@ -1821,6 +1847,7 @@ instance paramEq :: Eq Param where
   eq (ByThreadPostStarId x0a) (ByThreadPostStarId x0b) = x0a == x0b
   eq (ByThreadPostStarsIds x0a) (ByThreadPostStarsIds x0b) = x0a == x0b
   eq (ByBucketId x0a) (ByBucketId x0b) = x0a == x0b
+  eq (ByBucketRoundId x0a) (ByBucketRoundId x0b) = x0a == x0b
   eq (ByResourceId x0a) (ByResourceId x0b) = x0a == x0b
   eq (ByResourcesIds x0a) (ByResourcesIds x0b) = x0a == x0b
   eq (ByResourceName x0a) (ByResourceName x0b) = x0a == x0b
@@ -1890,6 +1917,7 @@ instance paramShow :: Show Param where
   show (ByThreadPostStarId x0) = "ByThreadPostStarId: " <> show x0
   show (ByThreadPostStarsIds x0) = "ByThreadPostStarsIds: " <> show x0
   show (ByBucketId x0) = "ByBucketId: " <> show x0
+  show (ByBucketRoundId x0) = "ByBucketRoundId: " <> show x0
   show (ByResourceId x0) = "ByResourceId: " <> show x0
   show (ByResourcesIds x0) = "ByResourcesIds: " <> show x0
   show (ByResourceName x0) = "ByResourceName: " <> show x0
@@ -1959,6 +1987,7 @@ instance paramQueryParam :: QueryParam Param where
   qp (ByThreadPostStarId x0) = Tuple "by_thread_post_star_id" (show x0)
   qp (ByThreadPostStarsIds x0) = Tuple "by_thread_post_stars_ids" (show x0)
   qp (ByBucketId x0) = Tuple "by_bucket_id" (show x0)
+  qp (ByBucketRoundId x0) = Tuple "by_bucket_round_id" (show x0)
   qp (ByResourceId x0) = Tuple "by_resource_id" (show x0)
   qp (ByResourcesIds x0) = Tuple "by_resources_ids" (show x0)
   qp (ByResourceName x0) = Tuple "by_resource_name" x0
@@ -2028,6 +2057,7 @@ data ParamTag
   | ParamTag_ByThreadPostStarId 
   | ParamTag_ByThreadPostStarsIds 
   | ParamTag_ByBucketId 
+  | ParamTag_ByBucketRoundId 
   | ParamTag_ByResourceId 
   | ParamTag_ByResourcesIds 
   | ParamTag_ByResourceName 
@@ -2213,6 +2243,10 @@ instance paramTagEncodeJson :: EncodeJson ParamTag where
     ~> jsonEmptyObject
   encodeJson (ParamTag_ByBucketId ) =
        "tag" := "ParamTag_ByBucketId"
+    ~> "contents" := ([] :: Array String)
+    ~> jsonEmptyObject
+  encodeJson (ParamTag_ByBucketRoundId ) =
+       "tag" := "ParamTag_ByBucketRoundId"
     ~> "contents" := ([] :: Array String)
     ~> jsonEmptyObject
   encodeJson (ParamTag_ByResourceId ) =
@@ -2447,6 +2481,9 @@ instance paramTagDecodeJson :: DecodeJson ParamTag where
       "ParamTag_ByBucketId" -> do
         pure ParamTag_ByBucketId
 
+      "ParamTag_ByBucketRoundId" -> do
+        pure ParamTag_ByBucketRoundId
+
       "ParamTag_ByResourceId" -> do
         pure ParamTag_ByResourceId
 
@@ -2661,6 +2698,9 @@ instance paramTagRespondable :: Respondable ParamTag where
       "ParamTag_ByBucketId" -> do
         pure ParamTag_ByBucketId
 
+      "ParamTag_ByBucketRoundId" -> do
+        pure ParamTag_ByBucketRoundId
+
       "ParamTag_ByResourceId" -> do
         pure ParamTag_ByResourceId
 
@@ -2867,6 +2907,9 @@ instance paramTagIsForeign :: IsForeign ParamTag where
       "ParamTag_ByBucketId" -> do
         pure ParamTag_ByBucketId
 
+      "ParamTag_ByBucketRoundId" -> do
+        pure ParamTag_ByBucketRoundId
+
       "ParamTag_ByResourceId" -> do
         pure ParamTag_ByResourceId
 
@@ -2992,6 +3035,7 @@ instance paramTagEq :: Eq ParamTag where
   eq ParamTag_ByThreadPostStarId ParamTag_ByThreadPostStarId = true
   eq ParamTag_ByThreadPostStarsIds ParamTag_ByThreadPostStarsIds = true
   eq ParamTag_ByBucketId ParamTag_ByBucketId = true
+  eq ParamTag_ByBucketRoundId ParamTag_ByBucketRoundId = true
   eq ParamTag_ByResourceId ParamTag_ByResourceId = true
   eq ParamTag_ByResourcesIds ParamTag_ByResourcesIds = true
   eq ParamTag_ByResourceName ParamTag_ByResourceName = true
@@ -3061,6 +3105,7 @@ instance paramTagShow :: Show ParamTag where
   show ParamTag_ByThreadPostStarId = "by_thread_post_star_id"
   show ParamTag_ByThreadPostStarsIds = "by_thread_post_stars_ids"
   show ParamTag_ByBucketId = "by_bucket_id"
+  show ParamTag_ByBucketRoundId = "by_bucket_round_id"
   show ParamTag_ByResourceId = "by_resource_id"
   show ParamTag_ByResourcesIds = "by_resources_ids"
   show ParamTag_ByResourceName = "by_resource_name"
@@ -3130,6 +3175,7 @@ readParamTag "by_thread_post_likes_ids" = Just ParamTag_ByThreadPostLikesIds
 readParamTag "by_thread_post_star_id" = Just ParamTag_ByThreadPostStarId
 readParamTag "by_thread_post_stars_ids" = Just ParamTag_ByThreadPostStarsIds
 readParamTag "by_bucket_id" = Just ParamTag_ByBucketId
+readParamTag "by_bucket_round_id" = Just ParamTag_ByBucketRoundId
 readParamTag "by_resource_id" = Just ParamTag_ByResourceId
 readParamTag "by_resources_ids" = Just ParamTag_ByResourcesIds
 readParamTag "by_resource_name" = Just ParamTag_ByResourceName

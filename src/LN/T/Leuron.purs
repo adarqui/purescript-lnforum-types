@@ -1404,6 +1404,116 @@ instance tyLeuronShow :: Show TyLeuron where
   show TyLnEmpty = "ty_ln_empty"
 
 
+data LeuronStatus
+  = LeuronKnow 
+  | LeuronDontKnow 
+  | LeuronDontCare 
+  | LeuronProtest 
+
+
+
+instance leuronStatusEncodeJson :: EncodeJson LeuronStatus where
+  encodeJson (LeuronKnow ) =
+       "tag" := "LeuronKnow"
+    ~> "contents" := ([] :: Array String)
+    ~> jsonEmptyObject
+  encodeJson (LeuronDontKnow ) =
+       "tag" := "LeuronDontKnow"
+    ~> "contents" := ([] :: Array String)
+    ~> jsonEmptyObject
+  encodeJson (LeuronDontCare ) =
+       "tag" := "LeuronDontCare"
+    ~> "contents" := ([] :: Array String)
+    ~> jsonEmptyObject
+  encodeJson (LeuronProtest ) =
+       "tag" := "LeuronProtest"
+    ~> "contents" := ([] :: Array String)
+    ~> jsonEmptyObject
+
+
+instance leuronStatusDecodeJson :: DecodeJson LeuronStatus where
+  decodeJson json = do
+    obj <- decodeJson json
+    tag <- obj .? "tag"
+    case tag of
+      "LeuronKnow" -> do
+        pure LeuronKnow
+
+      "LeuronDontKnow" -> do
+        pure LeuronDontKnow
+
+      "LeuronDontCare" -> do
+        pure LeuronDontCare
+
+      "LeuronProtest" -> do
+        pure LeuronProtest
+
+      _ -> Left $ "DecodeJson TypeMismatch for LeuronStatus"
+
+
+
+instance leuronStatusRequestable :: Requestable LeuronStatus where
+  toRequest s =
+    let str = printJson (encodeJson s) :: String
+    in toRequest str
+
+
+instance leuronStatusRespondable :: Respondable LeuronStatus where
+  responseType =
+    Tuple Nothing JSONResponse
+  fromResponse json = do
+    tag <- readProp "tag" json
+    case tag of
+      "LeuronKnow" -> do
+        pure LeuronKnow
+
+      "LeuronDontKnow" -> do
+        pure LeuronDontKnow
+
+      "LeuronDontCare" -> do
+        pure LeuronDontCare
+
+      "LeuronProtest" -> do
+        pure LeuronProtest
+
+      _ -> fail $ TypeMismatch "LeuronStatus" "Respondable"
+
+
+
+instance leuronStatusIsForeign :: IsForeign LeuronStatus where
+  read json = do
+    tag <- readProp "tag" json
+    case tag of
+      "LeuronKnow" -> do
+        pure LeuronKnow
+
+      "LeuronDontKnow" -> do
+        pure LeuronDontKnow
+
+      "LeuronDontCare" -> do
+        pure LeuronDontCare
+
+      "LeuronProtest" -> do
+        pure LeuronProtest
+
+      _ -> fail $ TypeMismatch "LeuronStatus" "IsForeign"
+
+
+
+instance leuronStatusEq :: Eq LeuronStatus where
+  eq LeuronKnow LeuronKnow = true
+  eq LeuronDontKnow LeuronDontKnow = true
+  eq LeuronDontCare LeuronDontCare = true
+  eq LeuronProtest LeuronProtest = true
+  eq _ _ = false
+
+instance leuronStatusShow :: Show LeuronStatus where
+  show LeuronKnow = "leuron_know"
+  show LeuronDontKnow = "leuron_dont_know"
+  show LeuronDontCare = "leuron_dont_care"
+  show LeuronProtest = "leuron_protest"
+
+
 newtype Fact = Fact {
   text :: String
 }

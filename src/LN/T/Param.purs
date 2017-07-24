@@ -2,12 +2,11 @@ module LN.T.Param where
 
 
 
-import Data.Argonaut.Core               (jsonEmptyObject)
+import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
-import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
@@ -847,7 +846,7 @@ instance paramDecodeJson :: DecodeJson Param where
 
 instance paramRequestable :: Requestable Param where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -2571,7 +2570,7 @@ instance paramTagDecodeJson :: DecodeJson ParamTag where
 
 instance paramTagRequestable :: Requestable ParamTag where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -3255,7 +3254,7 @@ instance sortOrderByDecodeJson :: DecodeJson SortOrderBy where
 
 instance sortOrderByRequestable :: Requestable SortOrderBy where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -3436,7 +3435,7 @@ instance orderByDecodeJson :: DecodeJson OrderBy where
 
 instance orderByRequestable :: Requestable OrderBy where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 

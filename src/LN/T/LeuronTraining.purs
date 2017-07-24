@@ -2,12 +2,11 @@ module LN.T.LeuronTraining where
 
 
 
-import Data.Argonaut.Core               (jsonEmptyObject)
+import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
-import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
@@ -99,7 +98,7 @@ instance leuronTrainingSummaryDecodeJson :: DecodeJson LeuronTrainingSummary whe
 
 instance leuronTrainingSummaryRequestable :: Requestable LeuronTrainingSummary where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -234,7 +233,7 @@ instance leuronTrainingRequestDecodeJson :: DecodeJson LeuronTrainingRequest whe
 
 instance leuronTrainingRequestRequestable :: Requestable LeuronTrainingRequest where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -340,7 +339,7 @@ instance leuronTrainingResponseDecodeJson :: DecodeJson LeuronTrainingResponse w
 
 instance leuronTrainingResponseRequestable :: Requestable LeuronTrainingResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -414,7 +413,7 @@ instance leuronTrainingResponsesDecodeJson :: DecodeJson LeuronTrainingResponses
 
 instance leuronTrainingResponsesRequestable :: Requestable LeuronTrainingResponses where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -476,7 +475,7 @@ instance leuronTrainingStatResponseDecodeJson :: DecodeJson LeuronTrainingStatRe
 
 instance leuronTrainingStatResponseRequestable :: Requestable LeuronTrainingStatResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -538,7 +537,7 @@ instance leuronTrainingStatResponsesDecodeJson :: DecodeJson LeuronTrainingStatR
 
 instance leuronTrainingStatResponsesRequestable :: Requestable LeuronTrainingStatResponses where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 

@@ -2,12 +2,11 @@ module LN.T.Profile where
 import LN.T.Ent
 
 
-import Data.Argonaut.Core               (jsonEmptyObject)
+import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
-import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
@@ -83,7 +82,7 @@ instance profileXDecodeJson :: DecodeJson ProfileX where
 
 instance profileXRequestable :: Requestable ProfileX where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -147,7 +146,7 @@ instance profileGenderDecodeJson :: DecodeJson ProfileGender where
 
 instance profileGenderRequestable :: Requestable ProfileGender where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -299,7 +298,7 @@ instance profileRequestDecodeJson :: DecodeJson ProfileRequest where
 
 instance profileRequestRequestable :: Requestable ProfileRequest where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -468,7 +467,7 @@ instance profileResponseDecodeJson :: DecodeJson ProfileResponse where
 
 instance profileResponseRequestable :: Requestable ProfileResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -556,7 +555,7 @@ instance profileResponsesDecodeJson :: DecodeJson ProfileResponses where
 
 instance profileResponsesRequestable :: Requestable ProfileResponses where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 

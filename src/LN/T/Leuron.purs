@@ -4,12 +4,11 @@ import LN.T.Splits
 import LN.T.Substitutions
 
 
-import Data.Argonaut.Core               (jsonEmptyObject)
+import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
-import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
@@ -155,7 +154,7 @@ instance leuronRequestDecodeJson :: DecodeJson LeuronRequest where
 
 instance leuronRequestRequestable :: Requestable LeuronRequest where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -381,7 +380,7 @@ instance leuronResponseDecodeJson :: DecodeJson LeuronResponse where
 
 instance leuronResponseRequestable :: Requestable LeuronResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -483,7 +482,7 @@ instance leuronResponsesDecodeJson :: DecodeJson LeuronResponses where
 
 instance leuronResponsesRequestable :: Requestable LeuronResponses where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -580,7 +579,7 @@ instance leuronStatResponseDecodeJson :: DecodeJson LeuronStatResponse where
 
 instance leuronStatResponseRequestable :: Requestable LeuronStatResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -652,7 +651,7 @@ instance leuronStatResponsesDecodeJson :: DecodeJson LeuronStatResponses where
 
 instance leuronStatResponsesRequestable :: Requestable LeuronStatResponses where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -872,7 +871,7 @@ instance leuronDataDecodeJson :: DecodeJson LeuronData where
 
 instance leuronDataRequestable :: Requestable LeuronData where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -1248,7 +1247,7 @@ instance tyLeuronDecodeJson :: DecodeJson TyLeuron where
 
 instance tyLeuronRequestable :: Requestable TyLeuron where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -1454,7 +1453,7 @@ instance leuronStatusDecodeJson :: DecodeJson LeuronStatus where
 
 instance leuronStatusRequestable :: Requestable LeuronStatus where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -1558,7 +1557,7 @@ instance factDecodeJson :: DecodeJson Fact where
 
 instance factRequestable :: Requestable Fact where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -1627,7 +1626,7 @@ instance factListDecodeJson :: DecodeJson FactList where
 
 instance factListRequestable :: Requestable FactList where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -1698,7 +1697,7 @@ instance cardDecodeJson :: DecodeJson Card where
 
 instance cardRequestable :: Requestable Card where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -1769,7 +1768,7 @@ instance dCardDecodeJson :: DecodeJson DCard where
 
 instance dCardRequestable :: Requestable DCard where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -1840,7 +1839,7 @@ instance dCardXDecodeJson :: DecodeJson DCardX where
 
 instance dCardXRequestable :: Requestable DCardX where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -1911,7 +1910,7 @@ instance acronymDecodeJson :: DecodeJson Acronym where
 
 instance acronymRequestable :: Requestable Acronym where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -1982,7 +1981,7 @@ instance synonymDecodeJson :: DecodeJson Synonym where
 
 instance synonymRequestable :: Requestable Synonym where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -2053,7 +2052,7 @@ instance antonymDecodeJson :: DecodeJson Antonym where
 
 instance antonymRequestable :: Requestable Antonym where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -2124,7 +2123,7 @@ instance templateDecodeJson :: DecodeJson Template where
 
 instance templateRequestable :: Requestable Template where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -2205,7 +2204,7 @@ instance imageAssociationDecodeJson :: DecodeJson ImageAssociation where
 
 instance imageAssociationRequestable :: Requestable ImageAssociation where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -2285,7 +2284,7 @@ instance scriptDecodeJson :: DecodeJson Script where
 
 instance scriptRequestable :: Requestable Script where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -2367,7 +2366,7 @@ instance linearDemoDecodeJson :: DecodeJson LinearDemo where
 
 instance linearDemoRequestable :: Requestable LinearDemo where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -2438,7 +2437,7 @@ instance qADecodeJson :: DecodeJson QA where
 
 instance qARequestable :: Requestable QA where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -2516,7 +2515,7 @@ instance tableDecodeJson :: DecodeJson Table where
 
 instance tableRequestable :: Requestable Table where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 

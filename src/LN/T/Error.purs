@@ -2,12 +2,11 @@ module LN.T.Error where
 
 
 
-import Data.Argonaut.Core               (jsonEmptyObject)
+import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
-import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
@@ -131,7 +130,7 @@ instance applicationErrorDecodeJson :: DecodeJson ApplicationError where
 
 instance applicationErrorRequestable :: Requestable ApplicationError where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -275,7 +274,7 @@ instance validationErrorDecodeJson :: DecodeJson ValidationError where
 
 instance validationErrorRequestable :: Requestable ValidationError where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -420,7 +419,7 @@ instance validationErrorCodeDecodeJson :: DecodeJson ValidationErrorCode where
 
 instance validationErrorCodeRequestable :: Requestable ValidationErrorCode where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 

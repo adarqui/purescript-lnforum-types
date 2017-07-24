@@ -2,12 +2,11 @@ module LN.T.User where
 
 
 
-import Data.Argonaut.Core               (jsonEmptyObject)
+import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
-import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
@@ -97,7 +96,7 @@ instance userRequestDecodeJson :: DecodeJson UserRequest where
 
 instance userRequestRequestable :: Requestable UserRequest where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -286,7 +285,7 @@ instance userResponseDecodeJson :: DecodeJson UserResponse where
 
 instance userResponseRequestable :: Requestable UserResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -382,7 +381,7 @@ instance userResponsesDecodeJson :: DecodeJson UserResponses where
 
 instance userResponsesRequestable :: Requestable UserResponses where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -493,7 +492,7 @@ instance userSanitizedResponseDecodeJson :: DecodeJson UserSanitizedResponse whe
 
 instance userSanitizedResponseRequestable :: Requestable UserSanitizedResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -569,7 +568,7 @@ instance userSanitizedResponsesDecodeJson :: DecodeJson UserSanitizedResponses w
 
 instance userSanitizedResponsesRequestable :: Requestable UserSanitizedResponses where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -673,7 +672,7 @@ instance userSanitizedStatResponseDecodeJson :: DecodeJson UserSanitizedStatResp
 
 instance userSanitizedStatResponseRequestable :: Requestable UserSanitizedStatResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -747,7 +746,7 @@ instance userSanitizedStatResponsesDecodeJson :: DecodeJson UserSanitizedStatRes
 
 instance userSanitizedStatResponsesRequestable :: Requestable UserSanitizedStatResponses where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 

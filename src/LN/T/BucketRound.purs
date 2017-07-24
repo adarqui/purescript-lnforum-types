@@ -2,12 +2,11 @@ module LN.T.BucketRound where
 import LN.T.Training
 
 
-import Data.Argonaut.Core               (jsonEmptyObject)
+import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
-import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
@@ -90,7 +89,7 @@ instance bucketRoundRequestDecodeJson :: DecodeJson BucketRoundRequest where
 
 instance bucketRoundRequestRequestable :: Requestable BucketRoundRequest where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -235,7 +234,7 @@ instance bucketRoundResponseDecodeJson :: DecodeJson BucketRoundResponse where
 
 instance bucketRoundResponseRequestable :: Requestable BucketRoundResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -319,7 +318,7 @@ instance bucketRoundResponsesDecodeJson :: DecodeJson BucketRoundResponses where
 
 instance bucketRoundResponsesRequestable :: Requestable BucketRoundResponses where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 

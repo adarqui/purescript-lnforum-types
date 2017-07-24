@@ -3,12 +3,11 @@ import LN.T.DepList
 import LN.T.Visibility
 
 
-import Data.Argonaut.Core               (jsonEmptyObject)
+import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
-import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
@@ -100,7 +99,7 @@ instance resourceTypeDecodeJson :: DecodeJson ResourceType where
 
 instance resourceTypeRequestable :: Requestable ResourceType where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -242,7 +241,7 @@ instance tyResourceTypeDecodeJson :: DecodeJson TyResourceType where
 
 instance tyResourceTypeRequestable :: Requestable TyResourceType where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -438,7 +437,7 @@ instance resourceRequestDecodeJson :: DecodeJson ResourceRequest where
 
 instance resourceRequestRequestable :: Requestable ResourceRequest where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -657,7 +656,7 @@ instance resourceResponseDecodeJson :: DecodeJson ResourceResponse where
 
 instance resourceResponseRequestable :: Requestable ResourceResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -757,7 +756,7 @@ instance resourceResponsesDecodeJson :: DecodeJson ResourceResponses where
 
 instance resourceResponsesRequestable :: Requestable ResourceResponses where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -861,7 +860,7 @@ instance resourceStatResponseDecodeJson :: DecodeJson ResourceStatResponse where
 
 instance resourceStatResponseRequestable :: Requestable ResourceStatResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -935,7 +934,7 @@ instance resourceStatResponsesDecodeJson :: DecodeJson ResourceStatResponses whe
 
 instance resourceStatResponsesRequestable :: Requestable ResourceStatResponses where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 

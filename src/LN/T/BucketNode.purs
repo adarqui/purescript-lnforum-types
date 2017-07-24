@@ -2,12 +2,11 @@ module LN.T.BucketNode where
 import LN.T.Training
 
 
-import Data.Argonaut.Core               (jsonEmptyObject)
+import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
-import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
@@ -69,7 +68,7 @@ instance bucketNodeRequestDecodeJson :: DecodeJson BucketNodeRequest where
 
 instance bucketNodeRequestRequestable :: Requestable BucketNodeRequest where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -201,7 +200,7 @@ instance bucketNodeResponseDecodeJson :: DecodeJson BucketNodeResponse where
 
 instance bucketNodeResponseRequestable :: Requestable BucketNodeResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -283,7 +282,7 @@ instance bucketNodeResponsesDecodeJson :: DecodeJson BucketNodeResponses where
 
 instance bucketNodeResponsesRequestable :: Requestable BucketNodeResponses where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 

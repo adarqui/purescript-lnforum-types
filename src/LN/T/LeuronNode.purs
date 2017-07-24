@@ -2,12 +2,11 @@ module LN.T.LeuronNode where
 import LN.T.Training
 
 
-import Data.Argonaut.Core               (jsonEmptyObject)
+import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
-import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
@@ -69,7 +68,7 @@ instance leuronNodeRequestDecodeJson :: DecodeJson LeuronNodeRequest where
 
 instance leuronNodeRequestRequestable :: Requestable LeuronNodeRequest where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -180,7 +179,7 @@ instance leuronNodeResponseDecodeJson :: DecodeJson LeuronNodeResponse where
 
 instance leuronNodeResponseRequestable :: Requestable LeuronNodeResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -256,7 +255,7 @@ instance leuronNodeResponsesDecodeJson :: DecodeJson LeuronNodeResponses where
 
 instance leuronNodeResponsesRequestable :: Requestable LeuronNodeResponses where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 

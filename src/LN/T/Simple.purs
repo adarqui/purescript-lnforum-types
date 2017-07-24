@@ -2,12 +2,11 @@ module LN.T.Simple where
 
 
 
-import Data.Argonaut.Core               (jsonEmptyObject)
+import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
-import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
@@ -69,7 +68,7 @@ instance simpleIntRequestDecodeJson :: DecodeJson SimpleIntRequest where
 
 instance simpleIntRequestRequestable :: Requestable SimpleIntRequest where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -131,7 +130,7 @@ instance simpleIntResponseDecodeJson :: DecodeJson SimpleIntResponse where
 
 instance simpleIntResponseRequestable :: Requestable SimpleIntResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -193,7 +192,7 @@ instance simpleIntsRequestDecodeJson :: DecodeJson SimpleIntsRequest where
 
 instance simpleIntsRequestRequestable :: Requestable SimpleIntsRequest where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -255,7 +254,7 @@ instance simpleIntsResponseDecodeJson :: DecodeJson SimpleIntsResponse where
 
 instance simpleIntsResponseRequestable :: Requestable SimpleIntsResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -317,7 +316,7 @@ instance simpleStringRequestDecodeJson :: DecodeJson SimpleStringRequest where
 
 instance simpleStringRequestRequestable :: Requestable SimpleStringRequest where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -379,7 +378,7 @@ instance simpleStringResponseDecodeJson :: DecodeJson SimpleStringResponse where
 
 instance simpleStringResponseRequestable :: Requestable SimpleStringResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -441,7 +440,7 @@ instance simpleStringsRequestDecodeJson :: DecodeJson SimpleStringsRequest where
 
 instance simpleStringsRequestRequestable :: Requestable SimpleStringsRequest where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -503,7 +502,7 @@ instance simpleStringsResponseDecodeJson :: DecodeJson SimpleStringsResponse whe
 
 instance simpleStringsResponseRequestable :: Requestable SimpleStringsResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 

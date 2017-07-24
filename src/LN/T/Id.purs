@@ -2,12 +2,11 @@ module LN.T.Id where
 
 
 
-import Data.Argonaut.Core               (jsonEmptyObject)
+import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
-import Data.Argonaut.Printer            (printJson)
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
@@ -76,7 +75,7 @@ instance idRequestDecodeJson :: DecodeJson IdRequest where
 
 instance idRequestRequestable :: Requestable IdRequest where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -182,7 +181,7 @@ instance idResponseDecodeJson :: DecodeJson IdResponse where
 
 instance idResponseRequestable :: Requestable IdResponse where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 
@@ -256,7 +255,7 @@ instance idResponsesDecodeJson :: DecodeJson IdResponses where
 
 instance idResponsesRequestable :: Requestable IdResponses where
   toRequest s =
-    let str = printJson (encodeJson s) :: String
+    let str = stringify (encodeJson s) :: String
     in toRequest str
 
 

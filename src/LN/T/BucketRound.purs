@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -105,7 +105,7 @@ instance bucketRoundRequestRespondable :: Respondable BucketRoundRequest where
       <*> readProp "guard" json
 
 
-instance bucketRoundRequestIsForeign :: IsForeign BucketRoundRequest where
+instance bucketRoundRequestDecode :: Decode BucketRoundRequest where
   read json =
       mkBucketRoundRequest
       <$> readProp "training_styles" json
@@ -258,7 +258,7 @@ instance bucketRoundResponseRespondable :: Respondable BucketRoundResponse where
       <*> (unNullOrUndefined <$> readProp "activity_at" json)
 
 
-instance bucketRoundResponseIsForeign :: IsForeign BucketRoundResponse where
+instance bucketRoundResponseDecode :: Decode BucketRoundResponse where
   read json =
       mkBucketRoundResponse
       <$> readProp "id" json
@@ -331,7 +331,7 @@ instance bucketRoundResponsesRespondable :: Respondable BucketRoundResponses whe
       <$> readProp "bucket_round_responses" json
 
 
-instance bucketRoundResponsesIsForeign :: IsForeign BucketRoundResponses where
+instance bucketRoundResponsesDecode :: Decode BucketRoundResponses where
   read json =
       mkBucketRoundResponses
       <$> readProp "bucket_round_responses" json

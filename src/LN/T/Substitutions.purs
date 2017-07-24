@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -133,7 +133,7 @@ instance substitutionsRespondable :: Respondable Substitutions where
 
 
 
-instance substitutionsIsForeign :: IsForeign Substitutions where
+instance substitutionsDecode :: Decode Substitutions where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -141,31 +141,31 @@ instance substitutionsIsForeign :: IsForeign Substitutions where
         r <- readProp "contents" json
         case r of
           [x0, x1] -> SubsExpr <$> read x0 <*> read x1
-          _ -> fail $ TypeMismatch "SubsExpr" "IsForeign"
+          _ -> fail $ TypeMismatch "SubsExpr" "Decode"
 
 
       "SubsOneOf" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> SubsOneOf <$> read x0
-          _ -> fail $ TypeMismatch "SubsOneOf" "IsForeign"
+          _ -> fail $ TypeMismatch "SubsOneOf" "Decode"
 
 
       "SubsAllOf" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> SubsAllOf <$> read x0
-          _ -> fail $ TypeMismatch "SubsAllOf" "IsForeign"
+          _ -> fail $ TypeMismatch "SubsAllOf" "Decode"
 
 
       "SubsBoth" -> do
         r <- readProp "contents" json
         case r of
           [x0, x1] -> SubsBoth <$> read x0 <*> read x1
-          _ -> fail $ TypeMismatch "SubsBoth" "IsForeign"
+          _ -> fail $ TypeMismatch "SubsBoth" "Decode"
 
 
-      _ -> fail $ TypeMismatch "Substitutions" "IsForeign"
+      _ -> fail $ TypeMismatch "Substitutions" "Decode"
 
 
 
@@ -245,7 +245,7 @@ instance tySubstitutionsRespondable :: Respondable TySubstitutions where
 
 
 
-instance tySubstitutionsIsForeign :: IsForeign TySubstitutions where
+instance tySubstitutionsDecode :: Decode TySubstitutions where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -261,7 +261,7 @@ instance tySubstitutionsIsForeign :: IsForeign TySubstitutions where
       "TySubsBoth" -> do
         pure TySubsBoth
 
-      _ -> fail $ TypeMismatch "TySubstitutions" "IsForeign"
+      _ -> fail $ TypeMismatch "TySubstitutions" "Decode"
 
 
 

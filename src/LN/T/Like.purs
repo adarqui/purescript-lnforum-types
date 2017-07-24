@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -90,7 +90,7 @@ instance likeOptRespondable :: Respondable LikeOpt where
 
 
 
-instance likeOptIsForeign :: IsForeign LikeOpt where
+instance likeOptDecode :: Decode LikeOpt where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -103,7 +103,7 @@ instance likeOptIsForeign :: IsForeign LikeOpt where
       "Dislike" -> do
         pure Dislike
 
-      _ -> fail $ TypeMismatch "LikeOpt" "IsForeign"
+      _ -> fail $ TypeMismatch "LikeOpt" "Decode"
 
 
 
@@ -191,7 +191,7 @@ instance likeRequestRespondable :: Respondable LikeRequest where
       <*> readProp "guard" json
 
 
-instance likeRequestIsForeign :: IsForeign LikeRequest where
+instance likeRequestDecode :: Decode LikeRequest where
   read json =
       mkLikeRequest
       <$> readProp "opt" json
@@ -335,7 +335,7 @@ instance likeResponseRespondable :: Respondable LikeResponse where
       <*> (unNullOrUndefined <$> readProp "modified_at" json)
 
 
-instance likeResponseIsForeign :: IsForeign LikeResponse where
+instance likeResponseDecode :: Decode LikeResponse where
   read json =
       mkLikeResponse
       <$> readProp "id" json
@@ -407,7 +407,7 @@ instance likeResponsesRespondable :: Respondable LikeResponses where
       <$> readProp "like_responses" json
 
 
-instance likeResponsesIsForeign :: IsForeign LikeResponses where
+instance likeResponsesDecode :: Decode LikeResponses where
   read json =
       mkLikeResponses
       <$> readProp "like_responses" json
@@ -509,7 +509,7 @@ instance likeStatResponseRespondable :: Respondable LikeStatResponse where
       <*> readProp "dislike" json
 
 
-instance likeStatResponseIsForeign :: IsForeign LikeStatResponse where
+instance likeStatResponseDecode :: Decode LikeStatResponse where
   read json =
       mkLikeStatResponse
       <$> readProp "ent" json
@@ -576,7 +576,7 @@ instance likeStatResponsesRespondable :: Respondable LikeStatResponses where
       <$> readProp "like_stat_responses" json
 
 
-instance likeStatResponsesIsForeign :: IsForeign LikeStatResponses where
+instance likeStatResponsesDecode :: Decode LikeStatResponses where
   read json =
       mkLikeStatResponses
       <$> readProp "like_stat_responses" json

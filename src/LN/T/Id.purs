@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -89,7 +89,7 @@ instance idRequestRespondable :: Respondable IdRequest where
       <*> readProp "guard" json
 
 
-instance idRequestIsForeign :: IsForeign IdRequest where
+instance idRequestDecode :: Decode IdRequest where
   read json =
       mkIdRequest
       <$> readProp "target_id" json
@@ -200,7 +200,7 @@ instance idResponseRespondable :: Respondable IdResponse where
       <*> (unNullOrUndefined <$> readProp "activity_at" json)
 
 
-instance idResponseIsForeign :: IsForeign IdResponse where
+instance idResponseDecode :: Decode IdResponse where
   read json =
       mkIdResponse
       <$> readProp "id" json
@@ -268,7 +268,7 @@ instance idResponsesRespondable :: Respondable IdResponses where
       <$> readProp "id_responses" json
 
 
-instance idResponsesIsForeign :: IsForeign IdResponses where
+instance idResponsesDecode :: Decode IdResponses where
   read json =
       mkIdResponses
       <$> readProp "id_responses" json

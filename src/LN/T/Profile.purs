@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -97,7 +97,7 @@ instance profileXRespondable :: Respondable ProfileX where
       <*> readProp "profile_email" json
 
 
-instance profileXIsForeign :: IsForeign ProfileX where
+instance profileXDecode :: Decode ProfileX where
   read json =
       mkProfileX
       <$> readProp "profile_login" json
@@ -170,7 +170,7 @@ instance profileGenderRespondable :: Respondable ProfileGender where
 
 
 
-instance profileGenderIsForeign :: IsForeign ProfileGender where
+instance profileGenderDecode :: Decode ProfileGender where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -183,7 +183,7 @@ instance profileGenderIsForeign :: IsForeign ProfileGender where
       "GenderUnknown" -> do
         pure GenderUnknown
 
-      _ -> fail $ TypeMismatch "ProfileGender" "IsForeign"
+      _ -> fail $ TypeMismatch "ProfileGender" "Decode"
 
 
 
@@ -319,7 +319,7 @@ instance profileRequestRespondable :: Respondable ProfileRequest where
       <*> (unNullOrUndefined <$> readProp "state_websites" json)
 
 
-instance profileRequestIsForeign :: IsForeign ProfileRequest where
+instance profileRequestDecode :: Decode ProfileRequest where
   read json =
       mkProfileRequest
       <$> readProp "gender" json
@@ -493,7 +493,7 @@ instance profileResponseRespondable :: Respondable ProfileResponse where
       <*> (unNullOrUndefined <$> readProp "modified_at" json)
 
 
-instance profileResponseIsForeign :: IsForeign ProfileResponse where
+instance profileResponseDecode :: Decode ProfileResponse where
   read json =
       mkProfileResponse
       <$> readProp "id" json
@@ -568,7 +568,7 @@ instance profileResponsesRespondable :: Respondable ProfileResponses where
       <$> readProp "profile_responses" json
 
 
-instance profileResponsesIsForeign :: IsForeign ProfileResponses where
+instance profileResponsesDecode :: Decode ProfileResponses where
   read json =
       mkProfileResponses
       <$> readProp "profile_responses" json

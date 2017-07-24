@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -299,7 +299,7 @@ instance entRespondable :: Respondable Ent where
 
 
 
-instance entIsForeign :: IsForeign Ent where
+instance entDecode :: Decode Ent where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -369,7 +369,7 @@ instance entIsForeign :: IsForeign Ent where
       "Ent_None" -> do
         pure Ent_None
 
-      _ -> fail $ TypeMismatch "Ent" "IsForeign"
+      _ -> fail $ TypeMismatch "Ent" "Decode"
 
 
 

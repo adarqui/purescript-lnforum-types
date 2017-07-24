@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -81,7 +81,7 @@ instance bucketNodeRequestRespondable :: Respondable BucketNodeRequest where
       <$> readProp "request_guard" json
 
 
-instance bucketNodeRequestIsForeign :: IsForeign BucketNodeRequest where
+instance bucketNodeRequestDecode :: Decode BucketNodeRequest where
   read json =
       mkBucketNodeRequest
       <$> readProp "request_guard" json
@@ -223,7 +223,7 @@ instance bucketNodeResponseRespondable :: Respondable BucketNodeResponse where
       <*> (unNullOrUndefined <$> readProp "modified_at" json)
 
 
-instance bucketNodeResponseIsForeign :: IsForeign BucketNodeResponse where
+instance bucketNodeResponseDecode :: Decode BucketNodeResponse where
   read json =
       mkBucketNodeResponse
       <$> readProp "id" json
@@ -295,7 +295,7 @@ instance bucketNodeResponsesRespondable :: Respondable BucketNodeResponses where
       <$> readProp "bucket_node_responses" json
 
 
-instance bucketNodeResponsesIsForeign :: IsForeign BucketNodeResponses where
+instance bucketNodeResponsesDecode :: Decode BucketNodeResponses where
   read json =
       mkBucketNodeResponses
       <$> readProp "bucket_node_responses" json

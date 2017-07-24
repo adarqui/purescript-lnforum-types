@@ -14,7 +14,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -179,7 +179,7 @@ instance leuronRequestRespondable :: Respondable LeuronRequest where
       <*> readProp "guard" json
 
 
-instance leuronRequestIsForeign :: IsForeign LeuronRequest where
+instance leuronRequestDecode :: Decode LeuronRequest where
   read json =
       mkLeuronRequest
       <$> readProp "data" json
@@ -413,7 +413,7 @@ instance leuronResponseRespondable :: Respondable LeuronResponse where
       <*> (unNullOrUndefined <$> readProp "activity_at" json)
 
 
-instance leuronResponseIsForeign :: IsForeign LeuronResponse where
+instance leuronResponseDecode :: Decode LeuronResponse where
   read json =
       mkLeuronResponse
       <$> readProp "id" json
@@ -495,7 +495,7 @@ instance leuronResponsesRespondable :: Respondable LeuronResponses where
       <$> readProp "leuron_responses" json
 
 
-instance leuronResponsesIsForeign :: IsForeign LeuronResponses where
+instance leuronResponsesDecode :: Decode LeuronResponses where
   read json =
       mkLeuronResponses
       <$> readProp "leuron_responses" json
@@ -597,7 +597,7 @@ instance leuronStatResponseRespondable :: Respondable LeuronStatResponse where
       <*> readProp "views" json
 
 
-instance leuronStatResponseIsForeign :: IsForeign LeuronStatResponse where
+instance leuronStatResponseDecode :: Decode LeuronStatResponse where
   read json =
       mkLeuronStatResponse
       <$> readProp "leuron_id" json
@@ -664,7 +664,7 @@ instance leuronStatResponsesRespondable :: Respondable LeuronStatResponses where
       <$> readProp "leuron_stat_responses" json
 
 
-instance leuronStatResponsesIsForeign :: IsForeign LeuronStatResponses where
+instance leuronStatResponsesDecode :: Decode LeuronStatResponses where
   read json =
       mkLeuronStatResponses
       <$> readProp "leuron_stat_responses" json
@@ -990,7 +990,7 @@ instance leuronDataRespondable :: Respondable LeuronData where
 
 
 
-instance leuronDataIsForeign :: IsForeign LeuronData where
+instance leuronDataDecode :: Decode LeuronData where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -998,98 +998,98 @@ instance leuronDataIsForeign :: IsForeign LeuronData where
         r <- readProp "contents" json
         case r of
           [x0] -> LnFact <$> read x0
-          _ -> fail $ TypeMismatch "LnFact" "IsForeign"
+          _ -> fail $ TypeMismatch "LnFact" "Decode"
 
 
       "LnFactList" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnFactList <$> read x0
-          _ -> fail $ TypeMismatch "LnFactList" "IsForeign"
+          _ -> fail $ TypeMismatch "LnFactList" "Decode"
 
 
       "LnCard" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnCard <$> read x0
-          _ -> fail $ TypeMismatch "LnCard" "IsForeign"
+          _ -> fail $ TypeMismatch "LnCard" "Decode"
 
 
       "LnDCard" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnDCard <$> read x0
-          _ -> fail $ TypeMismatch "LnDCard" "IsForeign"
+          _ -> fail $ TypeMismatch "LnDCard" "Decode"
 
 
       "LnDCardX" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnDCardX <$> read x0
-          _ -> fail $ TypeMismatch "LnDCardX" "IsForeign"
+          _ -> fail $ TypeMismatch "LnDCardX" "Decode"
 
 
       "LnAcronym" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnAcronym <$> read x0
-          _ -> fail $ TypeMismatch "LnAcronym" "IsForeign"
+          _ -> fail $ TypeMismatch "LnAcronym" "Decode"
 
 
       "LnSynonym" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnSynonym <$> read x0
-          _ -> fail $ TypeMismatch "LnSynonym" "IsForeign"
+          _ -> fail $ TypeMismatch "LnSynonym" "Decode"
 
 
       "LnAntonym" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnAntonym <$> read x0
-          _ -> fail $ TypeMismatch "LnAntonym" "IsForeign"
+          _ -> fail $ TypeMismatch "LnAntonym" "Decode"
 
 
       "LnTemplate" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnTemplate <$> read x0
-          _ -> fail $ TypeMismatch "LnTemplate" "IsForeign"
+          _ -> fail $ TypeMismatch "LnTemplate" "Decode"
 
 
       "LnImageAssociation" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnImageAssociation <$> read x0
-          _ -> fail $ TypeMismatch "LnImageAssociation" "IsForeign"
+          _ -> fail $ TypeMismatch "LnImageAssociation" "Decode"
 
 
       "LnLinearDemo" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnLinearDemo <$> read x0
-          _ -> fail $ TypeMismatch "LnLinearDemo" "IsForeign"
+          _ -> fail $ TypeMismatch "LnLinearDemo" "Decode"
 
 
       "LnTable" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnTable <$> read x0
-          _ -> fail $ TypeMismatch "LnTable" "IsForeign"
+          _ -> fail $ TypeMismatch "LnTable" "Decode"
 
 
       "LnScript" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnScript <$> read x0
-          _ -> fail $ TypeMismatch "LnScript" "IsForeign"
+          _ -> fail $ TypeMismatch "LnScript" "Decode"
 
 
       "LnQA" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> LnQA <$> read x0
-          _ -> fail $ TypeMismatch "LnQA" "IsForeign"
+          _ -> fail $ TypeMismatch "LnQA" "Decode"
 
 
       "LnExamples" -> do
@@ -1098,7 +1098,7 @@ instance leuronDataIsForeign :: IsForeign LeuronData where
       "LnEmpty" -> do
         pure LnEmpty
 
-      _ -> fail $ TypeMismatch "LeuronData" "IsForeign"
+      _ -> fail $ TypeMismatch "LeuronData" "Decode"
 
 
 
@@ -1310,7 +1310,7 @@ instance tyLeuronRespondable :: Respondable TyLeuron where
 
 
 
-instance tyLeuronIsForeign :: IsForeign TyLeuron where
+instance tyLeuronDecode :: Decode TyLeuron where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -1362,7 +1362,7 @@ instance tyLeuronIsForeign :: IsForeign TyLeuron where
       "TyLnEmpty" -> do
         pure TyLnEmpty
 
-      _ -> fail $ TypeMismatch "TyLeuron" "IsForeign"
+      _ -> fail $ TypeMismatch "TyLeuron" "Decode"
 
 
 
@@ -1480,7 +1480,7 @@ instance leuronStatusRespondable :: Respondable LeuronStatus where
 
 
 
-instance leuronStatusIsForeign :: IsForeign LeuronStatus where
+instance leuronStatusDecode :: Decode LeuronStatus where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -1496,7 +1496,7 @@ instance leuronStatusIsForeign :: IsForeign LeuronStatus where
       "LeuronProtest" -> do
         pure LeuronProtest
 
-      _ -> fail $ TypeMismatch "LeuronStatus" "IsForeign"
+      _ -> fail $ TypeMismatch "LeuronStatus" "Decode"
 
 
 
@@ -1570,7 +1570,7 @@ instance factRespondable :: Respondable Fact where
       <$> readProp "text" json
 
 
-instance factIsForeign :: IsForeign Fact where
+instance factDecode :: Decode Fact where
   read json =
       mkFact
       <$> readProp "text" json
@@ -1640,7 +1640,7 @@ instance factListRespondable :: Respondable FactList where
       <*> readProp "list" json
 
 
-instance factListIsForeign :: IsForeign FactList where
+instance factListDecode :: Decode FactList where
   read json =
       mkFactList
       <$> readProp "fact" json
@@ -1711,7 +1711,7 @@ instance cardRespondable :: Respondable Card where
       <*> readProp "back" json
 
 
-instance cardIsForeign :: IsForeign Card where
+instance cardDecode :: Decode Card where
   read json =
       mkCard
       <$> readProp "front" json
@@ -1782,7 +1782,7 @@ instance dCardRespondable :: Respondable DCard where
       <*> readProp "back" json
 
 
-instance dCardIsForeign :: IsForeign DCard where
+instance dCardDecode :: Decode DCard where
   read json =
       mkDCard
       <$> readProp "front" json
@@ -1853,7 +1853,7 @@ instance dCardXRespondable :: Respondable DCardX where
       <*> readProp "back" json
 
 
-instance dCardXIsForeign :: IsForeign DCardX where
+instance dCardXDecode :: Decode DCardX where
   read json =
       mkDCardX
       <$> readProp "front" json
@@ -1924,7 +1924,7 @@ instance acronymRespondable :: Respondable Acronym where
       <*> readProp "meaning" json
 
 
-instance acronymIsForeign :: IsForeign Acronym where
+instance acronymDecode :: Decode Acronym where
   read json =
       mkAcronym
       <$> readProp "abbreviation" json
@@ -1995,7 +1995,7 @@ instance synonymRespondable :: Respondable Synonym where
       <*> readProp "b" json
 
 
-instance synonymIsForeign :: IsForeign Synonym where
+instance synonymDecode :: Decode Synonym where
   read json =
       mkSynonym
       <$> readProp "a" json
@@ -2066,7 +2066,7 @@ instance antonymRespondable :: Respondable Antonym where
       <*> readProp "b" json
 
 
-instance antonymIsForeign :: IsForeign Antonym where
+instance antonymDecode :: Decode Antonym where
   read json =
       mkAntonym
       <$> readProp "a" json
@@ -2137,7 +2137,7 @@ instance templateRespondable :: Respondable Template where
       <*> readProp "values" json
 
 
-instance templateIsForeign :: IsForeign Template where
+instance templateDecode :: Decode Template where
   read json =
       mkTemplate
       <$> readProp "template" json
@@ -2219,7 +2219,7 @@ instance imageAssociationRespondable :: Respondable ImageAssociation where
       <*> readProp "assoc_result" json
 
 
-instance imageAssociationIsForeign :: IsForeign ImageAssociation where
+instance imageAssociationDecode :: Decode ImageAssociation where
   read json =
       mkImageAssociation
       <$> readProp "image_url" json
@@ -2299,7 +2299,7 @@ instance scriptRespondable :: Respondable Script where
       <*> readProp "url" json
 
 
-instance scriptIsForeign :: IsForeign Script where
+instance scriptDecode :: Decode Script where
   read json =
       mkScript
       <$> readProp "title" json
@@ -2380,7 +2380,7 @@ instance linearDemoRespondable :: Respondable LinearDemo where
       <*> readProp "content" json
 
 
-instance linearDemoIsForeign :: IsForeign LinearDemo where
+instance linearDemoDecode :: Decode LinearDemo where
   read json =
       mkLinearDemo
       <$> readProp "label" json
@@ -2451,7 +2451,7 @@ instance qARespondable :: Respondable QA where
       <*> readProp "answer" json
 
 
-instance qAIsForeign :: IsForeign QA where
+instance qADecode :: Decode QA where
   read json =
       mkQA
       <$> readProp "question" json
@@ -2530,7 +2530,7 @@ instance tableRespondable :: Respondable Table where
       <*> readProp "rows" json
 
 
-instance tableIsForeign :: IsForeign Table where
+instance tableDecode :: Decode Table where
   read json =
       mkTable
       <$> readProp "title" json

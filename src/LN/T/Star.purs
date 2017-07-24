@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -89,7 +89,7 @@ instance starRequestRespondable :: Respondable StarRequest where
       <*> readProp "guard" json
 
 
-instance starRequestIsForeign :: IsForeign StarRequest where
+instance starRequestDecode :: Decode StarRequest where
   read json =
       mkStarRequest
       <$> (unNullOrUndefined <$> readProp "reason" json)
@@ -216,7 +216,7 @@ instance starResponseRespondable :: Respondable StarResponse where
       <*> (unNullOrUndefined <$> readProp "modified_at" json)
 
 
-instance starResponseIsForeign :: IsForeign StarResponse where
+instance starResponseDecode :: Decode StarResponse where
   read json =
       mkStarResponse
       <$> readProp "id" json
@@ -286,7 +286,7 @@ instance starResponsesRespondable :: Respondable StarResponses where
       <$> readProp "star_responses" json
 
 
-instance starResponsesIsForeign :: IsForeign StarResponses where
+instance starResponsesDecode :: Decode StarResponses where
   read json =
       mkStarResponses
       <$> readProp "star_responses" json
@@ -364,7 +364,7 @@ instance starStatResponseRespondable :: Respondable StarStatResponse where
       <*> readProp "stars" json
 
 
-instance starStatResponseIsForeign :: IsForeign StarStatResponse where
+instance starStatResponseDecode :: Decode StarStatResponse where
   read json =
       mkStarStatResponse
       <$> readProp "ent" json
@@ -428,7 +428,7 @@ instance starStatResponsesRespondable :: Respondable StarStatResponses where
       <$> readProp "star_stat_responses" json
 
 
-instance starStatResponsesIsForeign :: IsForeign StarStatResponses where
+instance starStatResponsesDecode :: Decode StarStatResponses where
   read json =
       mkStarStatResponses
       <$> readProp "star_stat_responses" json

@@ -17,7 +17,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -150,7 +150,7 @@ instance leuronPackResponseRespondable :: Respondable LeuronPackResponse where
       <*> readProp "permissions" json
 
 
-instance leuronPackResponseIsForeign :: IsForeign LeuronPackResponse where
+instance leuronPackResponseDecode :: Decode LeuronPackResponse where
   read json =
       mkLeuronPackResponse
       <$> readProp "leuron" json
@@ -220,7 +220,7 @@ instance leuronPackResponsesRespondable :: Respondable LeuronPackResponses where
       <$> readProp "leuron_pack_responses" json
 
 
-instance leuronPackResponsesIsForeign :: IsForeign LeuronPackResponses where
+instance leuronPackResponsesDecode :: Decode LeuronPackResponses where
   read json =
       mkLeuronPackResponses
       <$> readProp "leuron_pack_responses" json

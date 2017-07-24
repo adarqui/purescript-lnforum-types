@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -113,7 +113,7 @@ instance userRequestRespondable :: Respondable UserRequest where
       <*> (unNullOrUndefined <$> readProp "accept_tos" json)
 
 
-instance userRequestIsForeign :: IsForeign UserRequest where
+instance userRequestDecode :: Decode UserRequest where
   read json =
       mkUserRequest
       <$> readProp "display_name" json
@@ -315,7 +315,7 @@ instance userResponseRespondable :: Respondable UserResponse where
       <*> (unNullOrUndefined <$> readProp "activity_at" json)
 
 
-instance userResponseIsForeign :: IsForeign UserResponse where
+instance userResponseDecode :: Decode UserResponse where
   read json =
       mkUserResponse
       <$> readProp "id" json
@@ -394,7 +394,7 @@ instance userResponsesRespondable :: Respondable UserResponses where
       <$> readProp "user_responses" json
 
 
-instance userResponsesIsForeign :: IsForeign UserResponses where
+instance userResponsesDecode :: Decode UserResponses where
   read json =
       mkUserResponses
       <$> readProp "user_responses" json
@@ -512,7 +512,7 @@ instance userSanitizedResponseRespondable :: Respondable UserSanitizedResponse w
       <*> (unNullOrUndefined <$> readProp "activity_at" json)
 
 
-instance userSanitizedResponseIsForeign :: IsForeign UserSanitizedResponse where
+instance userSanitizedResponseDecode :: Decode UserSanitizedResponse where
   read json =
       mkUserSanitizedResponse
       <$> readProp "id" json
@@ -581,7 +581,7 @@ instance userSanitizedResponsesRespondable :: Respondable UserSanitizedResponses
       <$> readProp "user_sanitized_responses" json
 
 
-instance userSanitizedResponsesIsForeign :: IsForeign UserSanitizedResponses where
+instance userSanitizedResponsesDecode :: Decode UserSanitizedResponses where
   read json =
       mkUserSanitizedResponses
       <$> readProp "user_sanitized_responses" json
@@ -691,7 +691,7 @@ instance userSanitizedStatResponseRespondable :: Respondable UserSanitizedStatRe
       <*> readProp "workouts" json
 
 
-instance userSanitizedStatResponseIsForeign :: IsForeign UserSanitizedStatResponse where
+instance userSanitizedStatResponseDecode :: Decode UserSanitizedStatResponse where
   read json =
       mkUserSanitizedStatResponse
       <$> readProp "user_id" json
@@ -759,7 +759,7 @@ instance userSanitizedStatResponsesRespondable :: Respondable UserSanitizedStatR
       <$> readProp "user_sanitized_stat_responses" json
 
 
-instance userSanitizedStatResponsesIsForeign :: IsForeign UserSanitizedStatResponses where
+instance userSanitizedStatResponsesDecode :: Decode UserSanitizedStatResponses where
   read json =
       mkUserSanitizedStatResponses
       <$> readProp "user_sanitized_stat_responses" json

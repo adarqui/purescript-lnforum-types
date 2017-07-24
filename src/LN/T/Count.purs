@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -89,7 +89,7 @@ instance countResponseRespondable :: Respondable CountResponse where
       <*> readProp "n" json
 
 
-instance countResponseIsForeign :: IsForeign CountResponse where
+instance countResponseDecode :: Decode CountResponse where
   read json =
       mkCountResponse
       <$> readProp "id" json
@@ -152,7 +152,7 @@ instance countResponsesRespondable :: Respondable CountResponses where
       <$> readProp "count_responses" json
 
 
-instance countResponsesIsForeign :: IsForeign CountResponses where
+instance countResponsesDecode :: Decode CountResponses where
   read json =
       mkCountResponses
       <$> readProp "count_responses" json

@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -1330,7 +1330,7 @@ instance paramRespondable :: Respondable Param where
 
 
 
-instance paramIsForeign :: IsForeign Param where
+instance paramDecode :: Decode Param where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -1338,472 +1338,472 @@ instance paramIsForeign :: IsForeign Param where
         r <- readProp "contents" json
         case r of
           [x0] -> Limit <$> read x0
-          _ -> fail $ TypeMismatch "Limit" "IsForeign"
+          _ -> fail $ TypeMismatch "Limit" "Decode"
 
 
       "Offset" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> Offset <$> read x0
-          _ -> fail $ TypeMismatch "Offset" "IsForeign"
+          _ -> fail $ TypeMismatch "Offset" "Decode"
 
 
       "SortOrder" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> SortOrder <$> read x0
-          _ -> fail $ TypeMismatch "SortOrder" "IsForeign"
+          _ -> fail $ TypeMismatch "SortOrder" "Decode"
 
 
       "Order" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> Order <$> read x0
-          _ -> fail $ TypeMismatch "Order" "IsForeign"
+          _ -> fail $ TypeMismatch "Order" "Decode"
 
 
       "ByOrganizationId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByOrganizationId <$> read x0
-          _ -> fail $ TypeMismatch "ByOrganizationId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByOrganizationId" "Decode"
 
 
       "ByOrganizationsIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByOrganizationsIds <$> read x0
-          _ -> fail $ TypeMismatch "ByOrganizationsIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByOrganizationsIds" "Decode"
 
 
       "ByOrganizationName" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByOrganizationName <$> read x0
-          _ -> fail $ TypeMismatch "ByOrganizationName" "IsForeign"
+          _ -> fail $ TypeMismatch "ByOrganizationName" "Decode"
 
 
       "ByTeamId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByTeamId <$> read x0
-          _ -> fail $ TypeMismatch "ByTeamId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByTeamId" "Decode"
 
 
       "ByTeamsIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByTeamsIds <$> read x0
-          _ -> fail $ TypeMismatch "ByTeamsIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByTeamsIds" "Decode"
 
 
       "ByTeamName" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByTeamName <$> read x0
-          _ -> fail $ TypeMismatch "ByTeamName" "IsForeign"
+          _ -> fail $ TypeMismatch "ByTeamName" "Decode"
 
 
       "ByTeamMemberId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByTeamMemberId <$> read x0
-          _ -> fail $ TypeMismatch "ByTeamMemberId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByTeamMemberId" "Decode"
 
 
       "ByTeamMembersIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByTeamMembersIds <$> read x0
-          _ -> fail $ TypeMismatch "ByTeamMembersIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByTeamMembersIds" "Decode"
 
 
       "ByUserId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByUserId <$> read x0
-          _ -> fail $ TypeMismatch "ByUserId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByUserId" "Decode"
 
 
       "ByUsersIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByUsersIds <$> read x0
-          _ -> fail $ TypeMismatch "ByUsersIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByUsersIds" "Decode"
 
 
       "ByUserName" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByUserName <$> read x0
-          _ -> fail $ TypeMismatch "ByUserName" "IsForeign"
+          _ -> fail $ TypeMismatch "ByUserName" "Decode"
 
 
       "ByUsersNames" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByUsersNames <$> read x0
-          _ -> fail $ TypeMismatch "ByUsersNames" "IsForeign"
+          _ -> fail $ TypeMismatch "ByUsersNames" "Decode"
 
 
       "ByGlobalGroupId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByGlobalGroupId <$> read x0
-          _ -> fail $ TypeMismatch "ByGlobalGroupId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByGlobalGroupId" "Decode"
 
 
       "ByGlobalGroupsIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByGlobalGroupsIds <$> read x0
-          _ -> fail $ TypeMismatch "ByGlobalGroupsIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByGlobalGroupsIds" "Decode"
 
 
       "ByGroupId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByGroupId <$> read x0
-          _ -> fail $ TypeMismatch "ByGroupId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByGroupId" "Decode"
 
 
       "ByGroupsIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByGroupsIds <$> read x0
-          _ -> fail $ TypeMismatch "ByGroupsIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByGroupsIds" "Decode"
 
 
       "ByGroupMemberId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByGroupMemberId <$> read x0
-          _ -> fail $ TypeMismatch "ByGroupMemberId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByGroupMemberId" "Decode"
 
 
       "ByGroupMembersIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByGroupMembersIds <$> read x0
-          _ -> fail $ TypeMismatch "ByGroupMembersIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByGroupMembersIds" "Decode"
 
 
       "ByForumId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByForumId <$> read x0
-          _ -> fail $ TypeMismatch "ByForumId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByForumId" "Decode"
 
 
       "ByForumsIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByForumsIds <$> read x0
-          _ -> fail $ TypeMismatch "ByForumsIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByForumsIds" "Decode"
 
 
       "ByForumName" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByForumName <$> read x0
-          _ -> fail $ TypeMismatch "ByForumName" "IsForeign"
+          _ -> fail $ TypeMismatch "ByForumName" "Decode"
 
 
       "ByBoardId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByBoardId <$> read x0
-          _ -> fail $ TypeMismatch "ByBoardId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByBoardId" "Decode"
 
 
       "ByBoardsIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByBoardsIds <$> read x0
-          _ -> fail $ TypeMismatch "ByBoardsIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByBoardsIds" "Decode"
 
 
       "ByBoardName" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByBoardName <$> read x0
-          _ -> fail $ TypeMismatch "ByBoardName" "IsForeign"
+          _ -> fail $ TypeMismatch "ByBoardName" "Decode"
 
 
       "ByThreadId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByThreadId <$> read x0
-          _ -> fail $ TypeMismatch "ByThreadId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByThreadId" "Decode"
 
 
       "ByThreadsIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByThreadsIds <$> read x0
-          _ -> fail $ TypeMismatch "ByThreadsIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByThreadsIds" "Decode"
 
 
       "ByThreadName" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByThreadName <$> read x0
-          _ -> fail $ TypeMismatch "ByThreadName" "IsForeign"
+          _ -> fail $ TypeMismatch "ByThreadName" "Decode"
 
 
       "ByThreadPostId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByThreadPostId <$> read x0
-          _ -> fail $ TypeMismatch "ByThreadPostId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByThreadPostId" "Decode"
 
 
       "ByThreadPostsIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByThreadPostsIds <$> read x0
-          _ -> fail $ TypeMismatch "ByThreadPostsIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByThreadPostsIds" "Decode"
 
 
       "ByThreadPostName" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByThreadPostName <$> read x0
-          _ -> fail $ TypeMismatch "ByThreadPostName" "IsForeign"
+          _ -> fail $ TypeMismatch "ByThreadPostName" "Decode"
 
 
       "ByThreadPostLikeId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByThreadPostLikeId <$> read x0
-          _ -> fail $ TypeMismatch "ByThreadPostLikeId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByThreadPostLikeId" "Decode"
 
 
       "ByThreadPostLikesIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByThreadPostLikesIds <$> read x0
-          _ -> fail $ TypeMismatch "ByThreadPostLikesIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByThreadPostLikesIds" "Decode"
 
 
       "ByThreadPostStarId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByThreadPostStarId <$> read x0
-          _ -> fail $ TypeMismatch "ByThreadPostStarId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByThreadPostStarId" "Decode"
 
 
       "ByThreadPostStarsIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByThreadPostStarsIds <$> read x0
-          _ -> fail $ TypeMismatch "ByThreadPostStarsIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByThreadPostStarsIds" "Decode"
 
 
       "ByBucketId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByBucketId <$> read x0
-          _ -> fail $ TypeMismatch "ByBucketId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByBucketId" "Decode"
 
 
       "ByBucketRoundId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByBucketRoundId <$> read x0
-          _ -> fail $ TypeMismatch "ByBucketRoundId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByBucketRoundId" "Decode"
 
 
       "ByResourceId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByResourceId <$> read x0
-          _ -> fail $ TypeMismatch "ByResourceId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByResourceId" "Decode"
 
 
       "ByResourcesIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByResourcesIds <$> read x0
-          _ -> fail $ TypeMismatch "ByResourcesIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByResourcesIds" "Decode"
 
 
       "ByResourceName" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByResourceName <$> read x0
-          _ -> fail $ TypeMismatch "ByResourceName" "IsForeign"
+          _ -> fail $ TypeMismatch "ByResourceName" "Decode"
 
 
       "ByLeuronId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByLeuronId <$> read x0
-          _ -> fail $ TypeMismatch "ByLeuronId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByLeuronId" "Decode"
 
 
       "ByLeuronsIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByLeuronsIds <$> read x0
-          _ -> fail $ TypeMismatch "ByLeuronsIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByLeuronsIds" "Decode"
 
 
       "ByPmId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByPmId <$> read x0
-          _ -> fail $ TypeMismatch "ByPmId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByPmId" "Decode"
 
 
       "ByPmsIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByPmsIds <$> read x0
-          _ -> fail $ TypeMismatch "ByPmsIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByPmsIds" "Decode"
 
 
       "ByReminderId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByReminderId <$> read x0
-          _ -> fail $ TypeMismatch "ByReminderId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByReminderId" "Decode"
 
 
       "ByReminderFolderId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByReminderFolderId <$> read x0
-          _ -> fail $ TypeMismatch "ByReminderFolderId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByReminderFolderId" "Decode"
 
 
       "ByParentId" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByParentId <$> read x0
-          _ -> fail $ TypeMismatch "ByParentId" "IsForeign"
+          _ -> fail $ TypeMismatch "ByParentId" "Decode"
 
 
       "ByParentsIds" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByParentsIds <$> read x0
-          _ -> fail $ TypeMismatch "ByParentsIds" "IsForeign"
+          _ -> fail $ TypeMismatch "ByParentsIds" "Decode"
 
 
       "ByParentName" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByParentName <$> read x0
-          _ -> fail $ TypeMismatch "ByParentName" "IsForeign"
+          _ -> fail $ TypeMismatch "ByParentName" "Decode"
 
 
       "ByEmail" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ByEmail <$> read x0
-          _ -> fail $ TypeMismatch "ByEmail" "IsForeign"
+          _ -> fail $ TypeMismatch "ByEmail" "Decode"
 
 
       "BySelf" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> BySelf <$> read x0
-          _ -> fail $ TypeMismatch "BySelf" "IsForeign"
+          _ -> fail $ TypeMismatch "BySelf" "Decode"
 
 
       "View" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> View <$> read x0
-          _ -> fail $ TypeMismatch "View" "IsForeign"
+          _ -> fail $ TypeMismatch "View" "Decode"
 
 
       "Timestamp" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> Timestamp <$> read x0
-          _ -> fail $ TypeMismatch "Timestamp" "IsForeign"
+          _ -> fail $ TypeMismatch "Timestamp" "Decode"
 
 
       "UnixTimestamp" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> UnixTimestamp <$> read x0
-          _ -> fail $ TypeMismatch "UnixTimestamp" "IsForeign"
+          _ -> fail $ TypeMismatch "UnixTimestamp" "Decode"
 
 
       "CreatedAtTimestamp" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> CreatedAtTimestamp <$> read x0
-          _ -> fail $ TypeMismatch "CreatedAtTimestamp" "IsForeign"
+          _ -> fail $ TypeMismatch "CreatedAtTimestamp" "Decode"
 
 
       "CreatedAtUnixTimestamp" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> CreatedAtUnixTimestamp <$> read x0
-          _ -> fail $ TypeMismatch "CreatedAtUnixTimestamp" "IsForeign"
+          _ -> fail $ TypeMismatch "CreatedAtUnixTimestamp" "Decode"
 
 
       "RealIP" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> RealIP <$> read x0
-          _ -> fail $ TypeMismatch "RealIP" "IsForeign"
+          _ -> fail $ TypeMismatch "RealIP" "Decode"
 
 
       "IP" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> IP <$> read x0
-          _ -> fail $ TypeMismatch "IP" "IsForeign"
+          _ -> fail $ TypeMismatch "IP" "Decode"
 
 
       "WithOrganization" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> WithOrganization <$> read x0
-          _ -> fail $ TypeMismatch "WithOrganization" "IsForeign"
+          _ -> fail $ TypeMismatch "WithOrganization" "Decode"
 
 
       "WithForum" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> WithForum <$> read x0
-          _ -> fail $ TypeMismatch "WithForum" "IsForeign"
+          _ -> fail $ TypeMismatch "WithForum" "Decode"
 
 
       "WithBoard" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> WithBoard <$> read x0
-          _ -> fail $ TypeMismatch "WithBoard" "IsForeign"
+          _ -> fail $ TypeMismatch "WithBoard" "Decode"
 
 
       "WithThread" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> WithThread <$> read x0
-          _ -> fail $ TypeMismatch "WithThread" "IsForeign"
+          _ -> fail $ TypeMismatch "WithThread" "Decode"
 
 
       "WithThreadPosts" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> WithThreadPosts <$> read x0
-          _ -> fail $ TypeMismatch "WithThreadPosts" "IsForeign"
+          _ -> fail $ TypeMismatch "WithThreadPosts" "Decode"
 
 
       "WithResource" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> WithResource <$> read x0
-          _ -> fail $ TypeMismatch "WithResource" "IsForeign"
+          _ -> fail $ TypeMismatch "WithResource" "Decode"
 
 
-      _ -> fail $ TypeMismatch "Param" "IsForeign"
+      _ -> fail $ TypeMismatch "Param" "Decode"
 
 
 
@@ -2786,7 +2786,7 @@ instance paramTagRespondable :: Respondable ParamTag where
 
 
 
-instance paramTagIsForeign :: IsForeign ParamTag where
+instance paramTagDecode :: Decode ParamTag where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -2991,7 +2991,7 @@ instance paramTagIsForeign :: IsForeign ParamTag where
       "ParamTag_WithResource" -> do
         pure ParamTag_WithResource
 
-      _ -> fail $ TypeMismatch "ParamTag" "IsForeign"
+      _ -> fail $ TypeMismatch "ParamTag" "Decode"
 
 
 
@@ -3281,7 +3281,7 @@ instance sortOrderByRespondable :: Respondable SortOrderBy where
 
 
 
-instance sortOrderByIsForeign :: IsForeign SortOrderBy where
+instance sortOrderByDecode :: Decode SortOrderBy where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -3297,7 +3297,7 @@ instance sortOrderByIsForeign :: IsForeign SortOrderBy where
       "SortOrderBy_None" -> do
         pure SortOrderBy_None
 
-      _ -> fail $ TypeMismatch "SortOrderBy" "IsForeign"
+      _ -> fail $ TypeMismatch "SortOrderBy" "Decode"
 
 
 
@@ -3486,7 +3486,7 @@ instance orderByRespondable :: Respondable OrderBy where
 
 
 
-instance orderByIsForeign :: IsForeign OrderBy where
+instance orderByDecode :: Decode OrderBy where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -3526,7 +3526,7 @@ instance orderByIsForeign :: IsForeign OrderBy where
       "OrderBy_None" -> do
         pure OrderBy_None
 
-      _ -> fail $ TypeMismatch "OrderBy" "IsForeign"
+      _ -> fail $ TypeMismatch "OrderBy" "Decode"
 
 
 

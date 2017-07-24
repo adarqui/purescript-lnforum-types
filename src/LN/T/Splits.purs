@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -87,7 +87,7 @@ instance splitsRespondable :: Respondable Splits where
 
 
 
-instance splitsIsForeign :: IsForeign Splits where
+instance splitsDecode :: Decode Splits where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -95,13 +95,13 @@ instance splitsIsForeign :: IsForeign Splits where
         r <- readProp "contents" json
         case r of
           [x0, x1, x2] -> SplitAt <$> read x0 <*> read x1 <*> read x2
-          _ -> fail $ TypeMismatch "SplitAt" "IsForeign"
+          _ -> fail $ TypeMismatch "SplitAt" "Decode"
 
 
       "SplitNone" -> do
         pure SplitNone
 
-      _ -> fail $ TypeMismatch "Splits" "IsForeign"
+      _ -> fail $ TypeMismatch "Splits" "Decode"
 
 
 
@@ -159,7 +159,7 @@ instance tySplitsRespondable :: Respondable TySplits where
 
 
 
-instance tySplitsIsForeign :: IsForeign TySplits where
+instance tySplitsDecode :: Decode TySplits where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -169,7 +169,7 @@ instance tySplitsIsForeign :: IsForeign TySplits where
       "TySplitNone" -> do
         pure TySplitNone
 
-      _ -> fail $ TypeMismatch "TySplits" "IsForeign"
+      _ -> fail $ TypeMismatch "TySplits" "Decode"
 
 
 

@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -81,7 +81,7 @@ instance simpleIntRequestRespondable :: Respondable SimpleIntRequest where
       <$> readProp "simple_int_request" json
 
 
-instance simpleIntRequestIsForeign :: IsForeign SimpleIntRequest where
+instance simpleIntRequestDecode :: Decode SimpleIntRequest where
   read json =
       mkSimpleIntRequest
       <$> readProp "simple_int_request" json
@@ -143,7 +143,7 @@ instance simpleIntResponseRespondable :: Respondable SimpleIntResponse where
       <$> readProp "simple_int_response" json
 
 
-instance simpleIntResponseIsForeign :: IsForeign SimpleIntResponse where
+instance simpleIntResponseDecode :: Decode SimpleIntResponse where
   read json =
       mkSimpleIntResponse
       <$> readProp "simple_int_response" json
@@ -205,7 +205,7 @@ instance simpleIntsRequestRespondable :: Respondable SimpleIntsRequest where
       <$> readProp "simple_ints_request" json
 
 
-instance simpleIntsRequestIsForeign :: IsForeign SimpleIntsRequest where
+instance simpleIntsRequestDecode :: Decode SimpleIntsRequest where
   read json =
       mkSimpleIntsRequest
       <$> readProp "simple_ints_request" json
@@ -267,7 +267,7 @@ instance simpleIntsResponseRespondable :: Respondable SimpleIntsResponse where
       <$> readProp "simple_ints_response" json
 
 
-instance simpleIntsResponseIsForeign :: IsForeign SimpleIntsResponse where
+instance simpleIntsResponseDecode :: Decode SimpleIntsResponse where
   read json =
       mkSimpleIntsResponse
       <$> readProp "simple_ints_response" json
@@ -329,7 +329,7 @@ instance simpleStringRequestRespondable :: Respondable SimpleStringRequest where
       <$> readProp "simple_string_request" json
 
 
-instance simpleStringRequestIsForeign :: IsForeign SimpleStringRequest where
+instance simpleStringRequestDecode :: Decode SimpleStringRequest where
   read json =
       mkSimpleStringRequest
       <$> readProp "simple_string_request" json
@@ -391,7 +391,7 @@ instance simpleStringResponseRespondable :: Respondable SimpleStringResponse whe
       <$> readProp "simple_string_response" json
 
 
-instance simpleStringResponseIsForeign :: IsForeign SimpleStringResponse where
+instance simpleStringResponseDecode :: Decode SimpleStringResponse where
   read json =
       mkSimpleStringResponse
       <$> readProp "simple_string_response" json
@@ -453,7 +453,7 @@ instance simpleStringsRequestRespondable :: Respondable SimpleStringsRequest whe
       <$> readProp "simple_strings_request" json
 
 
-instance simpleStringsRequestIsForeign :: IsForeign SimpleStringsRequest where
+instance simpleStringsRequestDecode :: Decode SimpleStringsRequest where
   read json =
       mkSimpleStringsRequest
       <$> readProp "simple_strings_request" json
@@ -515,7 +515,7 @@ instance simpleStringsResponseRespondable :: Respondable SimpleStringsResponse w
       <$> readProp "simple_strings_response" json
 
 
-instance simpleStringsResponseIsForeign :: IsForeign SimpleStringsResponse where
+instance simpleStringsResponseDecode :: Decode SimpleStringsResponse where
   read json =
       mkSimpleStringsResponse
       <$> readProp "simple_strings_response" json

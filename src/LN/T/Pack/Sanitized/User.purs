@@ -15,7 +15,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -132,7 +132,7 @@ instance userSanitizedPackResponseRespondable :: Respondable UserSanitizedPackRe
       <*> (unNullOrUndefined <$> readProp "star" json)
 
 
-instance userSanitizedPackResponseIsForeign :: IsForeign UserSanitizedPackResponse where
+instance userSanitizedPackResponseDecode :: Decode UserSanitizedPackResponse where
   read json =
       mkUserSanitizedPackResponse
       <$> readProp "user" json
@@ -200,7 +200,7 @@ instance userSanitizedPackResponsesRespondable :: Respondable UserSanitizedPackR
       <$> readProp "user_sanitized_pack_responses" json
 
 
-instance userSanitizedPackResponsesIsForeign :: IsForeign UserSanitizedPackResponses where
+instance userSanitizedPackResponsesDecode :: Decode UserSanitizedPackResponses where
   read json =
       mkUserSanitizedPackResponses
       <$> readProp "user_sanitized_pack_responses" json

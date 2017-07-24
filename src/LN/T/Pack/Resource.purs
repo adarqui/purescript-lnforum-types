@@ -16,7 +16,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -141,7 +141,7 @@ instance resourcePackResponseRespondable :: Respondable ResourcePackResponse whe
       <*> readProp "permissions" json
 
 
-instance resourcePackResponseIsForeign :: IsForeign ResourcePackResponse where
+instance resourcePackResponseDecode :: Decode ResourcePackResponse where
   read json =
       mkResourcePackResponse
       <$> readProp "resource" json
@@ -210,7 +210,7 @@ instance resourcePackResponsesRespondable :: Respondable ResourcePackResponses w
       <$> readProp "resource_pack_responses" json
 
 
-instance resourcePackResponsesIsForeign :: IsForeign ResourcePackResponses where
+instance resourcePackResponsesDecode :: Decode ResourcePackResponses where
   read json =
       mkResourcePackResponses
       <$> readProp "resource_pack_responses" json

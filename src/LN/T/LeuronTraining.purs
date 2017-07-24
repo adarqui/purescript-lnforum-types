@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -134,7 +134,7 @@ instance leuronTrainingSummaryRespondable :: Respondable LeuronTrainingSummary w
 
 
 
-instance leuronTrainingSummaryIsForeign :: IsForeign LeuronTrainingSummary where
+instance leuronTrainingSummaryDecode :: Decode LeuronTrainingSummary where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -159,7 +159,7 @@ instance leuronTrainingSummaryIsForeign :: IsForeign LeuronTrainingSummary where
       "LTS_Protest" -> do
         pure LTS_Protest
 
-      _ -> fail $ TypeMismatch "LeuronTrainingSummary" "IsForeign"
+      _ -> fail $ TypeMismatch "LeuronTrainingSummary" "Decode"
 
 
 
@@ -247,7 +247,7 @@ instance leuronTrainingRequestRespondable :: Respondable LeuronTrainingRequest w
       <*> readProp "guard" json
 
 
-instance leuronTrainingRequestIsForeign :: IsForeign LeuronTrainingRequest where
+instance leuronTrainingRequestDecode :: Decode LeuronTrainingRequest where
   read json =
       mkLeuronTrainingRequest
       <$> readProp "summary" json
@@ -358,7 +358,7 @@ instance leuronTrainingResponseRespondable :: Respondable LeuronTrainingResponse
       <*> (unNullOrUndefined <$> readProp "modified_at" json)
 
 
-instance leuronTrainingResponseIsForeign :: IsForeign LeuronTrainingResponse where
+instance leuronTrainingResponseDecode :: Decode LeuronTrainingResponse where
   read json =
       mkLeuronTrainingResponse
       <$> readProp "id" json
@@ -426,7 +426,7 @@ instance leuronTrainingResponsesRespondable :: Respondable LeuronTrainingRespons
       <$> readProp "leuron_training_responses" json
 
 
-instance leuronTrainingResponsesIsForeign :: IsForeign LeuronTrainingResponses where
+instance leuronTrainingResponsesDecode :: Decode LeuronTrainingResponses where
   read json =
       mkLeuronTrainingResponses
       <$> readProp "leuron_training_responses" json
@@ -488,7 +488,7 @@ instance leuronTrainingStatResponseRespondable :: Respondable LeuronTrainingStat
       <$> readProp "leuron_training_id" json
 
 
-instance leuronTrainingStatResponseIsForeign :: IsForeign LeuronTrainingStatResponse where
+instance leuronTrainingStatResponseDecode :: Decode LeuronTrainingStatResponse where
   read json =
       mkLeuronTrainingStatResponse
       <$> readProp "leuron_training_id" json
@@ -550,7 +550,7 @@ instance leuronTrainingStatResponsesRespondable :: Respondable LeuronTrainingSta
       <$> readProp "leuron_training_stat_responses" json
 
 
-instance leuronTrainingStatResponsesIsForeign :: IsForeign LeuronTrainingStatResponses where
+instance leuronTrainingStatResponsesDecode :: Decode LeuronTrainingStatResponses where
   read json =
       mkLeuronTrainingStatResponses
       <$> readProp "leuron_training_stat_responses" json

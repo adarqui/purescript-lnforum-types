@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -81,7 +81,7 @@ instance leuronNodeRequestRespondable :: Respondable LeuronNodeRequest where
       <$> readProp "request_guard" json
 
 
-instance leuronNodeRequestIsForeign :: IsForeign LeuronNodeRequest where
+instance leuronNodeRequestDecode :: Decode LeuronNodeRequest where
   read json =
       mkLeuronNodeRequest
       <$> readProp "request_guard" json
@@ -199,7 +199,7 @@ instance leuronNodeResponseRespondable :: Respondable LeuronNodeResponse where
       <*> (unNullOrUndefined <$> readProp "modified_at" json)
 
 
-instance leuronNodeResponseIsForeign :: IsForeign LeuronNodeResponse where
+instance leuronNodeResponseDecode :: Decode LeuronNodeResponse where
   read json =
       mkLeuronNodeResponse
       <$> readProp "id" json
@@ -268,7 +268,7 @@ instance leuronNodeResponsesRespondable :: Respondable LeuronNodeResponses where
       <$> readProp "leuron_node_responses" json
 
 
-instance leuronNodeResponsesIsForeign :: IsForeign LeuronNodeResponses where
+instance leuronNodeResponsesDecode :: Decode LeuronNodeResponses where
   read json =
       mkLeuronNodeResponses
       <$> readProp "leuron_node_responses" json

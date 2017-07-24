@@ -13,7 +13,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -145,7 +145,7 @@ instance resourceTypeRespondable :: Respondable ResourceType where
 
 
 
-instance resourceTypeIsForeign :: IsForeign ResourceType where
+instance resourceTypeDecode :: Decode ResourceType where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -153,34 +153,34 @@ instance resourceTypeIsForeign :: IsForeign ResourceType where
         r <- readProp "contents" json
         case r of
           [x0] -> ISBN13 <$> read x0
-          _ -> fail $ TypeMismatch "ISBN13" "IsForeign"
+          _ -> fail $ TypeMismatch "ISBN13" "Decode"
 
 
       "ISBN10" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ISBN10 <$> read x0
-          _ -> fail $ TypeMismatch "ISBN10" "IsForeign"
+          _ -> fail $ TypeMismatch "ISBN10" "Decode"
 
 
       "ISBN" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> ISBN <$> read x0
-          _ -> fail $ TypeMismatch "ISBN" "IsForeign"
+          _ -> fail $ TypeMismatch "ISBN" "Decode"
 
 
       "URL" -> do
         r <- readProp "contents" json
         case r of
           [x0] -> URL <$> read x0
-          _ -> fail $ TypeMismatch "URL" "IsForeign"
+          _ -> fail $ TypeMismatch "URL" "Decode"
 
 
       "SourceNone" -> do
         pure SourceNone
 
-      _ -> fail $ TypeMismatch "ResourceType" "IsForeign"
+      _ -> fail $ TypeMismatch "ResourceType" "Decode"
 
 
 
@@ -271,7 +271,7 @@ instance tyResourceTypeRespondable :: Respondable TyResourceType where
 
 
 
-instance tyResourceTypeIsForeign :: IsForeign TyResourceType where
+instance tyResourceTypeDecode :: Decode TyResourceType where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -290,7 +290,7 @@ instance tyResourceTypeIsForeign :: IsForeign TyResourceType where
       "TySourceNone" -> do
         pure TySourceNone
 
-      _ -> fail $ TypeMismatch "TyResourceType" "IsForeign"
+      _ -> fail $ TypeMismatch "TyResourceType" "Decode"
 
 
 
@@ -462,7 +462,7 @@ instance resourceRequestRespondable :: Respondable ResourceRequest where
       <*> readProp "guard" json
 
 
-instance resourceRequestIsForeign :: IsForeign ResourceRequest where
+instance resourceRequestDecode :: Decode ResourceRequest where
   read json =
       mkResourceRequest
       <$> readProp "display_name" json
@@ -688,7 +688,7 @@ instance resourceResponseRespondable :: Respondable ResourceResponse where
       <*> (unNullOrUndefined <$> readProp "activity_at" json)
 
 
-instance resourceResponseIsForeign :: IsForeign ResourceResponse where
+instance resourceResponseDecode :: Decode ResourceResponse where
   read json =
       mkResourceResponse
       <$> readProp "id" json
@@ -769,7 +769,7 @@ instance resourceResponsesRespondable :: Respondable ResourceResponses where
       <$> readProp "resource_responses" json
 
 
-instance resourceResponsesIsForeign :: IsForeign ResourceResponses where
+instance resourceResponsesDecode :: Decode ResourceResponses where
   read json =
       mkResourceResponses
       <$> readProp "resource_responses" json
@@ -879,7 +879,7 @@ instance resourceStatResponseRespondable :: Respondable ResourceStatResponse whe
       <*> readProp "views" json
 
 
-instance resourceStatResponseIsForeign :: IsForeign ResourceStatResponse where
+instance resourceStatResponseDecode :: Decode ResourceStatResponse where
   read json =
       mkResourceStatResponse
       <$> readProp "resource_id" json
@@ -947,7 +947,7 @@ instance resourceStatResponsesRespondable :: Respondable ResourceStatResponses w
       <$> readProp "resource_stat_responses" json
 
 
-instance resourceStatResponsesIsForeign :: IsForeign ResourceStatResponses where
+instance resourceStatResponsesDecode :: Decode ResourceStatResponses where
   read json =
       mkResourceStatResponses
       <$> readProp "resource_stat_responses" json

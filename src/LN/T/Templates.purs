@@ -15,7 +15,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -108,7 +108,7 @@ instance templatesRespondable :: Respondable Templates where
       <*> readProp "bucket_request" json
 
 
-instance templatesIsForeign :: IsForeign Templates where
+instance templatesDecode :: Decode Templates where
   read json =
       mkTemplates
       <$> readProp "resource_request" json

@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -112,7 +112,7 @@ instance sizeRespondable :: Respondable Size where
 
 
 
-instance sizeIsForeign :: IsForeign Size where
+instance sizeDecode :: Decode Size where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -131,7 +131,7 @@ instance sizeIsForeign :: IsForeign Size where
       "XLarge" -> do
         pure XLarge
 
-      _ -> fail $ TypeMismatch "Size" "IsForeign"
+      _ -> fail $ TypeMismatch "Size" "Decode"
 
 
 

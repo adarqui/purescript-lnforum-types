@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -112,7 +112,7 @@ instance permissionRespondable :: Respondable Permission where
 
 
 
-instance permissionIsForeign :: IsForeign Permission where
+instance permissionDecode :: Decode Permission where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -131,7 +131,7 @@ instance permissionIsForeign :: IsForeign Permission where
       "Perm_Execute" -> do
         pure Perm_Execute
 
-      _ -> fail $ TypeMismatch "Permission" "IsForeign"
+      _ -> fail $ TypeMismatch "Permission" "Decode"
 
 
 

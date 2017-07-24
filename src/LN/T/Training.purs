@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -433,7 +433,7 @@ instance trainingNodeRespondable :: Respondable TrainingNode where
       <*> (unNullOrUndefined <$> readProp "splits_protest_at" json)
 
 
-instance trainingNodeIsForeign :: IsForeign TrainingNode where
+instance trainingNodeDecode :: Decode TrainingNode where
   read json =
       mkTrainingNode
       <$> readProp "num_total" json
@@ -570,7 +570,7 @@ instance trainingStyleRespondable :: Respondable TrainingStyle where
 
 
 
-instance trainingStyleIsForeign :: IsForeign TrainingStyle where
+instance trainingStyleDecode :: Decode TrainingStyle where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -589,7 +589,7 @@ instance trainingStyleIsForeign :: IsForeign TrainingStyle where
       "TS_Splits" -> do
         pure TS_Splits
 
-      _ -> fail $ TypeMismatch "TrainingStyle" "IsForeign"
+      _ -> fail $ TypeMismatch "TrainingStyle" "Decode"
 
 
 

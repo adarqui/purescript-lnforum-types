@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -183,7 +183,7 @@ instance applicationErrorRespondable :: Respondable ApplicationError where
 
 
 
-instance applicationErrorIsForeign :: IsForeign ApplicationError where
+instance applicationErrorDecode :: Decode ApplicationError where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -209,7 +209,7 @@ instance applicationErrorIsForeign :: IsForeign ApplicationError where
         r <- readProp "contents" json
         case r of
           [x0] -> Error_Validation <$> read x0
-          _ -> fail $ TypeMismatch "Error_Validation" "IsForeign"
+          _ -> fail $ TypeMismatch "Error_Validation" "Decode"
 
 
       "Error_NotImplemented" -> do
@@ -219,13 +219,13 @@ instance applicationErrorIsForeign :: IsForeign ApplicationError where
         r <- readProp "contents" json
         case r of
           [x0] -> Error_InvalidArguments <$> read x0
-          _ -> fail $ TypeMismatch "Error_InvalidArguments" "IsForeign"
+          _ -> fail $ TypeMismatch "Error_InvalidArguments" "Decode"
 
 
       "Error_Unexpected" -> do
         pure Error_Unexpected
 
-      _ -> fail $ TypeMismatch "ApplicationError" "IsForeign"
+      _ -> fail $ TypeMismatch "ApplicationError" "Decode"
 
 
 
@@ -296,7 +296,7 @@ instance validationErrorRespondable :: Respondable ValidationError where
 
 
 
-instance validationErrorIsForeign :: IsForeign ValidationError where
+instance validationErrorDecode :: Decode ValidationError where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -304,10 +304,10 @@ instance validationErrorIsForeign :: IsForeign ValidationError where
         r <- readProp "contents" json
         case r of
           [x0, x1] -> Validate <$> read x0 <*> read x1
-          _ -> fail $ TypeMismatch "Validate" "IsForeign"
+          _ -> fail $ TypeMismatch "Validate" "Decode"
 
 
-      _ -> fail $ TypeMismatch "ValidationError" "IsForeign"
+      _ -> fail $ TypeMismatch "ValidationError" "Decode"
 
 
 
@@ -468,7 +468,7 @@ instance validationErrorCodeRespondable :: Respondable ValidationErrorCode where
 
 
 
-instance validationErrorCodeIsForeign :: IsForeign ValidationErrorCode where
+instance validationErrorCodeDecode :: Decode ValidationErrorCode where
   read json = do
     tag <- readProp "tag" json
     case tag of
@@ -503,10 +503,10 @@ instance validationErrorCodeIsForeign :: IsForeign ValidationErrorCode where
         r <- readProp "contents" json
         case r of
           [x0] -> Validate_Reason <$> read x0
-          _ -> fail $ TypeMismatch "Validate_Reason" "IsForeign"
+          _ -> fail $ TypeMismatch "Validate_Reason" "Decode"
 
 
-      _ -> fail $ TypeMismatch "ValidationErrorCode" "IsForeign"
+      _ -> fail $ TypeMismatch "ValidationErrorCode" "Decode"
 
 
 

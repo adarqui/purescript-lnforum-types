@@ -12,7 +12,7 @@ import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
 import Data.Foreign                     (ForeignError(..), fail)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class IsForeign, read, readProp)
+import Data.Foreign.Class               (class Decode, read, readProp)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -145,7 +145,7 @@ instance bucketRequestRespondable :: Respondable BucketRequest where
       <*> readProp "guard" json
 
 
-instance bucketRequestIsForeign :: IsForeign BucketRequest where
+instance bucketRequestDecode :: Decode BucketRequest where
   read json =
       mkBucketRequest
       <$> readProp "display_name" json
@@ -343,7 +343,7 @@ instance bucketResponseRespondable :: Respondable BucketResponse where
       <*> (unNullOrUndefined <$> readProp "activity_at" json)
 
 
-instance bucketResponseIsForeign :: IsForeign BucketResponse where
+instance bucketResponseDecode :: Decode BucketResponse where
   read json =
       mkBucketResponse
       <$> readProp "id" json
@@ -421,7 +421,7 @@ instance bucketResponsesRespondable :: Respondable BucketResponses where
       <$> readProp "bucket_responses" json
 
 
-instance bucketResponsesIsForeign :: IsForeign BucketResponses where
+instance bucketResponsesDecode :: Decode BucketResponses where
   read json =
       mkBucketResponses
       <$> readProp "bucket_responses" json

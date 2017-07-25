@@ -9,9 +9,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -105,21 +106,21 @@ instance userRequestRespondable :: Respondable UserRequest where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkUserRequest
-      <$> readProp "display_name" json
-      <*> readProp "full_name" json
-      <*> readProp "email" json
-      <*> readProp "plugin" json
-      <*> (unNullOrUndefined <$> readProp "accept_tos" json)
+      <$> readPropUnsafe "display_name" json
+      <*> readPropUnsafe "full_name" json
+      <*> readPropUnsafe "email" json
+      <*> readPropUnsafe "plugin" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "accept_tos" json)
 
 
 instance userRequestDecode :: Decode UserRequest where
-  read json =
+  decode json =
       mkUserRequest
-      <$> readProp "display_name" json
-      <*> readProp "full_name" json
-      <*> readProp "email" json
-      <*> readProp "plugin" json
-      <*> (unNullOrUndefined <$> readProp "accept_tos" json)
+      <$> readPropUnsafe "display_name" json
+      <*> readPropUnsafe "full_name" json
+      <*> readPropUnsafe "email" json
+      <*> readPropUnsafe "plugin" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "accept_tos" json)
 
 
 newtype UserResponse = UserResponse {
@@ -294,47 +295,47 @@ instance userResponseRespondable :: Respondable UserResponse where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkUserResponse
-      <$> readProp "id" json
-      <*> readProp "name" json
-      <*> readProp "display_name" json
-      <*> readProp "full_name" json
-      <*> readProp "email" json
-      <*> readProp "email_md5" json
-      <*> readProp "plugin" json
-      <*> (unNullOrUndefined <$> readProp "github_ident" json)
-      <*> (unNullOrUndefined <$> readProp "github_created_at" json)
-      <*> (unNullOrUndefined <$> readProp "google_ident" json)
-      <*> (unNullOrUndefined <$> readProp "google_created_at" json)
-      <*> (unNullOrUndefined <$> readProp "accept_tos" json)
-      <*> readProp "active" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
-      <*> (unNullOrUndefined <$> readProp "deactivated_at" json)
-      <*> (unNullOrUndefined <$> readProp "activity_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "name" json
+      <*> readPropUnsafe "display_name" json
+      <*> readPropUnsafe "full_name" json
+      <*> readPropUnsafe "email" json
+      <*> readPropUnsafe "email_md5" json
+      <*> readPropUnsafe "plugin" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "github_ident" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "github_created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "google_ident" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "google_created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "accept_tos" json)
+      <*> readPropUnsafe "active" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "deactivated_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
 
 
 instance userResponseDecode :: Decode UserResponse where
-  read json =
+  decode json =
       mkUserResponse
-      <$> readProp "id" json
-      <*> readProp "name" json
-      <*> readProp "display_name" json
-      <*> readProp "full_name" json
-      <*> readProp "email" json
-      <*> readProp "email_md5" json
-      <*> readProp "plugin" json
-      <*> (unNullOrUndefined <$> readProp "github_ident" json)
-      <*> (unNullOrUndefined <$> readProp "github_created_at" json)
-      <*> (unNullOrUndefined <$> readProp "google_ident" json)
-      <*> (unNullOrUndefined <$> readProp "google_created_at" json)
-      <*> (unNullOrUndefined <$> readProp "accept_tos" json)
-      <*> readProp "active" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
-      <*> (unNullOrUndefined <$> readProp "deactivated_at" json)
-      <*> (unNullOrUndefined <$> readProp "activity_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "name" json
+      <*> readPropUnsafe "display_name" json
+      <*> readPropUnsafe "full_name" json
+      <*> readPropUnsafe "email" json
+      <*> readPropUnsafe "email_md5" json
+      <*> readPropUnsafe "plugin" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "github_ident" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "github_created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "google_ident" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "google_created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "accept_tos" json)
+      <*> readPropUnsafe "active" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "deactivated_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
 
 
 newtype UserResponses = UserResponses {
@@ -390,13 +391,13 @@ instance userResponsesRespondable :: Respondable UserResponses where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkUserResponses
-      <$> readProp "user_responses" json
+      <$> readPropUnsafe "user_responses" json
 
 
 instance userResponsesDecode :: Decode UserResponses where
-  read json =
+  decode json =
       mkUserResponses
-      <$> readProp "user_responses" json
+      <$> readPropUnsafe "user_responses" json
 
 
 newtype UserSanitizedResponse = UserSanitizedResponse {
@@ -501,27 +502,27 @@ instance userSanitizedResponseRespondable :: Respondable UserSanitizedResponse w
     Tuple Nothing JSONResponse
   fromResponse json =
       mkUserSanitizedResponse
-      <$> readProp "id" json
-      <*> readProp "name" json
-      <*> readProp "display_name" json
-      <*> readProp "email_md5" json
-      <*> readProp "active" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "activity_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "name" json
+      <*> readPropUnsafe "display_name" json
+      <*> readPropUnsafe "email_md5" json
+      <*> readPropUnsafe "active" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
 
 
 instance userSanitizedResponseDecode :: Decode UserSanitizedResponse where
-  read json =
+  decode json =
       mkUserSanitizedResponse
-      <$> readProp "id" json
-      <*> readProp "name" json
-      <*> readProp "display_name" json
-      <*> readProp "email_md5" json
-      <*> readProp "active" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "activity_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "name" json
+      <*> readPropUnsafe "display_name" json
+      <*> readPropUnsafe "email_md5" json
+      <*> readPropUnsafe "active" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
 
 
 newtype UserSanitizedResponses = UserSanitizedResponses {
@@ -577,13 +578,13 @@ instance userSanitizedResponsesRespondable :: Respondable UserSanitizedResponses
     Tuple Nothing JSONResponse
   fromResponse json =
       mkUserSanitizedResponses
-      <$> readProp "user_sanitized_responses" json
+      <$> readPropUnsafe "user_sanitized_responses" json
 
 
 instance userSanitizedResponsesDecode :: Decode UserSanitizedResponses where
-  read json =
+  decode json =
       mkUserSanitizedResponses
-      <$> readProp "user_sanitized_responses" json
+      <$> readPropUnsafe "user_sanitized_responses" json
 
 
 newtype UserSanitizedStatResponse = UserSanitizedStatResponse {
@@ -681,25 +682,25 @@ instance userSanitizedStatResponseRespondable :: Respondable UserSanitizedStatRe
     Tuple Nothing JSONResponse
   fromResponse json =
       mkUserSanitizedStatResponse
-      <$> readProp "user_id" json
-      <*> readProp "threads" json
-      <*> readProp "thread_posts" json
-      <*> readProp "respect" json
-      <*> readProp "resources" json
-      <*> readProp "leurons" json
-      <*> readProp "workouts" json
+      <$> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "threads" json
+      <*> readPropUnsafe "thread_posts" json
+      <*> readPropUnsafe "respect" json
+      <*> readPropUnsafe "resources" json
+      <*> readPropUnsafe "leurons" json
+      <*> readPropUnsafe "workouts" json
 
 
 instance userSanitizedStatResponseDecode :: Decode UserSanitizedStatResponse where
-  read json =
+  decode json =
       mkUserSanitizedStatResponse
-      <$> readProp "user_id" json
-      <*> readProp "threads" json
-      <*> readProp "thread_posts" json
-      <*> readProp "respect" json
-      <*> readProp "resources" json
-      <*> readProp "leurons" json
-      <*> readProp "workouts" json
+      <$> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "threads" json
+      <*> readPropUnsafe "thread_posts" json
+      <*> readPropUnsafe "respect" json
+      <*> readPropUnsafe "resources" json
+      <*> readPropUnsafe "leurons" json
+      <*> readPropUnsafe "workouts" json
 
 
 newtype UserSanitizedStatResponses = UserSanitizedStatResponses {
@@ -755,12 +756,12 @@ instance userSanitizedStatResponsesRespondable :: Respondable UserSanitizedStatR
     Tuple Nothing JSONResponse
   fromResponse json =
       mkUserSanitizedStatResponses
-      <$> readProp "user_sanitized_stat_responses" json
+      <$> readPropUnsafe "user_sanitized_stat_responses" json
 
 
 instance userSanitizedStatResponsesDecode :: Decode UserSanitizedStatResponses where
-  read json =
+  decode json =
       mkUserSanitizedStatResponses
-      <$> readProp "user_sanitized_stat_responses" json
+      <$> readPropUnsafe "user_sanitized_stat_responses" json
 
 -- footer

@@ -9,9 +9,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -84,15 +85,15 @@ instance apiRequestRespondable :: Respondable ApiRequest where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkApiRequest
-      <$> (unNullOrUndefined <$> readProp "comment" json)
-      <*> readProp "guard" json
+      <$> (unNullOrUndefined <$> readPropUnsafe "comment" json)
+      <*> readPropUnsafe "guard" json
 
 
 instance apiRequestDecode :: Decode ApiRequest where
-  read json =
+  decode json =
       mkApiRequest
-      <$> (unNullOrUndefined <$> readProp "comment" json)
-      <*> readProp "guard" json
+      <$> (unNullOrUndefined <$> readPropUnsafe "comment" json)
+      <*> readPropUnsafe "guard" json
 
 
 newtype ApiResponse = ApiResponse {
@@ -190,25 +191,25 @@ instance apiResponseRespondable :: Respondable ApiResponse where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkApiResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "key" json
-      <*> (unNullOrUndefined <$> readProp "comment" json)
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "key" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "comment" json)
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
 
 
 instance apiResponseDecode :: Decode ApiResponse where
-  read json =
+  decode json =
       mkApiResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "key" json
-      <*> (unNullOrUndefined <$> readProp "comment" json)
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "key" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "comment" json)
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
 
 
 newtype ApiResponses = ApiResponses {
@@ -264,12 +265,12 @@ instance apiResponsesRespondable :: Respondable ApiResponses where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkApiResponses
-      <$> readProp "api_responses" json
+      <$> readPropUnsafe "api_responses" json
 
 
 instance apiResponsesDecode :: Decode ApiResponses where
-  read json =
+  decode json =
       mkApiResponses
-      <$> readProp "api_responses" json
+      <$> readPropUnsafe "api_responses" json
 
 -- footer

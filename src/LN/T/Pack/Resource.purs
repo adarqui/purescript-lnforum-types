@@ -13,9 +13,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -130,27 +131,27 @@ instance resourcePackResponseRespondable :: Respondable ResourcePackResponse whe
     Tuple Nothing JSONResponse
   fromResponse json =
       mkResourcePackResponse
-      <$> readProp "resource" json
-      <*> readProp "resource_id" json
-      <*> readProp "user" json
-      <*> readProp "user_id" json
-      <*> readProp "stat" json
-      <*> (unNullOrUndefined <$> readProp "like" json)
-      <*> (unNullOrUndefined <$> readProp "star" json)
-      <*> readProp "permissions" json
+      <$> readPropUnsafe "resource" json
+      <*> readPropUnsafe "resource_id" json
+      <*> readPropUnsafe "user" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "stat" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "like" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "star" json)
+      <*> readPropUnsafe "permissions" json
 
 
 instance resourcePackResponseDecode :: Decode ResourcePackResponse where
-  read json =
+  decode json =
       mkResourcePackResponse
-      <$> readProp "resource" json
-      <*> readProp "resource_id" json
-      <*> readProp "user" json
-      <*> readProp "user_id" json
-      <*> readProp "stat" json
-      <*> (unNullOrUndefined <$> readProp "like" json)
-      <*> (unNullOrUndefined <$> readProp "star" json)
-      <*> readProp "permissions" json
+      <$> readPropUnsafe "resource" json
+      <*> readPropUnsafe "resource_id" json
+      <*> readPropUnsafe "user" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "stat" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "like" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "star" json)
+      <*> readPropUnsafe "permissions" json
 
 
 newtype ResourcePackResponses = ResourcePackResponses {
@@ -206,12 +207,12 @@ instance resourcePackResponsesRespondable :: Respondable ResourcePackResponses w
     Tuple Nothing JSONResponse
   fromResponse json =
       mkResourcePackResponses
-      <$> readProp "resource_pack_responses" json
+      <$> readPropUnsafe "resource_pack_responses" json
 
 
 instance resourcePackResponsesDecode :: Decode ResourcePackResponses where
-  read json =
+  decode json =
       mkResourcePackResponses
-      <$> readProp "resource_pack_responses" json
+      <$> readPropUnsafe "resource_pack_responses" json
 
 -- footer

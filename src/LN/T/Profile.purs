@@ -9,9 +9,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -91,17 +92,17 @@ instance profileXRespondable :: Respondable ProfileX where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkProfileX
-      <$> readProp "profile_login" json
-      <*> readProp "profile_name" json
-      <*> readProp "profile_email" json
+      <$> readPropUnsafe "profile_login" json
+      <*> readPropUnsafe "profile_name" json
+      <*> readPropUnsafe "profile_email" json
 
 
 instance profileXDecode :: Decode ProfileX where
-  read json =
+  decode json =
       mkProfileX
-      <$> readProp "profile_login" json
-      <*> readProp "profile_name" json
-      <*> readProp "profile_email" json
+      <$> readPropUnsafe "profile_login" json
+      <*> readPropUnsafe "profile_name" json
+      <*> readPropUnsafe "profile_email" json
 
 
 data ProfileGender
@@ -154,7 +155,7 @@ instance profileGenderRespondable :: Respondable ProfileGender where
   responseType =
     Tuple Nothing JSONResponse
   fromResponse json = do
-    tag <- readProp "tag" json
+    tag <- readPropUnsafe "tag" json
     case tag of
       "GenderMale" -> do
         pure GenderMale
@@ -170,8 +171,8 @@ instance profileGenderRespondable :: Respondable ProfileGender where
 
 
 instance profileGenderDecode :: Decode ProfileGender where
-  read json = do
-    tag <- readProp "tag" json
+  decode json = do
+    tag <- readPropUnsafe "tag" json
     case tag of
       "GenderMale" -> do
         pure GenderMale
@@ -307,29 +308,29 @@ instance profileRequestRespondable :: Respondable ProfileRequest where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkProfileRequest
-      <$> readProp "gender" json
-      <*> readProp "birthdate" json
-      <*> (unNullOrUndefined <$> readProp "website" json)
-      <*> readProp "websites" json
-      <*> (unNullOrUndefined <$> readProp "location" json)
-      <*> (unNullOrUndefined <$> readProp "signature" json)
-      <*> readProp "debug" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "state_websites" json)
+      <$> readPropUnsafe "gender" json
+      <*> readPropUnsafe "birthdate" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "website" json)
+      <*> readPropUnsafe "websites" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "location" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "signature" json)
+      <*> readPropUnsafe "debug" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "state_websites" json)
 
 
 instance profileRequestDecode :: Decode ProfileRequest where
-  read json =
+  decode json =
       mkProfileRequest
-      <$> readProp "gender" json
-      <*> readProp "birthdate" json
-      <*> (unNullOrUndefined <$> readProp "website" json)
-      <*> readProp "websites" json
-      <*> (unNullOrUndefined <$> readProp "location" json)
-      <*> (unNullOrUndefined <$> readProp "signature" json)
-      <*> readProp "debug" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "state_websites" json)
+      <$> readPropUnsafe "gender" json
+      <*> readPropUnsafe "birthdate" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "website" json)
+      <*> readPropUnsafe "websites" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "location" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "signature" json)
+      <*> readPropUnsafe "debug" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "state_websites" json)
 
 
 newtype ProfileResponse = ProfileResponse {
@@ -476,39 +477,39 @@ instance profileResponseRespondable :: Respondable ProfileResponse where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkProfileResponse
-      <$> readProp "id" json
-      <*> readProp "ent" json
-      <*> readProp "ent_id" json
-      <*> readProp "gender" json
-      <*> readProp "birthdate" json
-      <*> (unNullOrUndefined <$> readProp "website" json)
-      <*> (unNullOrUndefined <$> readProp "location" json)
-      <*> (unNullOrUndefined <$> readProp "signature" json)
-      <*> readProp "debug" json
-      <*> readProp "karma_good" json
-      <*> readProp "karma_bad" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "ent" json
+      <*> readPropUnsafe "ent_id" json
+      <*> readPropUnsafe "gender" json
+      <*> readPropUnsafe "birthdate" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "website" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "location" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "signature" json)
+      <*> readPropUnsafe "debug" json
+      <*> readPropUnsafe "karma_good" json
+      <*> readPropUnsafe "karma_bad" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
 
 
 instance profileResponseDecode :: Decode ProfileResponse where
-  read json =
+  decode json =
       mkProfileResponse
-      <$> readProp "id" json
-      <*> readProp "ent" json
-      <*> readProp "ent_id" json
-      <*> readProp "gender" json
-      <*> readProp "birthdate" json
-      <*> (unNullOrUndefined <$> readProp "website" json)
-      <*> (unNullOrUndefined <$> readProp "location" json)
-      <*> (unNullOrUndefined <$> readProp "signature" json)
-      <*> readProp "debug" json
-      <*> readProp "karma_good" json
-      <*> readProp "karma_bad" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "ent" json
+      <*> readPropUnsafe "ent_id" json
+      <*> readPropUnsafe "gender" json
+      <*> readPropUnsafe "birthdate" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "website" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "location" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "signature" json)
+      <*> readPropUnsafe "debug" json
+      <*> readPropUnsafe "karma_good" json
+      <*> readPropUnsafe "karma_bad" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
 
 
 newtype ProfileResponses = ProfileResponses {
@@ -564,12 +565,12 @@ instance profileResponsesRespondable :: Respondable ProfileResponses where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkProfileResponses
-      <$> readProp "profile_responses" json
+      <$> readPropUnsafe "profile_responses" json
 
 
 instance profileResponsesDecode :: Decode ProfileResponses where
-  read json =
+  decode json =
       mkProfileResponses
-      <$> readProp "profile_responses" json
+      <$> readPropUnsafe "profile_responses" json
 
 -- footer

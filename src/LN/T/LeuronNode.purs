@@ -9,9 +9,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -77,13 +78,13 @@ instance leuronNodeRequestRespondable :: Respondable LeuronNodeRequest where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkLeuronNodeRequest
-      <$> readProp "request_guard" json
+      <$> readPropUnsafe "request_guard" json
 
 
 instance leuronNodeRequestDecode :: Decode LeuronNodeRequest where
-  read json =
+  decode json =
       mkLeuronNodeRequest
-      <$> readProp "request_guard" json
+      <$> readPropUnsafe "request_guard" json
 
 
 newtype LeuronNodeResponse = LeuronNodeResponse {
@@ -188,27 +189,27 @@ instance leuronNodeResponseRespondable :: Respondable LeuronNodeResponse where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkLeuronNodeResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "leuron_id" json
-      <*> readProp "training_node" json
-      <*> readProp "active" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "leuron_id" json
+      <*> readPropUnsafe "training_node" json
+      <*> readPropUnsafe "active" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
 
 
 instance leuronNodeResponseDecode :: Decode LeuronNodeResponse where
-  read json =
+  decode json =
       mkLeuronNodeResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "leuron_id" json
-      <*> readProp "training_node" json
-      <*> readProp "active" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "leuron_id" json
+      <*> readPropUnsafe "training_node" json
+      <*> readPropUnsafe "active" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
 
 
 newtype LeuronNodeResponses = LeuronNodeResponses {
@@ -264,12 +265,12 @@ instance leuronNodeResponsesRespondable :: Respondable LeuronNodeResponses where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkLeuronNodeResponses
-      <$> readProp "leuron_node_responses" json
+      <$> readPropUnsafe "leuron_node_responses" json
 
 
 instance leuronNodeResponsesDecode :: Decode LeuronNodeResponses where
-  read json =
+  decode json =
       mkLeuronNodeResponses
-      <$> readProp "leuron_node_responses" json
+      <$> readPropUnsafe "leuron_node_responses" json
 
 -- footer

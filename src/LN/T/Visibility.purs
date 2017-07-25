@@ -9,9 +9,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -66,7 +67,7 @@ instance visibilityRespondable :: Respondable Visibility where
   responseType =
     Tuple Nothing JSONResponse
   fromResponse json = do
-    tag <- readProp "tag" json
+    tag <- readPropUnsafe "tag" json
     case tag of
       "Public" -> do
         pure Public
@@ -79,8 +80,8 @@ instance visibilityRespondable :: Respondable Visibility where
 
 
 instance visibilityDecode :: Decode Visibility where
-  read json = do
-    tag <- readProp "tag" json
+  decode json = do
+    tag <- readPropUnsafe "tag" json
     case tag of
       "Public" -> do
         pure Public

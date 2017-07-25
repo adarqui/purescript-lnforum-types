@@ -9,9 +9,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -98,19 +99,19 @@ instance bucketRoundRequestRespondable :: Respondable BucketRoundRequest where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkBucketRoundRequest
-      <$> readProp "training_styles" json
-      <*> readProp "threshold" json
-      <*> readProp "time_limit" json
-      <*> readProp "guard" json
+      <$> readPropUnsafe "training_styles" json
+      <*> readPropUnsafe "threshold" json
+      <*> readPropUnsafe "time_limit" json
+      <*> readPropUnsafe "guard" json
 
 
 instance bucketRoundRequestDecode :: Decode BucketRoundRequest where
-  read json =
+  decode json =
       mkBucketRoundRequest
-      <$> readProp "training_styles" json
-      <*> readProp "threshold" json
-      <*> readProp "time_limit" json
-      <*> readProp "guard" json
+      <$> readPropUnsafe "training_styles" json
+      <*> readPropUnsafe "threshold" json
+      <*> readPropUnsafe "time_limit" json
+      <*> readPropUnsafe "guard" json
 
 
 newtype BucketRoundResponse = BucketRoundResponse {
@@ -243,35 +244,35 @@ instance bucketRoundResponseRespondable :: Respondable BucketRoundResponse where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkBucketRoundResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "bucket_id" json
-      <*> readProp "training_styles" json
-      <*> readProp "threshold" json
-      <*> readProp "time_limit" json
-      <*> readProp "training_node" json
-      <*> readProp "active" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
-      <*> (unNullOrUndefined <$> readProp "activity_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "bucket_id" json
+      <*> readPropUnsafe "training_styles" json
+      <*> readPropUnsafe "threshold" json
+      <*> readPropUnsafe "time_limit" json
+      <*> readPropUnsafe "training_node" json
+      <*> readPropUnsafe "active" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
 
 
 instance bucketRoundResponseDecode :: Decode BucketRoundResponse where
-  read json =
+  decode json =
       mkBucketRoundResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "bucket_id" json
-      <*> readProp "training_styles" json
-      <*> readProp "threshold" json
-      <*> readProp "time_limit" json
-      <*> readProp "training_node" json
-      <*> readProp "active" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
-      <*> (unNullOrUndefined <$> readProp "activity_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "bucket_id" json
+      <*> readPropUnsafe "training_styles" json
+      <*> readPropUnsafe "threshold" json
+      <*> readPropUnsafe "time_limit" json
+      <*> readPropUnsafe "training_node" json
+      <*> readPropUnsafe "active" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
 
 
 newtype BucketRoundResponses = BucketRoundResponses {
@@ -327,12 +328,12 @@ instance bucketRoundResponsesRespondable :: Respondable BucketRoundResponses whe
     Tuple Nothing JSONResponse
   fromResponse json =
       mkBucketRoundResponses
-      <$> readProp "bucket_round_responses" json
+      <$> readPropUnsafe "bucket_round_responses" json
 
 
 instance bucketRoundResponsesDecode :: Decode BucketRoundResponses where
-  read json =
+  decode json =
       mkBucketRoundResponses
-      <$> readProp "bucket_round_responses" json
+      <$> readPropUnsafe "bucket_round_responses" json
 
 -- footer

@@ -10,9 +10,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -106,21 +107,21 @@ instance userPackResponseRespondable :: Respondable UserPackResponse where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkUserPackResponse
-      <$> readProp "user" json
-      <*> readProp "user_id" json
-      <*> readProp "stat" json
-      <*> readProp "profile" json
-      <*> readProp "profile_id" json
+      <$> readPropUnsafe "user" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "stat" json
+      <*> readPropUnsafe "profile" json
+      <*> readPropUnsafe "profile_id" json
 
 
 instance userPackResponseDecode :: Decode UserPackResponse where
-  read json =
+  decode json =
       mkUserPackResponse
-      <$> readProp "user" json
-      <*> readProp "user_id" json
-      <*> readProp "stat" json
-      <*> readProp "profile" json
-      <*> readProp "profile_id" json
+      <$> readPropUnsafe "user" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "stat" json
+      <*> readPropUnsafe "profile" json
+      <*> readPropUnsafe "profile_id" json
 
 
 newtype UserPackResponses = UserPackResponses {
@@ -176,12 +177,12 @@ instance userPackResponsesRespondable :: Respondable UserPackResponses where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkUserPackResponses
-      <$> readProp "user_pack_responses" json
+      <$> readPropUnsafe "user_pack_responses" json
 
 
 instance userPackResponsesDecode :: Decode UserPackResponses where
-  read json =
+  decode json =
       mkUserPackResponses
-      <$> readProp "user_pack_responses" json
+      <$> readPropUnsafe "user_pack_responses" json
 
 -- footer

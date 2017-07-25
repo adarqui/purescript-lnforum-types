@@ -9,9 +9,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -385,101 +386,101 @@ instance trainingNodeRespondable :: Respondable TrainingNode where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkTrainingNode
-      <$> readProp "num_total" json
-      <*> readProp "num_know" json
-      <*> readProp "num_dont_know" json
-      <*> readProp "num_dont_care" json
-      <*> readProp "num_protest" json
-      <*> readProp "honor_know" json
-      <*> readProp "honor_dont_know" json
-      <*> readProp "honor_dont_care" json
-      <*> readProp "honor_protest" json
-      <*> (unNullOrUndefined <$> readProp "honor_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "honor_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "honor_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readProp "honor_protest_at" json)
-      <*> readProp "boolean_know" json
-      <*> readProp "boolean_dont_know" json
-      <*> readProp "boolean_dont_care" json
-      <*> readProp "boolean_protest" json
-      <*> (unNullOrUndefined <$> readProp "boolean_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "boolean_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "boolean_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readProp "boolean_protest_at" json)
-      <*> readProp "match_know" json
-      <*> readProp "match_dont_know" json
-      <*> readProp "match_dont_care" json
-      <*> readProp "match_protest" json
-      <*> (unNullOrUndefined <$> readProp "match_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "match_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "match_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readProp "match_protest_at" json)
-      <*> readProp "subs_know" json
-      <*> readProp "subs_dont_know" json
-      <*> readProp "subs_dont_care" json
-      <*> readProp "subs_protest" json
-      <*> (unNullOrUndefined <$> readProp "subs_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "subs_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "subs_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readProp "subs_protest_at" json)
-      <*> readProp "splits_know" json
-      <*> readProp "splits_dont_know" json
-      <*> readProp "splits_dont_care" json
-      <*> readProp "splits_protest" json
-      <*> (unNullOrUndefined <$> readProp "splits_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "splits_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "splits_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readProp "splits_protest_at" json)
+      <$> readPropUnsafe "num_total" json
+      <*> readPropUnsafe "num_know" json
+      <*> readPropUnsafe "num_dont_know" json
+      <*> readPropUnsafe "num_dont_care" json
+      <*> readPropUnsafe "num_protest" json
+      <*> readPropUnsafe "honor_know" json
+      <*> readPropUnsafe "honor_dont_know" json
+      <*> readPropUnsafe "honor_dont_care" json
+      <*> readPropUnsafe "honor_protest" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "honor_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "honor_dont_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "honor_dont_care_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "honor_protest_at" json)
+      <*> readPropUnsafe "boolean_know" json
+      <*> readPropUnsafe "boolean_dont_know" json
+      <*> readPropUnsafe "boolean_dont_care" json
+      <*> readPropUnsafe "boolean_protest" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_dont_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_dont_care_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_protest_at" json)
+      <*> readPropUnsafe "match_know" json
+      <*> readPropUnsafe "match_dont_know" json
+      <*> readPropUnsafe "match_dont_care" json
+      <*> readPropUnsafe "match_protest" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "match_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "match_dont_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "match_dont_care_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "match_protest_at" json)
+      <*> readPropUnsafe "subs_know" json
+      <*> readPropUnsafe "subs_dont_know" json
+      <*> readPropUnsafe "subs_dont_care" json
+      <*> readPropUnsafe "subs_protest" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "subs_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "subs_dont_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "subs_dont_care_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "subs_protest_at" json)
+      <*> readPropUnsafe "splits_know" json
+      <*> readPropUnsafe "splits_dont_know" json
+      <*> readPropUnsafe "splits_dont_care" json
+      <*> readPropUnsafe "splits_protest" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "splits_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "splits_dont_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "splits_dont_care_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "splits_protest_at" json)
 
 
 instance trainingNodeDecode :: Decode TrainingNode where
-  read json =
+  decode json =
       mkTrainingNode
-      <$> readProp "num_total" json
-      <*> readProp "num_know" json
-      <*> readProp "num_dont_know" json
-      <*> readProp "num_dont_care" json
-      <*> readProp "num_protest" json
-      <*> readProp "honor_know" json
-      <*> readProp "honor_dont_know" json
-      <*> readProp "honor_dont_care" json
-      <*> readProp "honor_protest" json
-      <*> (unNullOrUndefined <$> readProp "honor_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "honor_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "honor_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readProp "honor_protest_at" json)
-      <*> readProp "boolean_know" json
-      <*> readProp "boolean_dont_know" json
-      <*> readProp "boolean_dont_care" json
-      <*> readProp "boolean_protest" json
-      <*> (unNullOrUndefined <$> readProp "boolean_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "boolean_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "boolean_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readProp "boolean_protest_at" json)
-      <*> readProp "match_know" json
-      <*> readProp "match_dont_know" json
-      <*> readProp "match_dont_care" json
-      <*> readProp "match_protest" json
-      <*> (unNullOrUndefined <$> readProp "match_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "match_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "match_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readProp "match_protest_at" json)
-      <*> readProp "subs_know" json
-      <*> readProp "subs_dont_know" json
-      <*> readProp "subs_dont_care" json
-      <*> readProp "subs_protest" json
-      <*> (unNullOrUndefined <$> readProp "subs_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "subs_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "subs_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readProp "subs_protest_at" json)
-      <*> readProp "splits_know" json
-      <*> readProp "splits_dont_know" json
-      <*> readProp "splits_dont_care" json
-      <*> readProp "splits_protest" json
-      <*> (unNullOrUndefined <$> readProp "splits_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "splits_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readProp "splits_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readProp "splits_protest_at" json)
+      <$> readPropUnsafe "num_total" json
+      <*> readPropUnsafe "num_know" json
+      <*> readPropUnsafe "num_dont_know" json
+      <*> readPropUnsafe "num_dont_care" json
+      <*> readPropUnsafe "num_protest" json
+      <*> readPropUnsafe "honor_know" json
+      <*> readPropUnsafe "honor_dont_know" json
+      <*> readPropUnsafe "honor_dont_care" json
+      <*> readPropUnsafe "honor_protest" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "honor_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "honor_dont_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "honor_dont_care_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "honor_protest_at" json)
+      <*> readPropUnsafe "boolean_know" json
+      <*> readPropUnsafe "boolean_dont_know" json
+      <*> readPropUnsafe "boolean_dont_care" json
+      <*> readPropUnsafe "boolean_protest" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_dont_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_dont_care_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_protest_at" json)
+      <*> readPropUnsafe "match_know" json
+      <*> readPropUnsafe "match_dont_know" json
+      <*> readPropUnsafe "match_dont_care" json
+      <*> readPropUnsafe "match_protest" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "match_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "match_dont_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "match_dont_care_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "match_protest_at" json)
+      <*> readPropUnsafe "subs_know" json
+      <*> readPropUnsafe "subs_dont_know" json
+      <*> readPropUnsafe "subs_dont_care" json
+      <*> readPropUnsafe "subs_protest" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "subs_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "subs_dont_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "subs_dont_care_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "subs_protest_at" json)
+      <*> readPropUnsafe "splits_know" json
+      <*> readPropUnsafe "splits_dont_know" json
+      <*> readPropUnsafe "splits_dont_care" json
+      <*> readPropUnsafe "splits_protest" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "splits_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "splits_dont_know_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "splits_dont_care_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "splits_protest_at" json)
 
 
 data TrainingStyle
@@ -548,7 +549,7 @@ instance trainingStyleRespondable :: Respondable TrainingStyle where
   responseType =
     Tuple Nothing JSONResponse
   fromResponse json = do
-    tag <- readProp "tag" json
+    tag <- readPropUnsafe "tag" json
     case tag of
       "TS_Honor" -> do
         pure TS_Honor
@@ -570,8 +571,8 @@ instance trainingStyleRespondable :: Respondable TrainingStyle where
 
 
 instance trainingStyleDecode :: Decode TrainingStyle where
-  read json = do
-    tag <- readProp "tag" json
+  decode json = do
+    tag <- readPropUnsafe "tag" json
     case tag of
       "TS_Honor" -> do
         pure TS_Honor

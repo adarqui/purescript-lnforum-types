@@ -9,9 +9,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -106,7 +107,7 @@ instance leuronTrainingSummaryRespondable :: Respondable LeuronTrainingSummary w
   responseType =
     Tuple Nothing JSONResponse
   fromResponse json = do
-    tag <- readProp "tag" json
+    tag <- readPropUnsafe "tag" json
     case tag of
       "LTS_View" -> do
         pure LTS_View
@@ -134,8 +135,8 @@ instance leuronTrainingSummaryRespondable :: Respondable LeuronTrainingSummary w
 
 
 instance leuronTrainingSummaryDecode :: Decode LeuronTrainingSummary where
-  read json = do
-    tag <- readProp "tag" json
+  decode json = do
+    tag <- readPropUnsafe "tag" json
     case tag of
       "LTS_View" -> do
         pure LTS_View
@@ -242,15 +243,15 @@ instance leuronTrainingRequestRespondable :: Respondable LeuronTrainingRequest w
     Tuple Nothing JSONResponse
   fromResponse json =
       mkLeuronTrainingRequest
-      <$> readProp "summary" json
-      <*> readProp "guard" json
+      <$> readPropUnsafe "summary" json
+      <*> readPropUnsafe "guard" json
 
 
 instance leuronTrainingRequestDecode :: Decode LeuronTrainingRequest where
-  read json =
+  decode json =
       mkLeuronTrainingRequest
-      <$> readProp "summary" json
-      <*> readProp "guard" json
+      <$> readPropUnsafe "summary" json
+      <*> readPropUnsafe "guard" json
 
 
 newtype LeuronTrainingResponse = LeuronTrainingResponse {
@@ -348,25 +349,25 @@ instance leuronTrainingResponseRespondable :: Respondable LeuronTrainingResponse
     Tuple Nothing JSONResponse
   fromResponse json =
       mkLeuronTrainingResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "leuron_id" json
-      <*> readProp "summary" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "leuron_id" json
+      <*> readPropUnsafe "summary" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
 
 
 instance leuronTrainingResponseDecode :: Decode LeuronTrainingResponse where
-  read json =
+  decode json =
       mkLeuronTrainingResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "leuron_id" json
-      <*> readProp "summary" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "leuron_id" json
+      <*> readPropUnsafe "summary" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
 
 
 newtype LeuronTrainingResponses = LeuronTrainingResponses {
@@ -422,13 +423,13 @@ instance leuronTrainingResponsesRespondable :: Respondable LeuronTrainingRespons
     Tuple Nothing JSONResponse
   fromResponse json =
       mkLeuronTrainingResponses
-      <$> readProp "leuron_training_responses" json
+      <$> readPropUnsafe "leuron_training_responses" json
 
 
 instance leuronTrainingResponsesDecode :: Decode LeuronTrainingResponses where
-  read json =
+  decode json =
       mkLeuronTrainingResponses
-      <$> readProp "leuron_training_responses" json
+      <$> readPropUnsafe "leuron_training_responses" json
 
 
 newtype LeuronTrainingStatResponse = LeuronTrainingStatResponse {
@@ -484,13 +485,13 @@ instance leuronTrainingStatResponseRespondable :: Respondable LeuronTrainingStat
     Tuple Nothing JSONResponse
   fromResponse json =
       mkLeuronTrainingStatResponse
-      <$> readProp "leuron_training_id" json
+      <$> readPropUnsafe "leuron_training_id" json
 
 
 instance leuronTrainingStatResponseDecode :: Decode LeuronTrainingStatResponse where
-  read json =
+  decode json =
       mkLeuronTrainingStatResponse
-      <$> readProp "leuron_training_id" json
+      <$> readPropUnsafe "leuron_training_id" json
 
 
 newtype LeuronTrainingStatResponses = LeuronTrainingStatResponses {
@@ -546,12 +547,12 @@ instance leuronTrainingStatResponsesRespondable :: Respondable LeuronTrainingSta
     Tuple Nothing JSONResponse
   fromResponse json =
       mkLeuronTrainingStatResponses
-      <$> readProp "leuron_training_stat_responses" json
+      <$> readPropUnsafe "leuron_training_stat_responses" json
 
 
 instance leuronTrainingStatResponsesDecode :: Decode LeuronTrainingStatResponses where
-  read json =
+  decode json =
       mkLeuronTrainingStatResponses
-      <$> readProp "leuron_training_stat_responses" json
+      <$> readPropUnsafe "leuron_training_stat_responses" json
 
 -- footer

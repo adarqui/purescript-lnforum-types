@@ -12,9 +12,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -122,25 +123,25 @@ instance userSanitizedPackResponseRespondable :: Respondable UserSanitizedPackRe
     Tuple Nothing JSONResponse
   fromResponse json =
       mkUserSanitizedPackResponse
-      <$> readProp "user" json
-      <*> readProp "user_id" json
-      <*> readProp "profile" json
-      <*> readProp "profile_id" json
-      <*> readProp "stat" json
-      <*> (unNullOrUndefined <$> readProp "like" json)
-      <*> (unNullOrUndefined <$> readProp "star" json)
+      <$> readPropUnsafe "user" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "profile" json
+      <*> readPropUnsafe "profile_id" json
+      <*> readPropUnsafe "stat" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "like" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "star" json)
 
 
 instance userSanitizedPackResponseDecode :: Decode UserSanitizedPackResponse where
-  read json =
+  decode json =
       mkUserSanitizedPackResponse
-      <$> readProp "user" json
-      <*> readProp "user_id" json
-      <*> readProp "profile" json
-      <*> readProp "profile_id" json
-      <*> readProp "stat" json
-      <*> (unNullOrUndefined <$> readProp "like" json)
-      <*> (unNullOrUndefined <$> readProp "star" json)
+      <$> readPropUnsafe "user" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "profile" json
+      <*> readPropUnsafe "profile_id" json
+      <*> readPropUnsafe "stat" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "like" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "star" json)
 
 
 newtype UserSanitizedPackResponses = UserSanitizedPackResponses {
@@ -196,12 +197,12 @@ instance userSanitizedPackResponsesRespondable :: Respondable UserSanitizedPackR
     Tuple Nothing JSONResponse
   fromResponse json =
       mkUserSanitizedPackResponses
-      <$> readProp "user_sanitized_pack_responses" json
+      <$> readPropUnsafe "user_sanitized_pack_responses" json
 
 
 instance userSanitizedPackResponsesDecode :: Decode UserSanitizedPackResponses where
-  read json =
+  decode json =
       mkUserSanitizedPackResponses
-      <$> readProp "user_sanitized_pack_responses" json
+      <$> readPropUnsafe "user_sanitized_pack_responses" json
 
 -- footer

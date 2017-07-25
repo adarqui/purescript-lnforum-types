@@ -10,9 +10,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -99,19 +100,19 @@ instance bucketPackResponseRespondable :: Respondable BucketPackResponse where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkBucketPackResponse
-      <$> readProp "bucket" json
-      <*> readProp "bucket_id" json
-      <*> readProp "user" json
-      <*> readProp "user_id" json
+      <$> readPropUnsafe "bucket" json
+      <*> readPropUnsafe "bucket_id" json
+      <*> readPropUnsafe "user" json
+      <*> readPropUnsafe "user_id" json
 
 
 instance bucketPackResponseDecode :: Decode BucketPackResponse where
-  read json =
+  decode json =
       mkBucketPackResponse
-      <$> readProp "bucket" json
-      <*> readProp "bucket_id" json
-      <*> readProp "user" json
-      <*> readProp "user_id" json
+      <$> readPropUnsafe "bucket" json
+      <*> readPropUnsafe "bucket_id" json
+      <*> readPropUnsafe "user" json
+      <*> readPropUnsafe "user_id" json
 
 
 newtype BucketPackResponses = BucketPackResponses {
@@ -167,12 +168,12 @@ instance bucketPackResponsesRespondable :: Respondable BucketPackResponses where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkBucketPackResponses
-      <$> readProp "bucket_pack_responses" json
+      <$> readPropUnsafe "bucket_pack_responses" json
 
 
 instance bucketPackResponsesDecode :: Decode BucketPackResponses where
-  read json =
+  decode json =
       mkBucketPackResponses
-      <$> readProp "bucket_pack_responses" json
+      <$> readPropUnsafe "bucket_pack_responses" json
 
 -- footer

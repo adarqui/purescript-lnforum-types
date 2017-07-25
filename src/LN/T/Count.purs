@@ -9,9 +9,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -84,15 +85,15 @@ instance countResponseRespondable :: Respondable CountResponse where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkCountResponse
-      <$> readProp "id" json
-      <*> readProp "n" json
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "n" json
 
 
 instance countResponseDecode :: Decode CountResponse where
-  read json =
+  decode json =
       mkCountResponse
-      <$> readProp "id" json
-      <*> readProp "n" json
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "n" json
 
 
 newtype CountResponses = CountResponses {
@@ -148,12 +149,12 @@ instance countResponsesRespondable :: Respondable CountResponses where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkCountResponses
-      <$> readProp "count_responses" json
+      <$> readPropUnsafe "count_responses" json
 
 
 instance countResponsesDecode :: Decode CountResponses where
-  read json =
+  decode json =
       mkCountResponses
-      <$> readProp "count_responses" json
+      <$> readPropUnsafe "count_responses" json
 
 -- footer

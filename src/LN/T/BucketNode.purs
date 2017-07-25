@@ -9,9 +9,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -77,13 +78,13 @@ instance bucketNodeRequestRespondable :: Respondable BucketNodeRequest where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkBucketNodeRequest
-      <$> readProp "request_guard" json
+      <$> readPropUnsafe "request_guard" json
 
 
 instance bucketNodeRequestDecode :: Decode BucketNodeRequest where
-  read json =
+  decode json =
       mkBucketNodeRequest
-      <$> readProp "request_guard" json
+      <$> readPropUnsafe "request_guard" json
 
 
 newtype BucketNodeResponse = BucketNodeResponse {
@@ -209,33 +210,33 @@ instance bucketNodeResponseRespondable :: Respondable BucketNodeResponse where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkBucketNodeResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "bucket_id" json
-      <*> readProp "leuron_id" json
-      <*> readProp "time_limit" json
-      <*> readProp "time_limit_exceeded" json
-      <*> readProp "style" json
-      <*> readProp "active" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "bucket_id" json
+      <*> readPropUnsafe "leuron_id" json
+      <*> readPropUnsafe "time_limit" json
+      <*> readPropUnsafe "time_limit_exceeded" json
+      <*> readPropUnsafe "style" json
+      <*> readPropUnsafe "active" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
 
 
 instance bucketNodeResponseDecode :: Decode BucketNodeResponse where
-  read json =
+  decode json =
       mkBucketNodeResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "bucket_id" json
-      <*> readProp "leuron_id" json
-      <*> readProp "time_limit" json
-      <*> readProp "time_limit_exceeded" json
-      <*> readProp "style" json
-      <*> readProp "active" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "bucket_id" json
+      <*> readPropUnsafe "leuron_id" json
+      <*> readPropUnsafe "time_limit" json
+      <*> readPropUnsafe "time_limit_exceeded" json
+      <*> readPropUnsafe "style" json
+      <*> readPropUnsafe "active" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
 
 
 newtype BucketNodeResponses = BucketNodeResponses {
@@ -291,12 +292,12 @@ instance bucketNodeResponsesRespondable :: Respondable BucketNodeResponses where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkBucketNodeResponses
-      <$> readProp "bucket_node_responses" json
+      <$> readPropUnsafe "bucket_node_responses" json
 
 
 instance bucketNodeResponsesDecode :: Decode BucketNodeResponses where
-  read json =
+  decode json =
       mkBucketNodeResponses
-      <$> readProp "bucket_node_responses" json
+      <$> readPropUnsafe "bucket_node_responses" json
 
 -- footer

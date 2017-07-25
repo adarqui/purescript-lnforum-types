@@ -9,9 +9,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -133,29 +134,29 @@ instance bucketRequestRespondable :: Respondable BucketRequest where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkBucketRequest
-      <$> readProp "display_name" json
-      <*> (unNullOrUndefined <$> readProp "description" json)
-      <*> readProp "score_lo" json
-      <*> readProp "score_hi" json
-      <*> readProp "leurons" json
-      <*> readProp "resources" json
-      <*> readProp "categories" json
-      <*> readProp "filters" json
-      <*> readProp "guard" json
+      <$> readPropUnsafe "display_name" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "description" json)
+      <*> readPropUnsafe "score_lo" json
+      <*> readPropUnsafe "score_hi" json
+      <*> readPropUnsafe "leurons" json
+      <*> readPropUnsafe "resources" json
+      <*> readPropUnsafe "categories" json
+      <*> readPropUnsafe "filters" json
+      <*> readPropUnsafe "guard" json
 
 
 instance bucketRequestDecode :: Decode BucketRequest where
-  read json =
+  decode json =
       mkBucketRequest
-      <$> readProp "display_name" json
-      <*> (unNullOrUndefined <$> readProp "description" json)
-      <*> readProp "score_lo" json
-      <*> readProp "score_hi" json
-      <*> readProp "leurons" json
-      <*> readProp "resources" json
-      <*> readProp "categories" json
-      <*> readProp "filters" json
-      <*> readProp "guard" json
+      <$> readPropUnsafe "display_name" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "description" json)
+      <*> readPropUnsafe "score_lo" json
+      <*> readPropUnsafe "score_hi" json
+      <*> readPropUnsafe "leurons" json
+      <*> readPropUnsafe "resources" json
+      <*> readPropUnsafe "categories" json
+      <*> readPropUnsafe "filters" json
+      <*> readPropUnsafe "guard" json
 
 
 newtype BucketResponse = BucketResponse {
@@ -323,45 +324,45 @@ instance bucketResponseRespondable :: Respondable BucketResponse where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkBucketResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "name" json
-      <*> readProp "display_name" json
-      <*> (unNullOrUndefined <$> readProp "description" json)
-      <*> readProp "score_lo" json
-      <*> readProp "score_hi" json
-      <*> readProp "leurons" json
-      <*> readProp "resources" json
-      <*> readProp "categories" json
-      <*> readProp "filters" json
-      <*> readProp "training_node" json
-      <*> readProp "active" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
-      <*> (unNullOrUndefined <$> readProp "activity_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "name" json
+      <*> readPropUnsafe "display_name" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "description" json)
+      <*> readPropUnsafe "score_lo" json
+      <*> readPropUnsafe "score_hi" json
+      <*> readPropUnsafe "leurons" json
+      <*> readPropUnsafe "resources" json
+      <*> readPropUnsafe "categories" json
+      <*> readPropUnsafe "filters" json
+      <*> readPropUnsafe "training_node" json
+      <*> readPropUnsafe "active" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
 
 
 instance bucketResponseDecode :: Decode BucketResponse where
-  read json =
+  decode json =
       mkBucketResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "name" json
-      <*> readProp "display_name" json
-      <*> (unNullOrUndefined <$> readProp "description" json)
-      <*> readProp "score_lo" json
-      <*> readProp "score_hi" json
-      <*> readProp "leurons" json
-      <*> readProp "resources" json
-      <*> readProp "categories" json
-      <*> readProp "filters" json
-      <*> readProp "training_node" json
-      <*> readProp "active" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
-      <*> (unNullOrUndefined <$> readProp "activity_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "name" json
+      <*> readPropUnsafe "display_name" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "description" json)
+      <*> readPropUnsafe "score_lo" json
+      <*> readPropUnsafe "score_hi" json
+      <*> readPropUnsafe "leurons" json
+      <*> readPropUnsafe "resources" json
+      <*> readPropUnsafe "categories" json
+      <*> readPropUnsafe "filters" json
+      <*> readPropUnsafe "training_node" json
+      <*> readPropUnsafe "active" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
 
 
 newtype BucketResponses = BucketResponses {
@@ -417,12 +418,12 @@ instance bucketResponsesRespondable :: Respondable BucketResponses where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkBucketResponses
-      <$> readProp "bucket_responses" json
+      <$> readPropUnsafe "bucket_responses" json
 
 
 instance bucketResponsesDecode :: Decode BucketResponses where
-  read json =
+  decode json =
       mkBucketResponses
-      <$> readProp "bucket_responses" json
+      <$> readPropUnsafe "bucket_responses" json
 
 -- footer

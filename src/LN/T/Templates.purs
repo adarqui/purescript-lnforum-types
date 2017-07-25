@@ -12,9 +12,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -101,18 +102,18 @@ instance templatesRespondable :: Respondable Templates where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkTemplates
-      <$> readProp "resource_request" json
-      <*> readProp "leuron_request" json
-      <*> readProp "leuron_training_request" json
-      <*> readProp "bucket_request" json
+      <$> readPropUnsafe "resource_request" json
+      <*> readPropUnsafe "leuron_request" json
+      <*> readPropUnsafe "leuron_training_request" json
+      <*> readPropUnsafe "bucket_request" json
 
 
 instance templatesDecode :: Decode Templates where
-  read json =
+  decode json =
       mkTemplates
-      <$> readProp "resource_request" json
-      <*> readProp "leuron_request" json
-      <*> readProp "leuron_training_request" json
-      <*> readProp "bucket_request" json
+      <$> readPropUnsafe "resource_request" json
+      <*> readPropUnsafe "leuron_request" json
+      <*> readPropUnsafe "leuron_training_request" json
+      <*> readPropUnsafe "bucket_request" json
 
 -- footer

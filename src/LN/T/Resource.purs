@@ -10,9 +10,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -107,33 +108,33 @@ instance resourceTypeRespondable :: Respondable ResourceType where
   responseType =
     Tuple Nothing JSONResponse
   fromResponse json = do
-    tag <- readProp "tag" json
+    tag <- readPropUnsafe "tag" json
     case tag of
       "ISBN13" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ISBN13 <$> read x0
+          [x0] -> ISBN13 <$> decode x0
           _ -> fail $ TypeMismatch "ISBN13" "Respondable"
 
 
       "ISBN10" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ISBN10 <$> read x0
+          [x0] -> ISBN10 <$> decode x0
           _ -> fail $ TypeMismatch "ISBN10" "Respondable"
 
 
       "ISBN" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ISBN <$> read x0
+          [x0] -> ISBN <$> decode x0
           _ -> fail $ TypeMismatch "ISBN" "Respondable"
 
 
       "URL" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> URL <$> read x0
+          [x0] -> URL <$> decode x0
           _ -> fail $ TypeMismatch "URL" "Respondable"
 
 
@@ -145,34 +146,34 @@ instance resourceTypeRespondable :: Respondable ResourceType where
 
 
 instance resourceTypeDecode :: Decode ResourceType where
-  read json = do
-    tag <- readProp "tag" json
+  decode json = do
+    tag <- readPropUnsafe "tag" json
     case tag of
       "ISBN13" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ISBN13 <$> read x0
+          [x0] -> ISBN13 <$> decode x0
           _ -> fail $ TypeMismatch "ISBN13" "Decode"
 
 
       "ISBN10" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ISBN10 <$> read x0
+          [x0] -> ISBN10 <$> decode x0
           _ -> fail $ TypeMismatch "ISBN10" "Decode"
 
 
       "ISBN" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ISBN <$> read x0
+          [x0] -> ISBN <$> decode x0
           _ -> fail $ TypeMismatch "ISBN" "Decode"
 
 
       "URL" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> URL <$> read x0
+          [x0] -> URL <$> decode x0
           _ -> fail $ TypeMismatch "URL" "Decode"
 
 
@@ -249,7 +250,7 @@ instance tyResourceTypeRespondable :: Respondable TyResourceType where
   responseType =
     Tuple Nothing JSONResponse
   fromResponse json = do
-    tag <- readProp "tag" json
+    tag <- readPropUnsafe "tag" json
     case tag of
       "TyISBN13" -> do
         pure TyISBN13
@@ -271,8 +272,8 @@ instance tyResourceTypeRespondable :: Respondable TyResourceType where
 
 
 instance tyResourceTypeDecode :: Decode TyResourceType where
-  read json = do
-    tag <- readProp "tag" json
+  decode json = do
+    tag <- readPropUnsafe "tag" json
     case tag of
       "TyISBN13" -> do
         pure TyISBN13
@@ -446,37 +447,37 @@ instance resourceRequestRespondable :: Respondable ResourceRequest where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkResourceRequest
-      <$> readProp "display_name" json
-      <*> readProp "description" json
-      <*> readProp "source" json
-      <*> (unNullOrUndefined <$> readProp "author" json)
-      <*> readProp "prerequisites" json
-      <*> readProp "categories" json
-      <*> readProp "visibility" json
-      <*> readProp "counter" json
-      <*> (unNullOrUndefined <$> readProp "version" json)
-      <*> (unNullOrUndefined <$> readProp "urls" json)
-      <*> (unNullOrUndefined <$> readProp "icon" json)
-      <*> readProp "tags" json
-      <*> readProp "guard" json
+      <$> readPropUnsafe "display_name" json
+      <*> readPropUnsafe "description" json
+      <*> readPropUnsafe "source" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "author" json)
+      <*> readPropUnsafe "prerequisites" json
+      <*> readPropUnsafe "categories" json
+      <*> readPropUnsafe "visibility" json
+      <*> readPropUnsafe "counter" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "version" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "urls" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "icon" json)
+      <*> readPropUnsafe "tags" json
+      <*> readPropUnsafe "guard" json
 
 
 instance resourceRequestDecode :: Decode ResourceRequest where
-  read json =
+  decode json =
       mkResourceRequest
-      <$> readProp "display_name" json
-      <*> readProp "description" json
-      <*> readProp "source" json
-      <*> (unNullOrUndefined <$> readProp "author" json)
-      <*> readProp "prerequisites" json
-      <*> readProp "categories" json
-      <*> readProp "visibility" json
-      <*> readProp "counter" json
-      <*> (unNullOrUndefined <$> readProp "version" json)
-      <*> (unNullOrUndefined <$> readProp "urls" json)
-      <*> (unNullOrUndefined <$> readProp "icon" json)
-      <*> readProp "tags" json
-      <*> readProp "guard" json
+      <$> readPropUnsafe "display_name" json
+      <*> readPropUnsafe "description" json
+      <*> readPropUnsafe "source" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "author" json)
+      <*> readPropUnsafe "prerequisites" json
+      <*> readPropUnsafe "categories" json
+      <*> readPropUnsafe "visibility" json
+      <*> readPropUnsafe "counter" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "version" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "urls" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "icon" json)
+      <*> readPropUnsafe "tags" json
+      <*> readPropUnsafe "guard" json
 
 
 newtype ResourceResponse = ResourceResponse {
@@ -665,51 +666,51 @@ instance resourceResponseRespondable :: Respondable ResourceResponse where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkResourceResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "name" json
-      <*> readProp "display_name" json
-      <*> readProp "description" json
-      <*> readProp "source" json
-      <*> (unNullOrUndefined <$> readProp "author" json)
-      <*> readProp "prerequisites" json
-      <*> readProp "categories" json
-      <*> readProp "visibility" json
-      <*> readProp "counter" json
-      <*> (unNullOrUndefined <$> readProp "version" json)
-      <*> (unNullOrUndefined <$> readProp "urls" json)
-      <*> (unNullOrUndefined <$> readProp "icon" json)
-      <*> readProp "tags" json
-      <*> readProp "active" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
-      <*> (unNullOrUndefined <$> readProp "activity_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "name" json
+      <*> readPropUnsafe "display_name" json
+      <*> readPropUnsafe "description" json
+      <*> readPropUnsafe "source" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "author" json)
+      <*> readPropUnsafe "prerequisites" json
+      <*> readPropUnsafe "categories" json
+      <*> readPropUnsafe "visibility" json
+      <*> readPropUnsafe "counter" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "version" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "urls" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "icon" json)
+      <*> readPropUnsafe "tags" json
+      <*> readPropUnsafe "active" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
 
 
 instance resourceResponseDecode :: Decode ResourceResponse where
-  read json =
+  decode json =
       mkResourceResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "name" json
-      <*> readProp "display_name" json
-      <*> readProp "description" json
-      <*> readProp "source" json
-      <*> (unNullOrUndefined <$> readProp "author" json)
-      <*> readProp "prerequisites" json
-      <*> readProp "categories" json
-      <*> readProp "visibility" json
-      <*> readProp "counter" json
-      <*> (unNullOrUndefined <$> readProp "version" json)
-      <*> (unNullOrUndefined <$> readProp "urls" json)
-      <*> (unNullOrUndefined <$> readProp "icon" json)
-      <*> readProp "tags" json
-      <*> readProp "active" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
-      <*> (unNullOrUndefined <$> readProp "activity_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "name" json
+      <*> readPropUnsafe "display_name" json
+      <*> readPropUnsafe "description" json
+      <*> readPropUnsafe "source" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "author" json)
+      <*> readPropUnsafe "prerequisites" json
+      <*> readPropUnsafe "categories" json
+      <*> readPropUnsafe "visibility" json
+      <*> readPropUnsafe "counter" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "version" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "urls" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "icon" json)
+      <*> readPropUnsafe "tags" json
+      <*> readPropUnsafe "active" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
 
 
 newtype ResourceResponses = ResourceResponses {
@@ -765,13 +766,13 @@ instance resourceResponsesRespondable :: Respondable ResourceResponses where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkResourceResponses
-      <$> readProp "resource_responses" json
+      <$> readPropUnsafe "resource_responses" json
 
 
 instance resourceResponsesDecode :: Decode ResourceResponses where
-  read json =
+  decode json =
       mkResourceResponses
-      <$> readProp "resource_responses" json
+      <$> readPropUnsafe "resource_responses" json
 
 
 newtype ResourceStatResponse = ResourceStatResponse {
@@ -869,25 +870,25 @@ instance resourceStatResponseRespondable :: Respondable ResourceStatResponse whe
     Tuple Nothing JSONResponse
   fromResponse json =
       mkResourceStatResponse
-      <$> readProp "resource_id" json
-      <*> readProp "leurons" json
-      <*> readProp "likes" json
-      <*> readProp "neutral" json
-      <*> readProp "dislikes" json
-      <*> readProp "stars" json
-      <*> readProp "views" json
+      <$> readPropUnsafe "resource_id" json
+      <*> readPropUnsafe "leurons" json
+      <*> readPropUnsafe "likes" json
+      <*> readPropUnsafe "neutral" json
+      <*> readPropUnsafe "dislikes" json
+      <*> readPropUnsafe "stars" json
+      <*> readPropUnsafe "views" json
 
 
 instance resourceStatResponseDecode :: Decode ResourceStatResponse where
-  read json =
+  decode json =
       mkResourceStatResponse
-      <$> readProp "resource_id" json
-      <*> readProp "leurons" json
-      <*> readProp "likes" json
-      <*> readProp "neutral" json
-      <*> readProp "dislikes" json
-      <*> readProp "stars" json
-      <*> readProp "views" json
+      <$> readPropUnsafe "resource_id" json
+      <*> readPropUnsafe "leurons" json
+      <*> readPropUnsafe "likes" json
+      <*> readPropUnsafe "neutral" json
+      <*> readPropUnsafe "dislikes" json
+      <*> readPropUnsafe "stars" json
+      <*> readPropUnsafe "views" json
 
 
 newtype ResourceStatResponses = ResourceStatResponses {
@@ -943,12 +944,12 @@ instance resourceStatResponsesRespondable :: Respondable ResourceStatResponses w
     Tuple Nothing JSONResponse
   fromResponse json =
       mkResourceStatResponses
-      <$> readProp "resource_stat_responses" json
+      <$> readPropUnsafe "resource_stat_responses" json
 
 
 instance resourceStatResponsesDecode :: Decode ResourceStatResponses where
-  read json =
+  decode json =
       mkResourceStatResponses
-      <$> readProp "resource_stat_responses" json
+      <$> readPropUnsafe "resource_stat_responses" json
 
 -- footer

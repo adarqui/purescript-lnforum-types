@@ -9,9 +9,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -70,12 +71,12 @@ instance splitsRespondable :: Respondable Splits where
   responseType =
     Tuple Nothing JSONResponse
   fromResponse json = do
-    tag <- readProp "tag" json
+    tag <- readPropUnsafe "tag" json
     case tag of
       "SplitAt" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0, x1, x2] -> SplitAt <$> read x0 <*> read x1 <*> read x2
+          [x0, x1, x2] -> SplitAt <$> decode x0 <*> decode x1 <*> decode x2
           _ -> fail $ TypeMismatch "SplitAt" "Respondable"
 
 
@@ -87,13 +88,13 @@ instance splitsRespondable :: Respondable Splits where
 
 
 instance splitsDecode :: Decode Splits where
-  read json = do
-    tag <- readProp "tag" json
+  decode json = do
+    tag <- readPropUnsafe "tag" json
     case tag of
       "SplitAt" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0, x1, x2] -> SplitAt <$> read x0 <*> read x1 <*> read x2
+          [x0, x1, x2] -> SplitAt <$> decode x0 <*> decode x1 <*> decode x2
           _ -> fail $ TypeMismatch "SplitAt" "Decode"
 
 
@@ -146,7 +147,7 @@ instance tySplitsRespondable :: Respondable TySplits where
   responseType =
     Tuple Nothing JSONResponse
   fromResponse json = do
-    tag <- readProp "tag" json
+    tag <- readPropUnsafe "tag" json
     case tag of
       "TySplitA" -> do
         pure TySplitA
@@ -159,8 +160,8 @@ instance tySplitsRespondable :: Respondable TySplits where
 
 
 instance tySplitsDecode :: Decode TySplits where
-  read json = do
-    tag <- readProp "tag" json
+  decode json = do
+    tag <- readPropUnsafe "tag" json
     case tag of
       "TySplitA" -> do
         pure TySplitA

@@ -9,9 +9,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -98,33 +99,33 @@ instance substitutionsRespondable :: Respondable Substitutions where
   responseType =
     Tuple Nothing JSONResponse
   fromResponse json = do
-    tag <- readProp "tag" json
+    tag <- readPropUnsafe "tag" json
     case tag of
       "SubsExpr" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0, x1] -> SubsExpr <$> read x0 <*> read x1
+          [x0, x1] -> SubsExpr <$> decode x0 <*> decode x1
           _ -> fail $ TypeMismatch "SubsExpr" "Respondable"
 
 
       "SubsOneOf" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> SubsOneOf <$> read x0
+          [x0] -> SubsOneOf <$> decode x0
           _ -> fail $ TypeMismatch "SubsOneOf" "Respondable"
 
 
       "SubsAllOf" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> SubsAllOf <$> read x0
+          [x0] -> SubsAllOf <$> decode x0
           _ -> fail $ TypeMismatch "SubsAllOf" "Respondable"
 
 
       "SubsBoth" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0, x1] -> SubsBoth <$> read x0 <*> read x1
+          [x0, x1] -> SubsBoth <$> decode x0 <*> decode x1
           _ -> fail $ TypeMismatch "SubsBoth" "Respondable"
 
 
@@ -133,34 +134,34 @@ instance substitutionsRespondable :: Respondable Substitutions where
 
 
 instance substitutionsDecode :: Decode Substitutions where
-  read json = do
-    tag <- readProp "tag" json
+  decode json = do
+    tag <- readPropUnsafe "tag" json
     case tag of
       "SubsExpr" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0, x1] -> SubsExpr <$> read x0 <*> read x1
+          [x0, x1] -> SubsExpr <$> decode x0 <*> decode x1
           _ -> fail $ TypeMismatch "SubsExpr" "Decode"
 
 
       "SubsOneOf" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> SubsOneOf <$> read x0
+          [x0] -> SubsOneOf <$> decode x0
           _ -> fail $ TypeMismatch "SubsOneOf" "Decode"
 
 
       "SubsAllOf" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> SubsAllOf <$> read x0
+          [x0] -> SubsAllOf <$> decode x0
           _ -> fail $ TypeMismatch "SubsAllOf" "Decode"
 
 
       "SubsBoth" -> do
-        r <- readProp "contents" json
+        r <- readPropUnsafe "contents" json
         case r of
-          [x0, x1] -> SubsBoth <$> read x0 <*> read x1
+          [x0, x1] -> SubsBoth <$> decode x0 <*> decode x1
           _ -> fail $ TypeMismatch "SubsBoth" "Decode"
 
 
@@ -226,7 +227,7 @@ instance tySubstitutionsRespondable :: Respondable TySubstitutions where
   responseType =
     Tuple Nothing JSONResponse
   fromResponse json = do
-    tag <- readProp "tag" json
+    tag <- readPropUnsafe "tag" json
     case tag of
       "TySubsExpr" -> do
         pure TySubsExpr
@@ -245,8 +246,8 @@ instance tySubstitutionsRespondable :: Respondable TySubstitutions where
 
 
 instance tySubstitutionsDecode :: Decode TySubstitutions where
-  read json = do
-    tag <- readProp "tag" json
+  decode json = do
+    tag <- readPropUnsafe "tag" json
     case tag of
       "TySubsExpr" -> do
         pure TySubsExpr

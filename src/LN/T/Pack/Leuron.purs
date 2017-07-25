@@ -14,9 +14,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -138,29 +139,29 @@ instance leuronPackResponseRespondable :: Respondable LeuronPackResponse where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkLeuronPackResponse
-      <$> readProp "leuron" json
-      <*> readProp "leuron_id" json
-      <*> readProp "user" json
-      <*> readProp "user_id" json
-      <*> readProp "training" json
-      <*> readProp "stat" json
-      <*> (unNullOrUndefined <$> readProp "like" json)
-      <*> (unNullOrUndefined <$> readProp "star" json)
-      <*> readProp "permissions" json
+      <$> readPropUnsafe "leuron" json
+      <*> readPropUnsafe "leuron_id" json
+      <*> readPropUnsafe "user" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "training" json
+      <*> readPropUnsafe "stat" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "like" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "star" json)
+      <*> readPropUnsafe "permissions" json
 
 
 instance leuronPackResponseDecode :: Decode LeuronPackResponse where
-  read json =
+  decode json =
       mkLeuronPackResponse
-      <$> readProp "leuron" json
-      <*> readProp "leuron_id" json
-      <*> readProp "user" json
-      <*> readProp "user_id" json
-      <*> readProp "training" json
-      <*> readProp "stat" json
-      <*> (unNullOrUndefined <$> readProp "like" json)
-      <*> (unNullOrUndefined <$> readProp "star" json)
-      <*> readProp "permissions" json
+      <$> readPropUnsafe "leuron" json
+      <*> readPropUnsafe "leuron_id" json
+      <*> readPropUnsafe "user" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "training" json
+      <*> readPropUnsafe "stat" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "like" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "star" json)
+      <*> readPropUnsafe "permissions" json
 
 
 newtype LeuronPackResponses = LeuronPackResponses {
@@ -216,12 +217,12 @@ instance leuronPackResponsesRespondable :: Respondable LeuronPackResponses where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkLeuronPackResponses
-      <$> readProp "leuron_pack_responses" json
+      <$> readPropUnsafe "leuron_pack_responses" json
 
 
 instance leuronPackResponsesDecode :: Decode LeuronPackResponses where
-  read json =
+  decode json =
       mkLeuronPackResponses
-      <$> readProp "leuron_pack_responses" json
+      <$> readPropUnsafe "leuron_pack_responses" json
 
 -- footer

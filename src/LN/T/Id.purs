@@ -9,9 +9,10 @@ import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
 import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
-import Data.Foreign.Class               (class Decode, read, readProp)
+import Data.Foreign.Class               (class Decode, decode)
+import Data.Foreign.Helpers             (readPropUnsafe)
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -84,15 +85,15 @@ instance idRequestRespondable :: Respondable IdRequest where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkIdRequest
-      <$> readProp "target_id" json
-      <*> readProp "guard" json
+      <$> readPropUnsafe "target_id" json
+      <*> readPropUnsafe "guard" json
 
 
 instance idRequestDecode :: Decode IdRequest where
-  read json =
+  decode json =
       mkIdRequest
-      <$> readProp "target_id" json
-      <*> readProp "guard" json
+      <$> readPropUnsafe "target_id" json
+      <*> readPropUnsafe "guard" json
 
 
 newtype IdResponse = IdResponse {
@@ -190,25 +191,25 @@ instance idResponseRespondable :: Respondable IdResponse where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkIdResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "target_id" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
-      <*> (unNullOrUndefined <$> readProp "activity_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "target_id" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
 
 
 instance idResponseDecode :: Decode IdResponse where
-  read json =
+  decode json =
       mkIdResponse
-      <$> readProp "id" json
-      <*> readProp "user_id" json
-      <*> readProp "target_id" json
-      <*> readProp "guard" json
-      <*> (unNullOrUndefined <$> readProp "created_at" json)
-      <*> (unNullOrUndefined <$> readProp "modified_at" json)
-      <*> (unNullOrUndefined <$> readProp "activity_at" json)
+      <$> readPropUnsafe "id" json
+      <*> readPropUnsafe "user_id" json
+      <*> readPropUnsafe "target_id" json
+      <*> readPropUnsafe "guard" json
+      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
 
 
 newtype IdResponses = IdResponses {
@@ -264,12 +265,12 @@ instance idResponsesRespondable :: Respondable IdResponses where
     Tuple Nothing JSONResponse
   fromResponse json =
       mkIdResponses
-      <$> readProp "id_responses" json
+      <$> readPropUnsafe "id_responses" json
 
 
 instance idResponsesDecode :: Decode IdResponses where
-  read json =
+  decode json =
       mkIdResponses
-      <$> readProp "id_responses" json
+      <$> readPropUnsafe "id_responses" json
 
 -- footer

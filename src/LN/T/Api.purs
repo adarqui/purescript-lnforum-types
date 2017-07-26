@@ -2,17 +2,18 @@ module LN.T.Api where
 
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -20,7 +21,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -83,17 +84,7 @@ instance apiRequestRequestable :: Requestable ApiRequest where
 instance apiRequestRespondable :: Respondable ApiRequest where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkApiRequest
-      <$> (unNullOrUndefined <$> readPropUnsafe "comment" json)
-      <*> readPropUnsafe "guard" json
-
-
-instance apiRequestDecode :: Decode ApiRequest where
-  decode json =
-      mkApiRequest
-      <$> (unNullOrUndefined <$> readPropUnsafe "comment" json)
-      <*> readPropUnsafe "guard" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype ApiResponse = ApiResponse {
@@ -189,27 +180,7 @@ instance apiResponseRequestable :: Requestable ApiResponse where
 instance apiResponseRespondable :: Respondable ApiResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkApiResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "key" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "comment" json)
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
-
-
-instance apiResponseDecode :: Decode ApiResponse where
-  decode json =
-      mkApiResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "key" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "comment" json)
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+  fromResponse = fromResponseDecodeJson
 
 
 newtype ApiResponses = ApiResponses {
@@ -263,14 +234,6 @@ instance apiResponsesRequestable :: Requestable ApiResponses where
 instance apiResponsesRespondable :: Respondable ApiResponses where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkApiResponses
-      <$> readPropUnsafe "api_responses" json
-
-
-instance apiResponsesDecode :: Decode ApiResponses where
-  decode json =
-      mkApiResponses
-      <$> readPropUnsafe "api_responses" json
+  fromResponse = fromResponseDecodeJson
 
 -- footer

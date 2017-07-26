@@ -2,17 +2,18 @@ module LN.T.Splits where
 
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -20,7 +21,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -76,7 +77,7 @@ instance splitsRespondable :: Respondable Splits where
       "SplitAt" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0, x1, x2] -> SplitAt <$> decode x0 <*> decode x1 <*> decode x2
+          [x0, x1, x2] -> SplitAt <$> exceptDecodeJsonRespondable x0 <*> exceptDecodeJsonRespondable x1 <*> exceptDecodeJsonRespondable x2
           _ -> fail $ TypeMismatch "SplitAt" "Respondable"
 
 
@@ -84,24 +85,6 @@ instance splitsRespondable :: Respondable Splits where
         pure SplitNone
 
       _ -> fail $ TypeMismatch "Splits" "Respondable"
-
-
-
-instance splitsDecode :: Decode Splits where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "SplitAt" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0, x1, x2] -> SplitAt <$> decode x0 <*> decode x1 <*> decode x2
-          _ -> fail $ TypeMismatch "SplitAt" "Decode"
-
-
-      "SplitNone" -> do
-        pure SplitNone
-
-      _ -> fail $ TypeMismatch "Splits" "Decode"
 
 
 
@@ -156,20 +139,6 @@ instance tySplitsRespondable :: Respondable TySplits where
         pure TySplitNone
 
       _ -> fail $ TypeMismatch "TySplits" "Respondable"
-
-
-
-instance tySplitsDecode :: Decode TySplits where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "TySplitA" -> do
-        pure TySplitA
-
-      "TySplitNone" -> do
-        pure TySplitNone
-
-      _ -> fail $ TypeMismatch "TySplits" "Decode"
 
 
 

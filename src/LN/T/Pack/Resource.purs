@@ -6,17 +6,18 @@ import LN.T.Like
 import LN.T.Star
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -24,7 +25,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -129,29 +130,7 @@ instance resourcePackResponseRequestable :: Requestable ResourcePackResponse whe
 instance resourcePackResponseRespondable :: Respondable ResourcePackResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkResourcePackResponse
-      <$> readPropUnsafe "resource" json
-      <*> readPropUnsafe "resource_id" json
-      <*> readPropUnsafe "user" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "stat" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "like" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "star" json)
-      <*> readPropUnsafe "permissions" json
-
-
-instance resourcePackResponseDecode :: Decode ResourcePackResponse where
-  decode json =
-      mkResourcePackResponse
-      <$> readPropUnsafe "resource" json
-      <*> readPropUnsafe "resource_id" json
-      <*> readPropUnsafe "user" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "stat" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "like" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "star" json)
-      <*> readPropUnsafe "permissions" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype ResourcePackResponses = ResourcePackResponses {
@@ -205,14 +184,6 @@ instance resourcePackResponsesRequestable :: Requestable ResourcePackResponses w
 instance resourcePackResponsesRespondable :: Respondable ResourcePackResponses where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkResourcePackResponses
-      <$> readPropUnsafe "resource_pack_responses" json
-
-
-instance resourcePackResponsesDecode :: Decode ResourcePackResponses where
-  decode json =
-      mkResourcePackResponses
-      <$> readPropUnsafe "resource_pack_responses" json
+  fromResponse = fromResponseDecodeJson
 
 -- footer

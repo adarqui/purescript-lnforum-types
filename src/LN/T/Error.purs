@@ -2,17 +2,18 @@ module LN.T.Error where
 
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -20,7 +21,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -162,7 +163,7 @@ instance applicationErrorRespondable :: Respondable ApplicationError where
       "Error_Validation" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> Error_Validation <$> decode x0
+          [x0] -> Error_Validation <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "Error_Validation" "Respondable"
 
 
@@ -172,7 +173,7 @@ instance applicationErrorRespondable :: Respondable ApplicationError where
       "Error_InvalidArguments" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> Error_InvalidArguments <$> decode x0
+          [x0] -> Error_InvalidArguments <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "Error_InvalidArguments" "Respondable"
 
 
@@ -180,52 +181,6 @@ instance applicationErrorRespondable :: Respondable ApplicationError where
         pure Error_Unexpected
 
       _ -> fail $ TypeMismatch "ApplicationError" "Respondable"
-
-
-
-instance applicationErrorDecode :: Decode ApplicationError where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "Error_Unknown" -> do
-        pure Error_Unknown
-
-      "Error_NotFound" -> do
-        pure Error_NotFound
-
-      "Error_PermissionDenied" -> do
-        pure Error_PermissionDenied
-
-      "Error_AlreadyExists" -> do
-        pure Error_AlreadyExists
-
-      "Error_Visibility" -> do
-        pure Error_Visibility
-
-      "Error_Membership" -> do
-        pure Error_Membership
-
-      "Error_Validation" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> Error_Validation <$> decode x0
-          _ -> fail $ TypeMismatch "Error_Validation" "Decode"
-
-
-      "Error_NotImplemented" -> do
-        pure Error_NotImplemented
-
-      "Error_InvalidArguments" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> Error_InvalidArguments <$> decode x0
-          _ -> fail $ TypeMismatch "Error_InvalidArguments" "Decode"
-
-
-      "Error_Unexpected" -> do
-        pure Error_Unexpected
-
-      _ -> fail $ TypeMismatch "ApplicationError" "Decode"
 
 
 
@@ -288,26 +243,11 @@ instance validationErrorRespondable :: Respondable ValidationError where
       "Validate" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0, x1] -> Validate <$> decode x0 <*> decode x1
+          [x0, x1] -> Validate <$> exceptDecodeJsonRespondable x0 <*> exceptDecodeJsonRespondable x1
           _ -> fail $ TypeMismatch "Validate" "Respondable"
 
 
       _ -> fail $ TypeMismatch "ValidationError" "Respondable"
-
-
-
-instance validationErrorDecode :: Decode ValidationError where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "Validate" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0, x1] -> Validate <$> decode x0 <*> decode x1
-          _ -> fail $ TypeMismatch "Validate" "Decode"
-
-
-      _ -> fail $ TypeMismatch "ValidationError" "Decode"
 
 
 
@@ -460,53 +400,11 @@ instance validationErrorCodeRespondable :: Respondable ValidationErrorCode where
       "Validate_Reason" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> Validate_Reason <$> decode x0
+          [x0] -> Validate_Reason <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "Validate_Reason" "Respondable"
 
 
       _ -> fail $ TypeMismatch "ValidationErrorCode" "Respondable"
-
-
-
-instance validationErrorCodeDecode :: Decode ValidationErrorCode where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "Validate_Unknown" -> do
-        pure Validate_Unknown
-
-      "Validate_InvalidCharacters" -> do
-        pure Validate_InvalidCharacters
-
-      "Validate_InvalidEmail" -> do
-        pure Validate_InvalidEmail
-
-      "Validate_InvalidDate" -> do
-        pure Validate_InvalidDate
-
-      "Validate_CannotBeEmpty" -> do
-        pure Validate_CannotBeEmpty
-
-      "Validate_TooLong" -> do
-        pure Validate_TooLong
-
-      "Validate_TooShort" -> do
-        pure Validate_TooShort
-
-      "Validate_GreaterThanMaximum" -> do
-        pure Validate_GreaterThanMaximum
-
-      "Validate_SmallerThanMinimum" -> do
-        pure Validate_SmallerThanMinimum
-
-      "Validate_Reason" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> Validate_Reason <$> decode x0
-          _ -> fail $ TypeMismatch "Validate_Reason" "Decode"
-
-
-      _ -> fail $ TypeMismatch "ValidationErrorCode" "Decode"
 
 
 

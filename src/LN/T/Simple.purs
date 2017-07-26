@@ -2,17 +2,18 @@ module LN.T.Simple where
 
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -20,7 +21,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -76,15 +77,7 @@ instance simpleIntRequestRequestable :: Requestable SimpleIntRequest where
 instance simpleIntRequestRespondable :: Respondable SimpleIntRequest where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkSimpleIntRequest
-      <$> readPropUnsafe "simple_int_request" json
-
-
-instance simpleIntRequestDecode :: Decode SimpleIntRequest where
-  decode json =
-      mkSimpleIntRequest
-      <$> readPropUnsafe "simple_int_request" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype SimpleIntResponse = SimpleIntResponse {
@@ -138,15 +131,7 @@ instance simpleIntResponseRequestable :: Requestable SimpleIntResponse where
 instance simpleIntResponseRespondable :: Respondable SimpleIntResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkSimpleIntResponse
-      <$> readPropUnsafe "simple_int_response" json
-
-
-instance simpleIntResponseDecode :: Decode SimpleIntResponse where
-  decode json =
-      mkSimpleIntResponse
-      <$> readPropUnsafe "simple_int_response" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype SimpleIntsRequest = SimpleIntsRequest {
@@ -200,15 +185,7 @@ instance simpleIntsRequestRequestable :: Requestable SimpleIntsRequest where
 instance simpleIntsRequestRespondable :: Respondable SimpleIntsRequest where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkSimpleIntsRequest
-      <$> readPropUnsafe "simple_ints_request" json
-
-
-instance simpleIntsRequestDecode :: Decode SimpleIntsRequest where
-  decode json =
-      mkSimpleIntsRequest
-      <$> readPropUnsafe "simple_ints_request" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype SimpleIntsResponse = SimpleIntsResponse {
@@ -262,15 +239,7 @@ instance simpleIntsResponseRequestable :: Requestable SimpleIntsResponse where
 instance simpleIntsResponseRespondable :: Respondable SimpleIntsResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkSimpleIntsResponse
-      <$> readPropUnsafe "simple_ints_response" json
-
-
-instance simpleIntsResponseDecode :: Decode SimpleIntsResponse where
-  decode json =
-      mkSimpleIntsResponse
-      <$> readPropUnsafe "simple_ints_response" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype SimpleStringRequest = SimpleStringRequest {
@@ -324,15 +293,7 @@ instance simpleStringRequestRequestable :: Requestable SimpleStringRequest where
 instance simpleStringRequestRespondable :: Respondable SimpleStringRequest where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkSimpleStringRequest
-      <$> readPropUnsafe "simple_string_request" json
-
-
-instance simpleStringRequestDecode :: Decode SimpleStringRequest where
-  decode json =
-      mkSimpleStringRequest
-      <$> readPropUnsafe "simple_string_request" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype SimpleStringResponse = SimpleStringResponse {
@@ -386,15 +347,7 @@ instance simpleStringResponseRequestable :: Requestable SimpleStringResponse whe
 instance simpleStringResponseRespondable :: Respondable SimpleStringResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkSimpleStringResponse
-      <$> readPropUnsafe "simple_string_response" json
-
-
-instance simpleStringResponseDecode :: Decode SimpleStringResponse where
-  decode json =
-      mkSimpleStringResponse
-      <$> readPropUnsafe "simple_string_response" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype SimpleStringsRequest = SimpleStringsRequest {
@@ -448,15 +401,7 @@ instance simpleStringsRequestRequestable :: Requestable SimpleStringsRequest whe
 instance simpleStringsRequestRespondable :: Respondable SimpleStringsRequest where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkSimpleStringsRequest
-      <$> readPropUnsafe "simple_strings_request" json
-
-
-instance simpleStringsRequestDecode :: Decode SimpleStringsRequest where
-  decode json =
-      mkSimpleStringsRequest
-      <$> readPropUnsafe "simple_strings_request" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype SimpleStringsResponse = SimpleStringsResponse {
@@ -510,14 +455,6 @@ instance simpleStringsResponseRequestable :: Requestable SimpleStringsResponse w
 instance simpleStringsResponseRespondable :: Respondable SimpleStringsResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkSimpleStringsResponse
-      <$> readPropUnsafe "simple_strings_response" json
-
-
-instance simpleStringsResponseDecode :: Decode SimpleStringsResponse where
-  decode json =
-      mkSimpleStringsResponse
-      <$> readPropUnsafe "simple_strings_response" json
+  fromResponse = fromResponseDecodeJson
 
 -- footer

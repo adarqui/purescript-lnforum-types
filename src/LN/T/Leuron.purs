@@ -4,17 +4,18 @@ import LN.T.Splits
 import LN.T.Substitutions
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -22,7 +23,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -162,39 +163,7 @@ instance leuronRequestRequestable :: Requestable LeuronRequest where
 instance leuronRequestRespondable :: Respondable LeuronRequest where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLeuronRequest
-      <$> readPropUnsafe "data" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "title" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "description" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "section" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "page" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "examples" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "strengths" json)
-      <*> readPropUnsafe "categories" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "splits" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "substitutions" json)
-      <*> readPropUnsafe "tags" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "style" json)
-      <*> readPropUnsafe "guard" json
-
-
-instance leuronRequestDecode :: Decode LeuronRequest where
-  decode json =
-      mkLeuronRequest
-      <$> readPropUnsafe "data" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "title" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "description" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "section" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "page" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "examples" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "strengths" json)
-      <*> readPropUnsafe "categories" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "splits" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "substitutions" json)
-      <*> readPropUnsafe "tags" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "style" json)
-      <*> readPropUnsafe "guard" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype LeuronResponse = LeuronResponse {
@@ -388,55 +357,7 @@ instance leuronResponseRequestable :: Requestable LeuronResponse where
 instance leuronResponseRespondable :: Respondable LeuronResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLeuronResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "resource_id" json
-      <*> readPropUnsafe "data" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "title" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "description" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "section" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "page" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "examples" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "strengths" json)
-      <*> readPropUnsafe "categories" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "splits" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "substitutions" json)
-      <*> readPropUnsafe "tags" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "style" json)
-      <*> readPropUnsafe "checksum" json
-      <*> readPropUnsafe "active" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
-
-
-instance leuronResponseDecode :: Decode LeuronResponse where
-  decode json =
-      mkLeuronResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "resource_id" json
-      <*> readPropUnsafe "data" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "title" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "description" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "section" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "page" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "examples" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "strengths" json)
-      <*> readPropUnsafe "categories" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "splits" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "substitutions" json)
-      <*> readPropUnsafe "tags" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "style" json)
-      <*> readPropUnsafe "checksum" json
-      <*> readPropUnsafe "active" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
+  fromResponse = fromResponseDecodeJson
 
 
 newtype LeuronResponses = LeuronResponses {
@@ -490,15 +411,7 @@ instance leuronResponsesRequestable :: Requestable LeuronResponses where
 instance leuronResponsesRespondable :: Respondable LeuronResponses where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLeuronResponses
-      <$> readPropUnsafe "leuron_responses" json
-
-
-instance leuronResponsesDecode :: Decode LeuronResponses where
-  decode json =
-      mkLeuronResponses
-      <$> readPropUnsafe "leuron_responses" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype LeuronStatResponse = LeuronStatResponse {
@@ -587,25 +500,7 @@ instance leuronStatResponseRequestable :: Requestable LeuronStatResponse where
 instance leuronStatResponseRespondable :: Respondable LeuronStatResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLeuronStatResponse
-      <$> readPropUnsafe "leuron_id" json
-      <*> readPropUnsafe "likes" json
-      <*> readPropUnsafe "neutral" json
-      <*> readPropUnsafe "dislikes" json
-      <*> readPropUnsafe "stars" json
-      <*> readPropUnsafe "views" json
-
-
-instance leuronStatResponseDecode :: Decode LeuronStatResponse where
-  decode json =
-      mkLeuronStatResponse
-      <$> readPropUnsafe "leuron_id" json
-      <*> readPropUnsafe "likes" json
-      <*> readPropUnsafe "neutral" json
-      <*> readPropUnsafe "dislikes" json
-      <*> readPropUnsafe "stars" json
-      <*> readPropUnsafe "views" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype LeuronStatResponses = LeuronStatResponses {
@@ -659,15 +554,7 @@ instance leuronStatResponsesRequestable :: Requestable LeuronStatResponses where
 instance leuronStatResponsesRespondable :: Respondable LeuronStatResponses where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLeuronStatResponses
-      <$> readPropUnsafe "leuron_stat_responses" json
-
-
-instance leuronStatResponsesDecode :: Decode LeuronStatResponses where
-  decode json =
-      mkLeuronStatResponses
-      <$> readPropUnsafe "leuron_stat_responses" json
+  fromResponse = fromResponseDecodeJson
 
 
 data LeuronData
@@ -885,98 +772,98 @@ instance leuronDataRespondable :: Respondable LeuronData where
       "LnFact" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> LnFact <$> decode x0
+          [x0] -> LnFact <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "LnFact" "Respondable"
 
 
       "LnFactList" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> LnFactList <$> decode x0
+          [x0] -> LnFactList <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "LnFactList" "Respondable"
 
 
       "LnCard" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> LnCard <$> decode x0
+          [x0] -> LnCard <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "LnCard" "Respondable"
 
 
       "LnDCard" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> LnDCard <$> decode x0
+          [x0] -> LnDCard <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "LnDCard" "Respondable"
 
 
       "LnDCardX" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> LnDCardX <$> decode x0
+          [x0] -> LnDCardX <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "LnDCardX" "Respondable"
 
 
       "LnAcronym" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> LnAcronym <$> decode x0
+          [x0] -> LnAcronym <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "LnAcronym" "Respondable"
 
 
       "LnSynonym" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> LnSynonym <$> decode x0
+          [x0] -> LnSynonym <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "LnSynonym" "Respondable"
 
 
       "LnAntonym" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> LnAntonym <$> decode x0
+          [x0] -> LnAntonym <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "LnAntonym" "Respondable"
 
 
       "LnTemplate" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> LnTemplate <$> decode x0
+          [x0] -> LnTemplate <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "LnTemplate" "Respondable"
 
 
       "LnImageAssociation" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> LnImageAssociation <$> decode x0
+          [x0] -> LnImageAssociation <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "LnImageAssociation" "Respondable"
 
 
       "LnLinearDemo" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> LnLinearDemo <$> decode x0
+          [x0] -> LnLinearDemo <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "LnLinearDemo" "Respondable"
 
 
       "LnTable" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> LnTable <$> decode x0
+          [x0] -> LnTable <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "LnTable" "Respondable"
 
 
       "LnScript" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> LnScript <$> decode x0
+          [x0] -> LnScript <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "LnScript" "Respondable"
 
 
       "LnQA" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> LnQA <$> decode x0
+          [x0] -> LnQA <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "LnQA" "Respondable"
 
 
@@ -987,118 +874,6 @@ instance leuronDataRespondable :: Respondable LeuronData where
         pure LnEmpty
 
       _ -> fail $ TypeMismatch "LeuronData" "Respondable"
-
-
-
-instance leuronDataDecode :: Decode LeuronData where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "LnFact" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> LnFact <$> decode x0
-          _ -> fail $ TypeMismatch "LnFact" "Decode"
-
-
-      "LnFactList" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> LnFactList <$> decode x0
-          _ -> fail $ TypeMismatch "LnFactList" "Decode"
-
-
-      "LnCard" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> LnCard <$> decode x0
-          _ -> fail $ TypeMismatch "LnCard" "Decode"
-
-
-      "LnDCard" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> LnDCard <$> decode x0
-          _ -> fail $ TypeMismatch "LnDCard" "Decode"
-
-
-      "LnDCardX" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> LnDCardX <$> decode x0
-          _ -> fail $ TypeMismatch "LnDCardX" "Decode"
-
-
-      "LnAcronym" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> LnAcronym <$> decode x0
-          _ -> fail $ TypeMismatch "LnAcronym" "Decode"
-
-
-      "LnSynonym" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> LnSynonym <$> decode x0
-          _ -> fail $ TypeMismatch "LnSynonym" "Decode"
-
-
-      "LnAntonym" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> LnAntonym <$> decode x0
-          _ -> fail $ TypeMismatch "LnAntonym" "Decode"
-
-
-      "LnTemplate" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> LnTemplate <$> decode x0
-          _ -> fail $ TypeMismatch "LnTemplate" "Decode"
-
-
-      "LnImageAssociation" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> LnImageAssociation <$> decode x0
-          _ -> fail $ TypeMismatch "LnImageAssociation" "Decode"
-
-
-      "LnLinearDemo" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> LnLinearDemo <$> decode x0
-          _ -> fail $ TypeMismatch "LnLinearDemo" "Decode"
-
-
-      "LnTable" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> LnTable <$> decode x0
-          _ -> fail $ TypeMismatch "LnTable" "Decode"
-
-
-      "LnScript" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> LnScript <$> decode x0
-          _ -> fail $ TypeMismatch "LnScript" "Decode"
-
-
-      "LnQA" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> LnQA <$> decode x0
-          _ -> fail $ TypeMismatch "LnQA" "Decode"
-
-
-      "LnExamples" -> do
-        pure LnExamples
-
-      "LnEmpty" -> do
-        pure LnEmpty
-
-      _ -> fail $ TypeMismatch "LeuronData" "Decode"
 
 
 
@@ -1310,62 +1085,6 @@ instance tyLeuronRespondable :: Respondable TyLeuron where
 
 
 
-instance tyLeuronDecode :: Decode TyLeuron where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "TyLnFact" -> do
-        pure TyLnFact
-
-      "TyLnFactList" -> do
-        pure TyLnFactList
-
-      "TyLnCard" -> do
-        pure TyLnCard
-
-      "TyLnDCard" -> do
-        pure TyLnDCard
-
-      "TyLnDCardX" -> do
-        pure TyLnDCardX
-
-      "TyLnAcronym" -> do
-        pure TyLnAcronym
-
-      "TyLnSynonym" -> do
-        pure TyLnSynonym
-
-      "TyLnAntonym" -> do
-        pure TyLnAntonym
-
-      "TyLnTemplate" -> do
-        pure TyLnTemplate
-
-      "TyLnImageAssociation" -> do
-        pure TyLnImageAssociation
-
-      "TyLnLinearDemo" -> do
-        pure TyLnLinearDemo
-
-      "TyLnTable" -> do
-        pure TyLnTable
-
-      "TyLnScript" -> do
-        pure TyLnScript
-
-      "TyLnQA" -> do
-        pure TyLnQA
-
-      "TyLnExamples" -> do
-        pure TyLnExamples
-
-      "TyLnEmpty" -> do
-        pure TyLnEmpty
-
-      _ -> fail $ TypeMismatch "TyLeuron" "Decode"
-
-
-
 instance tyLeuronEq :: Eq TyLeuron where
   eq TyLnFact TyLnFact = true
   eq TyLnFactList TyLnFactList = true
@@ -1480,26 +1199,6 @@ instance leuronStatusRespondable :: Respondable LeuronStatus where
 
 
 
-instance leuronStatusDecode :: Decode LeuronStatus where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "LeuronKnow" -> do
-        pure LeuronKnow
-
-      "LeuronDontKnow" -> do
-        pure LeuronDontKnow
-
-      "LeuronDontCare" -> do
-        pure LeuronDontCare
-
-      "LeuronProtest" -> do
-        pure LeuronProtest
-
-      _ -> fail $ TypeMismatch "LeuronStatus" "Decode"
-
-
-
 instance leuronStatusEq :: Eq LeuronStatus where
   eq LeuronKnow LeuronKnow = true
   eq LeuronDontKnow LeuronDontKnow = true
@@ -1565,15 +1264,7 @@ instance factRequestable :: Requestable Fact where
 instance factRespondable :: Respondable Fact where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkFact
-      <$> readPropUnsafe "text" json
-
-
-instance factDecode :: Decode Fact where
-  decode json =
-      mkFact
-      <$> readPropUnsafe "text" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype FactList = FactList {
@@ -1634,17 +1325,7 @@ instance factListRequestable :: Requestable FactList where
 instance factListRespondable :: Respondable FactList where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkFactList
-      <$> readPropUnsafe "fact" json
-      <*> readPropUnsafe "list" json
-
-
-instance factListDecode :: Decode FactList where
-  decode json =
-      mkFactList
-      <$> readPropUnsafe "fact" json
-      <*> readPropUnsafe "list" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype Card = Card {
@@ -1705,17 +1386,7 @@ instance cardRequestable :: Requestable Card where
 instance cardRespondable :: Respondable Card where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkCard
-      <$> readPropUnsafe "front" json
-      <*> readPropUnsafe "back" json
-
-
-instance cardDecode :: Decode Card where
-  decode json =
-      mkCard
-      <$> readPropUnsafe "front" json
-      <*> readPropUnsafe "back" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype DCard = DCard {
@@ -1776,17 +1447,7 @@ instance dCardRequestable :: Requestable DCard where
 instance dCardRespondable :: Respondable DCard where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkDCard
-      <$> readPropUnsafe "front" json
-      <*> readPropUnsafe "back" json
-
-
-instance dCardDecode :: Decode DCard where
-  decode json =
-      mkDCard
-      <$> readPropUnsafe "front" json
-      <*> readPropUnsafe "back" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype DCardX = DCardX {
@@ -1847,17 +1508,7 @@ instance dCardXRequestable :: Requestable DCardX where
 instance dCardXRespondable :: Respondable DCardX where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkDCardX
-      <$> readPropUnsafe "front" json
-      <*> readPropUnsafe "back" json
-
-
-instance dCardXDecode :: Decode DCardX where
-  decode json =
-      mkDCardX
-      <$> readPropUnsafe "front" json
-      <*> readPropUnsafe "back" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype Acronym = Acronym {
@@ -1918,17 +1569,7 @@ instance acronymRequestable :: Requestable Acronym where
 instance acronymRespondable :: Respondable Acronym where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkAcronym
-      <$> readPropUnsafe "abbreviation" json
-      <*> readPropUnsafe "meaning" json
-
-
-instance acronymDecode :: Decode Acronym where
-  decode json =
-      mkAcronym
-      <$> readPropUnsafe "abbreviation" json
-      <*> readPropUnsafe "meaning" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype Synonym = Synonym {
@@ -1989,17 +1630,7 @@ instance synonymRequestable :: Requestable Synonym where
 instance synonymRespondable :: Respondable Synonym where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkSynonym
-      <$> readPropUnsafe "a" json
-      <*> readPropUnsafe "b" json
-
-
-instance synonymDecode :: Decode Synonym where
-  decode json =
-      mkSynonym
-      <$> readPropUnsafe "a" json
-      <*> readPropUnsafe "b" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype Antonym = Antonym {
@@ -2060,17 +1691,7 @@ instance antonymRequestable :: Requestable Antonym where
 instance antonymRespondable :: Respondable Antonym where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkAntonym
-      <$> readPropUnsafe "a" json
-      <*> readPropUnsafe "b" json
-
-
-instance antonymDecode :: Decode Antonym where
-  decode json =
-      mkAntonym
-      <$> readPropUnsafe "a" json
-      <*> readPropUnsafe "b" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype Template = Template {
@@ -2131,17 +1752,7 @@ instance templateRequestable :: Requestable Template where
 instance templateRespondable :: Respondable Template where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkTemplate
-      <$> readPropUnsafe "template" json
-      <*> readPropUnsafe "values" json
-
-
-instance templateDecode :: Decode Template where
-  decode json =
-      mkTemplate
-      <$> readPropUnsafe "template" json
-      <*> readPropUnsafe "values" json
+  fromResponse = fromResponseDecodeJson
 
 
 type TemplateValue  = ((Tuple String) (Array String))
@@ -2212,19 +1823,7 @@ instance imageAssociationRequestable :: Requestable ImageAssociation where
 instance imageAssociationRespondable :: Respondable ImageAssociation where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkImageAssociation
-      <$> readPropUnsafe "image_url" json
-      <*> readPropUnsafe "assoc_by" json
-      <*> readPropUnsafe "assoc_result" json
-
-
-instance imageAssociationDecode :: Decode ImageAssociation where
-  decode json =
-      mkImageAssociation
-      <$> readPropUnsafe "image_url" json
-      <*> readPropUnsafe "assoc_by" json
-      <*> readPropUnsafe "assoc_result" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype Script = Script {
@@ -2292,19 +1891,7 @@ instance scriptRequestable :: Requestable Script where
 instance scriptRespondable :: Respondable Script where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkScript
-      <$> readPropUnsafe "title" json
-      <*> readPropUnsafe "desc" json
-      <*> readPropUnsafe "url" json
-
-
-instance scriptDecode :: Decode Script where
-  decode json =
-      mkScript
-      <$> readPropUnsafe "title" json
-      <*> readPropUnsafe "desc" json
-      <*> readPropUnsafe "url" json
+  fromResponse = fromResponseDecodeJson
 
 
 type LDContent  = String
@@ -2374,17 +1961,7 @@ instance linearDemoRequestable :: Requestable LinearDemo where
 instance linearDemoRespondable :: Respondable LinearDemo where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLinearDemo
-      <$> readPropUnsafe "label" json
-      <*> readPropUnsafe "content" json
-
-
-instance linearDemoDecode :: Decode LinearDemo where
-  decode json =
-      mkLinearDemo
-      <$> readPropUnsafe "label" json
-      <*> readPropUnsafe "content" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype QA = QA {
@@ -2445,17 +2022,7 @@ instance qARequestable :: Requestable QA where
 instance qARespondable :: Respondable QA where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkQA
-      <$> readPropUnsafe "question" json
-      <*> readPropUnsafe "answer" json
-
-
-instance qADecode :: Decode QA where
-  decode json =
-      mkQA
-      <$> readPropUnsafe "question" json
-      <*> readPropUnsafe "answer" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype Table = Table {
@@ -2523,18 +2090,6 @@ instance tableRequestable :: Requestable Table where
 instance tableRespondable :: Respondable Table where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkTable
-      <$> readPropUnsafe "title" json
-      <*> readPropUnsafe "columns" json
-      <*> readPropUnsafe "rows" json
-
-
-instance tableDecode :: Decode Table where
-  decode json =
-      mkTable
-      <$> readPropUnsafe "title" json
-      <*> readPropUnsafe "columns" json
-      <*> readPropUnsafe "rows" json
+  fromResponse = fromResponseDecodeJson
 
 -- footer

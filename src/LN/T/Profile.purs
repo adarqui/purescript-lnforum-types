@@ -2,17 +2,18 @@ module LN.T.Profile where
 import LN.T.Ent
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -20,7 +21,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -90,19 +91,7 @@ instance profileXRequestable :: Requestable ProfileX where
 instance profileXRespondable :: Respondable ProfileX where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkProfileX
-      <$> readPropUnsafe "profile_login" json
-      <*> readPropUnsafe "profile_name" json
-      <*> readPropUnsafe "profile_email" json
-
-
-instance profileXDecode :: Decode ProfileX where
-  decode json =
-      mkProfileX
-      <$> readPropUnsafe "profile_login" json
-      <*> readPropUnsafe "profile_name" json
-      <*> readPropUnsafe "profile_email" json
+  fromResponse = fromResponseDecodeJson
 
 
 data ProfileGender
@@ -167,23 +156,6 @@ instance profileGenderRespondable :: Respondable ProfileGender where
         pure GenderUnknown
 
       _ -> fail $ TypeMismatch "ProfileGender" "Respondable"
-
-
-
-instance profileGenderDecode :: Decode ProfileGender where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "GenderMale" -> do
-        pure GenderMale
-
-      "GenderFemale" -> do
-        pure GenderFemale
-
-      "GenderUnknown" -> do
-        pure GenderUnknown
-
-      _ -> fail $ TypeMismatch "ProfileGender" "Decode"
 
 
 
@@ -306,31 +278,7 @@ instance profileRequestRequestable :: Requestable ProfileRequest where
 instance profileRequestRespondable :: Respondable ProfileRequest where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkProfileRequest
-      <$> readPropUnsafe "gender" json
-      <*> readPropUnsafe "birthdate" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "website" json)
-      <*> readPropUnsafe "websites" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "location" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "signature" json)
-      <*> readPropUnsafe "debug" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "state_websites" json)
-
-
-instance profileRequestDecode :: Decode ProfileRequest where
-  decode json =
-      mkProfileRequest
-      <$> readPropUnsafe "gender" json
-      <*> readPropUnsafe "birthdate" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "website" json)
-      <*> readPropUnsafe "websites" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "location" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "signature" json)
-      <*> readPropUnsafe "debug" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "state_websites" json)
+  fromResponse = fromResponseDecodeJson
 
 
 newtype ProfileResponse = ProfileResponse {
@@ -475,41 +423,7 @@ instance profileResponseRequestable :: Requestable ProfileResponse where
 instance profileResponseRespondable :: Respondable ProfileResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkProfileResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "ent" json
-      <*> readPropUnsafe "ent_id" json
-      <*> readPropUnsafe "gender" json
-      <*> readPropUnsafe "birthdate" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "website" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "location" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "signature" json)
-      <*> readPropUnsafe "debug" json
-      <*> readPropUnsafe "karma_good" json
-      <*> readPropUnsafe "karma_bad" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
-
-
-instance profileResponseDecode :: Decode ProfileResponse where
-  decode json =
-      mkProfileResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "ent" json
-      <*> readPropUnsafe "ent_id" json
-      <*> readPropUnsafe "gender" json
-      <*> readPropUnsafe "birthdate" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "website" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "location" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "signature" json)
-      <*> readPropUnsafe "debug" json
-      <*> readPropUnsafe "karma_good" json
-      <*> readPropUnsafe "karma_bad" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+  fromResponse = fromResponseDecodeJson
 
 
 newtype ProfileResponses = ProfileResponses {
@@ -563,14 +477,6 @@ instance profileResponsesRequestable :: Requestable ProfileResponses where
 instance profileResponsesRespondable :: Respondable ProfileResponses where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkProfileResponses
-      <$> readPropUnsafe "profile_responses" json
-
-
-instance profileResponsesDecode :: Decode ProfileResponses where
-  decode json =
-      mkProfileResponses
-      <$> readPropUnsafe "profile_responses" json
+  fromResponse = fromResponseDecodeJson
 
 -- footer

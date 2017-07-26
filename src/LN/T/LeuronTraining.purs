@@ -2,17 +2,18 @@ module LN.T.LeuronTraining where
 
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -20,7 +21,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -134,35 +135,6 @@ instance leuronTrainingSummaryRespondable :: Respondable LeuronTrainingSummary w
 
 
 
-instance leuronTrainingSummaryDecode :: Decode LeuronTrainingSummary where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "LTS_View" -> do
-        pure LTS_View
-
-      "LTS_Skip" -> do
-        pure LTS_Skip
-
-      "LTS_Know" -> do
-        pure LTS_Know
-
-      "LTS_DontKnow" -> do
-        pure LTS_DontKnow
-
-      "LTS_DontUnderstand" -> do
-        pure LTS_DontUnderstand
-
-      "LTS_DontCare" -> do
-        pure LTS_DontCare
-
-      "LTS_Protest" -> do
-        pure LTS_Protest
-
-      _ -> fail $ TypeMismatch "LeuronTrainingSummary" "Decode"
-
-
-
 instance leuronTrainingSummaryEq :: Eq LeuronTrainingSummary where
   eq LTS_View LTS_View = true
   eq LTS_Skip LTS_Skip = true
@@ -241,17 +213,7 @@ instance leuronTrainingRequestRequestable :: Requestable LeuronTrainingRequest w
 instance leuronTrainingRequestRespondable :: Respondable LeuronTrainingRequest where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLeuronTrainingRequest
-      <$> readPropUnsafe "summary" json
-      <*> readPropUnsafe "guard" json
-
-
-instance leuronTrainingRequestDecode :: Decode LeuronTrainingRequest where
-  decode json =
-      mkLeuronTrainingRequest
-      <$> readPropUnsafe "summary" json
-      <*> readPropUnsafe "guard" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype LeuronTrainingResponse = LeuronTrainingResponse {
@@ -347,27 +309,7 @@ instance leuronTrainingResponseRequestable :: Requestable LeuronTrainingResponse
 instance leuronTrainingResponseRespondable :: Respondable LeuronTrainingResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLeuronTrainingResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "leuron_id" json
-      <*> readPropUnsafe "summary" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
-
-
-instance leuronTrainingResponseDecode :: Decode LeuronTrainingResponse where
-  decode json =
-      mkLeuronTrainingResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "leuron_id" json
-      <*> readPropUnsafe "summary" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+  fromResponse = fromResponseDecodeJson
 
 
 newtype LeuronTrainingResponses = LeuronTrainingResponses {
@@ -421,15 +363,7 @@ instance leuronTrainingResponsesRequestable :: Requestable LeuronTrainingRespons
 instance leuronTrainingResponsesRespondable :: Respondable LeuronTrainingResponses where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLeuronTrainingResponses
-      <$> readPropUnsafe "leuron_training_responses" json
-
-
-instance leuronTrainingResponsesDecode :: Decode LeuronTrainingResponses where
-  decode json =
-      mkLeuronTrainingResponses
-      <$> readPropUnsafe "leuron_training_responses" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype LeuronTrainingStatResponse = LeuronTrainingStatResponse {
@@ -483,15 +417,7 @@ instance leuronTrainingStatResponseRequestable :: Requestable LeuronTrainingStat
 instance leuronTrainingStatResponseRespondable :: Respondable LeuronTrainingStatResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLeuronTrainingStatResponse
-      <$> readPropUnsafe "leuron_training_id" json
-
-
-instance leuronTrainingStatResponseDecode :: Decode LeuronTrainingStatResponse where
-  decode json =
-      mkLeuronTrainingStatResponse
-      <$> readPropUnsafe "leuron_training_id" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype LeuronTrainingStatResponses = LeuronTrainingStatResponses {
@@ -545,14 +471,6 @@ instance leuronTrainingStatResponsesRequestable :: Requestable LeuronTrainingSta
 instance leuronTrainingStatResponsesRespondable :: Respondable LeuronTrainingStatResponses where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLeuronTrainingStatResponses
-      <$> readPropUnsafe "leuron_training_stat_responses" json
-
-
-instance leuronTrainingStatResponsesDecode :: Decode LeuronTrainingStatResponses where
-  decode json =
-      mkLeuronTrainingStatResponses
-      <$> readPropUnsafe "leuron_training_stat_responses" json
+  fromResponse = fromResponseDecodeJson
 
 -- footer

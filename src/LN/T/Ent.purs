@@ -2,17 +2,18 @@ module LN.T.Ent where
 
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -20,7 +21,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -296,80 +297,6 @@ instance entRespondable :: Respondable Ent where
         pure Ent_None
 
       _ -> fail $ TypeMismatch "Ent" "Respondable"
-
-
-
-instance entDecode :: Decode Ent where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "Ent_Organization" -> do
-        pure Ent_Organization
-
-      "Ent_Team" -> do
-        pure Ent_Team
-
-      "Ent_TeamMember" -> do
-        pure Ent_TeamMember
-
-      "Ent_GlobalGroup" -> do
-        pure Ent_GlobalGroup
-
-      "Ent_Group" -> do
-        pure Ent_Group
-
-      "Ent_GroupMember" -> do
-        pure Ent_GroupMember
-
-      "Ent_User" -> do
-        pure Ent_User
-
-      "Ent_UserSanitized" -> do
-        pure Ent_UserSanitized
-
-      "Ent_Forum" -> do
-        pure Ent_Forum
-
-      "Ent_Board" -> do
-        pure Ent_Board
-
-      "Ent_Thread" -> do
-        pure Ent_Thread
-
-      "Ent_ThreadPost" -> do
-        pure Ent_ThreadPost
-
-      "Ent_Blog" -> do
-        pure Ent_Blog
-
-      "Ent_BlogPost" -> do
-        pure Ent_BlogPost
-
-      "Ent_BlogComment" -> do
-        pure Ent_BlogComment
-
-      "Ent_Resource" -> do
-        pure Ent_Resource
-
-      "Ent_Leuron" -> do
-        pure Ent_Leuron
-
-      "Ent_Comment" -> do
-        pure Ent_Comment
-
-      "Ent_Api" -> do
-        pure Ent_Api
-
-      "Ent_Like" -> do
-        pure Ent_Like
-
-      "Ent_Star" -> do
-        pure Ent_Star
-
-      "Ent_None" -> do
-        pure Ent_None
-
-      _ -> fail $ TypeMismatch "Ent" "Decode"
 
 
 

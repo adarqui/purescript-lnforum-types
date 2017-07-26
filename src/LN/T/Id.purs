@@ -2,17 +2,18 @@ module LN.T.Id where
 
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -20,7 +21,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -83,17 +84,7 @@ instance idRequestRequestable :: Requestable IdRequest where
 instance idRequestRespondable :: Respondable IdRequest where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkIdRequest
-      <$> readPropUnsafe "target_id" json
-      <*> readPropUnsafe "guard" json
-
-
-instance idRequestDecode :: Decode IdRequest where
-  decode json =
-      mkIdRequest
-      <$> readPropUnsafe "target_id" json
-      <*> readPropUnsafe "guard" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype IdResponse = IdResponse {
@@ -189,27 +180,7 @@ instance idResponseRequestable :: Requestable IdResponse where
 instance idResponseRespondable :: Respondable IdResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkIdResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "target_id" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
-
-
-instance idResponseDecode :: Decode IdResponse where
-  decode json =
-      mkIdResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "target_id" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "activity_at" json)
+  fromResponse = fromResponseDecodeJson
 
 
 newtype IdResponses = IdResponses {
@@ -263,14 +234,6 @@ instance idResponsesRequestable :: Requestable IdResponses where
 instance idResponsesRespondable :: Respondable IdResponses where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkIdResponses
-      <$> readPropUnsafe "id_responses" json
-
-
-instance idResponsesDecode :: Decode IdResponses where
-  decode json =
-      mkIdResponses
-      <$> readPropUnsafe "id_responses" json
+  fromResponse = fromResponseDecodeJson
 
 -- footer

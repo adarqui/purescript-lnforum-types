@@ -2,17 +2,18 @@ module LN.T.LeuronNode where
 import LN.T.Training
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -20,7 +21,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -76,15 +77,7 @@ instance leuronNodeRequestRequestable :: Requestable LeuronNodeRequest where
 instance leuronNodeRequestRespondable :: Respondable LeuronNodeRequest where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLeuronNodeRequest
-      <$> readPropUnsafe "request_guard" json
-
-
-instance leuronNodeRequestDecode :: Decode LeuronNodeRequest where
-  decode json =
-      mkLeuronNodeRequest
-      <$> readPropUnsafe "request_guard" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype LeuronNodeResponse = LeuronNodeResponse {
@@ -187,29 +180,7 @@ instance leuronNodeResponseRequestable :: Requestable LeuronNodeResponse where
 instance leuronNodeResponseRespondable :: Respondable LeuronNodeResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLeuronNodeResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "leuron_id" json
-      <*> readPropUnsafe "training_node" json
-      <*> readPropUnsafe "active" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
-
-
-instance leuronNodeResponseDecode :: Decode LeuronNodeResponse where
-  decode json =
-      mkLeuronNodeResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "leuron_id" json
-      <*> readPropUnsafe "training_node" json
-      <*> readPropUnsafe "active" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+  fromResponse = fromResponseDecodeJson
 
 
 newtype LeuronNodeResponses = LeuronNodeResponses {
@@ -263,14 +234,6 @@ instance leuronNodeResponsesRequestable :: Requestable LeuronNodeResponses where
 instance leuronNodeResponsesRespondable :: Respondable LeuronNodeResponses where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLeuronNodeResponses
-      <$> readPropUnsafe "leuron_node_responses" json
-
-
-instance leuronNodeResponsesDecode :: Decode LeuronNodeResponses where
-  decode json =
-      mkLeuronNodeResponses
-      <$> readPropUnsafe "leuron_node_responses" json
+  fromResponse = fromResponseDecodeJson
 
 -- footer

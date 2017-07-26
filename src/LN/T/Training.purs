@@ -2,17 +2,18 @@ module LN.T.Training where
 
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -20,7 +21,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -384,103 +385,7 @@ instance trainingNodeRequestable :: Requestable TrainingNode where
 instance trainingNodeRespondable :: Respondable TrainingNode where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkTrainingNode
-      <$> readPropUnsafe "num_total" json
-      <*> readPropUnsafe "num_know" json
-      <*> readPropUnsafe "num_dont_know" json
-      <*> readPropUnsafe "num_dont_care" json
-      <*> readPropUnsafe "num_protest" json
-      <*> readPropUnsafe "honor_know" json
-      <*> readPropUnsafe "honor_dont_know" json
-      <*> readPropUnsafe "honor_dont_care" json
-      <*> readPropUnsafe "honor_protest" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "honor_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "honor_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "honor_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "honor_protest_at" json)
-      <*> readPropUnsafe "boolean_know" json
-      <*> readPropUnsafe "boolean_dont_know" json
-      <*> readPropUnsafe "boolean_dont_care" json
-      <*> readPropUnsafe "boolean_protest" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_protest_at" json)
-      <*> readPropUnsafe "match_know" json
-      <*> readPropUnsafe "match_dont_know" json
-      <*> readPropUnsafe "match_dont_care" json
-      <*> readPropUnsafe "match_protest" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "match_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "match_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "match_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "match_protest_at" json)
-      <*> readPropUnsafe "subs_know" json
-      <*> readPropUnsafe "subs_dont_know" json
-      <*> readPropUnsafe "subs_dont_care" json
-      <*> readPropUnsafe "subs_protest" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "subs_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "subs_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "subs_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "subs_protest_at" json)
-      <*> readPropUnsafe "splits_know" json
-      <*> readPropUnsafe "splits_dont_know" json
-      <*> readPropUnsafe "splits_dont_care" json
-      <*> readPropUnsafe "splits_protest" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "splits_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "splits_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "splits_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "splits_protest_at" json)
-
-
-instance trainingNodeDecode :: Decode TrainingNode where
-  decode json =
-      mkTrainingNode
-      <$> readPropUnsafe "num_total" json
-      <*> readPropUnsafe "num_know" json
-      <*> readPropUnsafe "num_dont_know" json
-      <*> readPropUnsafe "num_dont_care" json
-      <*> readPropUnsafe "num_protest" json
-      <*> readPropUnsafe "honor_know" json
-      <*> readPropUnsafe "honor_dont_know" json
-      <*> readPropUnsafe "honor_dont_care" json
-      <*> readPropUnsafe "honor_protest" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "honor_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "honor_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "honor_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "honor_protest_at" json)
-      <*> readPropUnsafe "boolean_know" json
-      <*> readPropUnsafe "boolean_dont_know" json
-      <*> readPropUnsafe "boolean_dont_care" json
-      <*> readPropUnsafe "boolean_protest" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "boolean_protest_at" json)
-      <*> readPropUnsafe "match_know" json
-      <*> readPropUnsafe "match_dont_know" json
-      <*> readPropUnsafe "match_dont_care" json
-      <*> readPropUnsafe "match_protest" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "match_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "match_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "match_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "match_protest_at" json)
-      <*> readPropUnsafe "subs_know" json
-      <*> readPropUnsafe "subs_dont_know" json
-      <*> readPropUnsafe "subs_dont_care" json
-      <*> readPropUnsafe "subs_protest" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "subs_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "subs_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "subs_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "subs_protest_at" json)
-      <*> readPropUnsafe "splits_know" json
-      <*> readPropUnsafe "splits_dont_know" json
-      <*> readPropUnsafe "splits_dont_care" json
-      <*> readPropUnsafe "splits_protest" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "splits_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "splits_dont_know_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "splits_dont_care_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "splits_protest_at" json)
+  fromResponse = fromResponseDecodeJson
 
 
 data TrainingStyle
@@ -567,29 +472,6 @@ instance trainingStyleRespondable :: Respondable TrainingStyle where
         pure TS_Splits
 
       _ -> fail $ TypeMismatch "TrainingStyle" "Respondable"
-
-
-
-instance trainingStyleDecode :: Decode TrainingStyle where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "TS_Honor" -> do
-        pure TS_Honor
-
-      "TS_Boolean" -> do
-        pure TS_Boolean
-
-      "TS_Match" -> do
-        pure TS_Match
-
-      "TS_Subs" -> do
-        pure TS_Subs
-
-      "TS_Splits" -> do
-        pure TS_Splits
-
-      _ -> fail $ TypeMismatch "TrainingStyle" "Decode"
 
 
 

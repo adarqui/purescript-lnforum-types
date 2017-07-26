@@ -2,17 +2,18 @@ module LN.T.BucketNode where
 import LN.T.Training
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -20,7 +21,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -76,15 +77,7 @@ instance bucketNodeRequestRequestable :: Requestable BucketNodeRequest where
 instance bucketNodeRequestRespondable :: Respondable BucketNodeRequest where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkBucketNodeRequest
-      <$> readPropUnsafe "request_guard" json
-
-
-instance bucketNodeRequestDecode :: Decode BucketNodeRequest where
-  decode json =
-      mkBucketNodeRequest
-      <$> readPropUnsafe "request_guard" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype BucketNodeResponse = BucketNodeResponse {
@@ -208,35 +201,7 @@ instance bucketNodeResponseRequestable :: Requestable BucketNodeResponse where
 instance bucketNodeResponseRespondable :: Respondable BucketNodeResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkBucketNodeResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "bucket_id" json
-      <*> readPropUnsafe "leuron_id" json
-      <*> readPropUnsafe "time_limit" json
-      <*> readPropUnsafe "time_limit_exceeded" json
-      <*> readPropUnsafe "style" json
-      <*> readPropUnsafe "active" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
-
-
-instance bucketNodeResponseDecode :: Decode BucketNodeResponse where
-  decode json =
-      mkBucketNodeResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "bucket_id" json
-      <*> readPropUnsafe "leuron_id" json
-      <*> readPropUnsafe "time_limit" json
-      <*> readPropUnsafe "time_limit_exceeded" json
-      <*> readPropUnsafe "style" json
-      <*> readPropUnsafe "active" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+  fromResponse = fromResponseDecodeJson
 
 
 newtype BucketNodeResponses = BucketNodeResponses {
@@ -290,14 +255,6 @@ instance bucketNodeResponsesRequestable :: Requestable BucketNodeResponses where
 instance bucketNodeResponsesRespondable :: Respondable BucketNodeResponses where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkBucketNodeResponses
-      <$> readPropUnsafe "bucket_node_responses" json
-
-
-instance bucketNodeResponsesDecode :: Decode BucketNodeResponses where
-  decode json =
-      mkBucketNodeResponses
-      <$> readPropUnsafe "bucket_node_responses" json
+  fromResponse = fromResponseDecodeJson
 
 -- footer

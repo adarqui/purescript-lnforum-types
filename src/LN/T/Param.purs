@@ -2,17 +2,18 @@ module LN.T.Param where
 
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -20,7 +21,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -860,950 +861,473 @@ instance paramRespondable :: Respondable Param where
       "Limit" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> Limit <$> decode x0
+          [x0] -> Limit <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "Limit" "Respondable"
 
 
       "Offset" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> Offset <$> decode x0
+          [x0] -> Offset <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "Offset" "Respondable"
 
 
       "SortOrder" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> SortOrder <$> decode x0
+          [x0] -> SortOrder <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "SortOrder" "Respondable"
 
 
       "Order" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> Order <$> decode x0
+          [x0] -> Order <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "Order" "Respondable"
 
 
       "ByOrganizationId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByOrganizationId <$> decode x0
+          [x0] -> ByOrganizationId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByOrganizationId" "Respondable"
 
 
       "ByOrganizationsIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByOrganizationsIds <$> decode x0
+          [x0] -> ByOrganizationsIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByOrganizationsIds" "Respondable"
 
 
       "ByOrganizationName" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByOrganizationName <$> decode x0
+          [x0] -> ByOrganizationName <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByOrganizationName" "Respondable"
 
 
       "ByTeamId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByTeamId <$> decode x0
+          [x0] -> ByTeamId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByTeamId" "Respondable"
 
 
       "ByTeamsIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByTeamsIds <$> decode x0
+          [x0] -> ByTeamsIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByTeamsIds" "Respondable"
 
 
       "ByTeamName" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByTeamName <$> decode x0
+          [x0] -> ByTeamName <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByTeamName" "Respondable"
 
 
       "ByTeamMemberId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByTeamMemberId <$> decode x0
+          [x0] -> ByTeamMemberId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByTeamMemberId" "Respondable"
 
 
       "ByTeamMembersIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByTeamMembersIds <$> decode x0
+          [x0] -> ByTeamMembersIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByTeamMembersIds" "Respondable"
 
 
       "ByUserId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByUserId <$> decode x0
+          [x0] -> ByUserId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByUserId" "Respondable"
 
 
       "ByUsersIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByUsersIds <$> decode x0
+          [x0] -> ByUsersIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByUsersIds" "Respondable"
 
 
       "ByUserName" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByUserName <$> decode x0
+          [x0] -> ByUserName <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByUserName" "Respondable"
 
 
       "ByUsersNames" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByUsersNames <$> decode x0
+          [x0] -> ByUsersNames <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByUsersNames" "Respondable"
 
 
       "ByGlobalGroupId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByGlobalGroupId <$> decode x0
+          [x0] -> ByGlobalGroupId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByGlobalGroupId" "Respondable"
 
 
       "ByGlobalGroupsIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByGlobalGroupsIds <$> decode x0
+          [x0] -> ByGlobalGroupsIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByGlobalGroupsIds" "Respondable"
 
 
       "ByGroupId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByGroupId <$> decode x0
+          [x0] -> ByGroupId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByGroupId" "Respondable"
 
 
       "ByGroupsIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByGroupsIds <$> decode x0
+          [x0] -> ByGroupsIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByGroupsIds" "Respondable"
 
 
       "ByGroupMemberId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByGroupMemberId <$> decode x0
+          [x0] -> ByGroupMemberId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByGroupMemberId" "Respondable"
 
 
       "ByGroupMembersIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByGroupMembersIds <$> decode x0
+          [x0] -> ByGroupMembersIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByGroupMembersIds" "Respondable"
 
 
       "ByForumId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByForumId <$> decode x0
+          [x0] -> ByForumId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByForumId" "Respondable"
 
 
       "ByForumsIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByForumsIds <$> decode x0
+          [x0] -> ByForumsIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByForumsIds" "Respondable"
 
 
       "ByForumName" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByForumName <$> decode x0
+          [x0] -> ByForumName <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByForumName" "Respondable"
 
 
       "ByBoardId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByBoardId <$> decode x0
+          [x0] -> ByBoardId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByBoardId" "Respondable"
 
 
       "ByBoardsIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByBoardsIds <$> decode x0
+          [x0] -> ByBoardsIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByBoardsIds" "Respondable"
 
 
       "ByBoardName" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByBoardName <$> decode x0
+          [x0] -> ByBoardName <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByBoardName" "Respondable"
 
 
       "ByThreadId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByThreadId <$> decode x0
+          [x0] -> ByThreadId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByThreadId" "Respondable"
 
 
       "ByThreadsIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByThreadsIds <$> decode x0
+          [x0] -> ByThreadsIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByThreadsIds" "Respondable"
 
 
       "ByThreadName" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByThreadName <$> decode x0
+          [x0] -> ByThreadName <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByThreadName" "Respondable"
 
 
       "ByThreadPostId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByThreadPostId <$> decode x0
+          [x0] -> ByThreadPostId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByThreadPostId" "Respondable"
 
 
       "ByThreadPostsIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByThreadPostsIds <$> decode x0
+          [x0] -> ByThreadPostsIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByThreadPostsIds" "Respondable"
 
 
       "ByThreadPostName" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByThreadPostName <$> decode x0
+          [x0] -> ByThreadPostName <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByThreadPostName" "Respondable"
 
 
       "ByThreadPostLikeId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByThreadPostLikeId <$> decode x0
+          [x0] -> ByThreadPostLikeId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByThreadPostLikeId" "Respondable"
 
 
       "ByThreadPostLikesIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByThreadPostLikesIds <$> decode x0
+          [x0] -> ByThreadPostLikesIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByThreadPostLikesIds" "Respondable"
 
 
       "ByThreadPostStarId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByThreadPostStarId <$> decode x0
+          [x0] -> ByThreadPostStarId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByThreadPostStarId" "Respondable"
 
 
       "ByThreadPostStarsIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByThreadPostStarsIds <$> decode x0
+          [x0] -> ByThreadPostStarsIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByThreadPostStarsIds" "Respondable"
 
 
       "ByBucketId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByBucketId <$> decode x0
+          [x0] -> ByBucketId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByBucketId" "Respondable"
 
 
       "ByBucketRoundId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByBucketRoundId <$> decode x0
+          [x0] -> ByBucketRoundId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByBucketRoundId" "Respondable"
 
 
       "ByResourceId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByResourceId <$> decode x0
+          [x0] -> ByResourceId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByResourceId" "Respondable"
 
 
       "ByResourcesIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByResourcesIds <$> decode x0
+          [x0] -> ByResourcesIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByResourcesIds" "Respondable"
 
 
       "ByResourceName" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByResourceName <$> decode x0
+          [x0] -> ByResourceName <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByResourceName" "Respondable"
 
 
       "ByLeuronId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByLeuronId <$> decode x0
+          [x0] -> ByLeuronId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByLeuronId" "Respondable"
 
 
       "ByLeuronsIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByLeuronsIds <$> decode x0
+          [x0] -> ByLeuronsIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByLeuronsIds" "Respondable"
 
 
       "ByPmId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByPmId <$> decode x0
+          [x0] -> ByPmId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByPmId" "Respondable"
 
 
       "ByPmsIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByPmsIds <$> decode x0
+          [x0] -> ByPmsIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByPmsIds" "Respondable"
 
 
       "ByReminderId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByReminderId <$> decode x0
+          [x0] -> ByReminderId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByReminderId" "Respondable"
 
 
       "ByReminderFolderId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByReminderFolderId <$> decode x0
+          [x0] -> ByReminderFolderId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByReminderFolderId" "Respondable"
 
 
       "ByParentId" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByParentId <$> decode x0
+          [x0] -> ByParentId <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByParentId" "Respondable"
 
 
       "ByParentsIds" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByParentsIds <$> decode x0
+          [x0] -> ByParentsIds <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByParentsIds" "Respondable"
 
 
       "ByParentName" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByParentName <$> decode x0
+          [x0] -> ByParentName <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByParentName" "Respondable"
 
 
       "ByEmail" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> ByEmail <$> decode x0
+          [x0] -> ByEmail <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "ByEmail" "Respondable"
 
 
       "BySelf" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> BySelf <$> decode x0
+          [x0] -> BySelf <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "BySelf" "Respondable"
 
 
       "View" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> View <$> decode x0
+          [x0] -> View <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "View" "Respondable"
 
 
       "Timestamp" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> Timestamp <$> decode x0
+          [x0] -> Timestamp <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "Timestamp" "Respondable"
 
 
       "UnixTimestamp" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> UnixTimestamp <$> decode x0
+          [x0] -> UnixTimestamp <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "UnixTimestamp" "Respondable"
 
 
       "CreatedAtTimestamp" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> CreatedAtTimestamp <$> decode x0
+          [x0] -> CreatedAtTimestamp <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "CreatedAtTimestamp" "Respondable"
 
 
       "CreatedAtUnixTimestamp" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> CreatedAtUnixTimestamp <$> decode x0
+          [x0] -> CreatedAtUnixTimestamp <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "CreatedAtUnixTimestamp" "Respondable"
 
 
       "RealIP" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> RealIP <$> decode x0
+          [x0] -> RealIP <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "RealIP" "Respondable"
 
 
       "IP" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> IP <$> decode x0
+          [x0] -> IP <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "IP" "Respondable"
 
 
       "WithOrganization" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> WithOrganization <$> decode x0
+          [x0] -> WithOrganization <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "WithOrganization" "Respondable"
 
 
       "WithForum" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> WithForum <$> decode x0
+          [x0] -> WithForum <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "WithForum" "Respondable"
 
 
       "WithBoard" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> WithBoard <$> decode x0
+          [x0] -> WithBoard <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "WithBoard" "Respondable"
 
 
       "WithThread" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> WithThread <$> decode x0
+          [x0] -> WithThread <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "WithThread" "Respondable"
 
 
       "WithThreadPosts" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> WithThreadPosts <$> decode x0
+          [x0] -> WithThreadPosts <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "WithThreadPosts" "Respondable"
 
 
       "WithResource" -> do
         r <- readPropUnsafe "contents" json
         case r of
-          [x0] -> WithResource <$> decode x0
+          [x0] -> WithResource <$> exceptDecodeJsonRespondable x0
           _ -> fail $ TypeMismatch "WithResource" "Respondable"
 
 
       _ -> fail $ TypeMismatch "Param" "Respondable"
-
-
-
-instance paramDecode :: Decode Param where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "Limit" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> Limit <$> decode x0
-          _ -> fail $ TypeMismatch "Limit" "Decode"
-
-
-      "Offset" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> Offset <$> decode x0
-          _ -> fail $ TypeMismatch "Offset" "Decode"
-
-
-      "SortOrder" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> SortOrder <$> decode x0
-          _ -> fail $ TypeMismatch "SortOrder" "Decode"
-
-
-      "Order" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> Order <$> decode x0
-          _ -> fail $ TypeMismatch "Order" "Decode"
-
-
-      "ByOrganizationId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByOrganizationId <$> decode x0
-          _ -> fail $ TypeMismatch "ByOrganizationId" "Decode"
-
-
-      "ByOrganizationsIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByOrganizationsIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByOrganizationsIds" "Decode"
-
-
-      "ByOrganizationName" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByOrganizationName <$> decode x0
-          _ -> fail $ TypeMismatch "ByOrganizationName" "Decode"
-
-
-      "ByTeamId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByTeamId <$> decode x0
-          _ -> fail $ TypeMismatch "ByTeamId" "Decode"
-
-
-      "ByTeamsIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByTeamsIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByTeamsIds" "Decode"
-
-
-      "ByTeamName" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByTeamName <$> decode x0
-          _ -> fail $ TypeMismatch "ByTeamName" "Decode"
-
-
-      "ByTeamMemberId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByTeamMemberId <$> decode x0
-          _ -> fail $ TypeMismatch "ByTeamMemberId" "Decode"
-
-
-      "ByTeamMembersIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByTeamMembersIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByTeamMembersIds" "Decode"
-
-
-      "ByUserId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByUserId <$> decode x0
-          _ -> fail $ TypeMismatch "ByUserId" "Decode"
-
-
-      "ByUsersIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByUsersIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByUsersIds" "Decode"
-
-
-      "ByUserName" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByUserName <$> decode x0
-          _ -> fail $ TypeMismatch "ByUserName" "Decode"
-
-
-      "ByUsersNames" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByUsersNames <$> decode x0
-          _ -> fail $ TypeMismatch "ByUsersNames" "Decode"
-
-
-      "ByGlobalGroupId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByGlobalGroupId <$> decode x0
-          _ -> fail $ TypeMismatch "ByGlobalGroupId" "Decode"
-
-
-      "ByGlobalGroupsIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByGlobalGroupsIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByGlobalGroupsIds" "Decode"
-
-
-      "ByGroupId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByGroupId <$> decode x0
-          _ -> fail $ TypeMismatch "ByGroupId" "Decode"
-
-
-      "ByGroupsIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByGroupsIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByGroupsIds" "Decode"
-
-
-      "ByGroupMemberId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByGroupMemberId <$> decode x0
-          _ -> fail $ TypeMismatch "ByGroupMemberId" "Decode"
-
-
-      "ByGroupMembersIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByGroupMembersIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByGroupMembersIds" "Decode"
-
-
-      "ByForumId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByForumId <$> decode x0
-          _ -> fail $ TypeMismatch "ByForumId" "Decode"
-
-
-      "ByForumsIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByForumsIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByForumsIds" "Decode"
-
-
-      "ByForumName" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByForumName <$> decode x0
-          _ -> fail $ TypeMismatch "ByForumName" "Decode"
-
-
-      "ByBoardId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByBoardId <$> decode x0
-          _ -> fail $ TypeMismatch "ByBoardId" "Decode"
-
-
-      "ByBoardsIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByBoardsIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByBoardsIds" "Decode"
-
-
-      "ByBoardName" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByBoardName <$> decode x0
-          _ -> fail $ TypeMismatch "ByBoardName" "Decode"
-
-
-      "ByThreadId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByThreadId <$> decode x0
-          _ -> fail $ TypeMismatch "ByThreadId" "Decode"
-
-
-      "ByThreadsIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByThreadsIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByThreadsIds" "Decode"
-
-
-      "ByThreadName" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByThreadName <$> decode x0
-          _ -> fail $ TypeMismatch "ByThreadName" "Decode"
-
-
-      "ByThreadPostId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByThreadPostId <$> decode x0
-          _ -> fail $ TypeMismatch "ByThreadPostId" "Decode"
-
-
-      "ByThreadPostsIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByThreadPostsIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByThreadPostsIds" "Decode"
-
-
-      "ByThreadPostName" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByThreadPostName <$> decode x0
-          _ -> fail $ TypeMismatch "ByThreadPostName" "Decode"
-
-
-      "ByThreadPostLikeId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByThreadPostLikeId <$> decode x0
-          _ -> fail $ TypeMismatch "ByThreadPostLikeId" "Decode"
-
-
-      "ByThreadPostLikesIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByThreadPostLikesIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByThreadPostLikesIds" "Decode"
-
-
-      "ByThreadPostStarId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByThreadPostStarId <$> decode x0
-          _ -> fail $ TypeMismatch "ByThreadPostStarId" "Decode"
-
-
-      "ByThreadPostStarsIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByThreadPostStarsIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByThreadPostStarsIds" "Decode"
-
-
-      "ByBucketId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByBucketId <$> decode x0
-          _ -> fail $ TypeMismatch "ByBucketId" "Decode"
-
-
-      "ByBucketRoundId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByBucketRoundId <$> decode x0
-          _ -> fail $ TypeMismatch "ByBucketRoundId" "Decode"
-
-
-      "ByResourceId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByResourceId <$> decode x0
-          _ -> fail $ TypeMismatch "ByResourceId" "Decode"
-
-
-      "ByResourcesIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByResourcesIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByResourcesIds" "Decode"
-
-
-      "ByResourceName" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByResourceName <$> decode x0
-          _ -> fail $ TypeMismatch "ByResourceName" "Decode"
-
-
-      "ByLeuronId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByLeuronId <$> decode x0
-          _ -> fail $ TypeMismatch "ByLeuronId" "Decode"
-
-
-      "ByLeuronsIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByLeuronsIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByLeuronsIds" "Decode"
-
-
-      "ByPmId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByPmId <$> decode x0
-          _ -> fail $ TypeMismatch "ByPmId" "Decode"
-
-
-      "ByPmsIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByPmsIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByPmsIds" "Decode"
-
-
-      "ByReminderId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByReminderId <$> decode x0
-          _ -> fail $ TypeMismatch "ByReminderId" "Decode"
-
-
-      "ByReminderFolderId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByReminderFolderId <$> decode x0
-          _ -> fail $ TypeMismatch "ByReminderFolderId" "Decode"
-
-
-      "ByParentId" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByParentId <$> decode x0
-          _ -> fail $ TypeMismatch "ByParentId" "Decode"
-
-
-      "ByParentsIds" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByParentsIds <$> decode x0
-          _ -> fail $ TypeMismatch "ByParentsIds" "Decode"
-
-
-      "ByParentName" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByParentName <$> decode x0
-          _ -> fail $ TypeMismatch "ByParentName" "Decode"
-
-
-      "ByEmail" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ByEmail <$> decode x0
-          _ -> fail $ TypeMismatch "ByEmail" "Decode"
-
-
-      "BySelf" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> BySelf <$> decode x0
-          _ -> fail $ TypeMismatch "BySelf" "Decode"
-
-
-      "View" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> View <$> decode x0
-          _ -> fail $ TypeMismatch "View" "Decode"
-
-
-      "Timestamp" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> Timestamp <$> decode x0
-          _ -> fail $ TypeMismatch "Timestamp" "Decode"
-
-
-      "UnixTimestamp" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> UnixTimestamp <$> decode x0
-          _ -> fail $ TypeMismatch "UnixTimestamp" "Decode"
-
-
-      "CreatedAtTimestamp" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> CreatedAtTimestamp <$> decode x0
-          _ -> fail $ TypeMismatch "CreatedAtTimestamp" "Decode"
-
-
-      "CreatedAtUnixTimestamp" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> CreatedAtUnixTimestamp <$> decode x0
-          _ -> fail $ TypeMismatch "CreatedAtUnixTimestamp" "Decode"
-
-
-      "RealIP" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> RealIP <$> decode x0
-          _ -> fail $ TypeMismatch "RealIP" "Decode"
-
-
-      "IP" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> IP <$> decode x0
-          _ -> fail $ TypeMismatch "IP" "Decode"
-
-
-      "WithOrganization" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> WithOrganization <$> decode x0
-          _ -> fail $ TypeMismatch "WithOrganization" "Decode"
-
-
-      "WithForum" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> WithForum <$> decode x0
-          _ -> fail $ TypeMismatch "WithForum" "Decode"
-
-
-      "WithBoard" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> WithBoard <$> decode x0
-          _ -> fail $ TypeMismatch "WithBoard" "Decode"
-
-
-      "WithThread" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> WithThread <$> decode x0
-          _ -> fail $ TypeMismatch "WithThread" "Decode"
-
-
-      "WithThreadPosts" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> WithThreadPosts <$> decode x0
-          _ -> fail $ TypeMismatch "WithThreadPosts" "Decode"
-
-
-      "WithResource" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> WithResource <$> decode x0
-          _ -> fail $ TypeMismatch "WithResource" "Decode"
-
-
-      _ -> fail $ TypeMismatch "Param" "Decode"
 
 
 
@@ -2786,215 +2310,6 @@ instance paramTagRespondable :: Respondable ParamTag where
 
 
 
-instance paramTagDecode :: Decode ParamTag where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "ParamTag_Limit" -> do
-        pure ParamTag_Limit
-
-      "ParamTag_Offset" -> do
-        pure ParamTag_Offset
-
-      "ParamTag_SortOrder" -> do
-        pure ParamTag_SortOrder
-
-      "ParamTag_Order" -> do
-        pure ParamTag_Order
-
-      "ParamTag_ByOrganizationId" -> do
-        pure ParamTag_ByOrganizationId
-
-      "ParamTag_ByOrganizationsIds" -> do
-        pure ParamTag_ByOrganizationsIds
-
-      "ParamTag_ByOrganizationName" -> do
-        pure ParamTag_ByOrganizationName
-
-      "ParamTag_ByTeamId" -> do
-        pure ParamTag_ByTeamId
-
-      "ParamTag_ByTeamsIds" -> do
-        pure ParamTag_ByTeamsIds
-
-      "ParamTag_ByTeamName" -> do
-        pure ParamTag_ByTeamName
-
-      "ParamTag_ByTeamMemberId" -> do
-        pure ParamTag_ByTeamMemberId
-
-      "ParamTag_ByTeamMembersIds" -> do
-        pure ParamTag_ByTeamMembersIds
-
-      "ParamTag_ByUserId" -> do
-        pure ParamTag_ByUserId
-
-      "ParamTag_ByUsersIds" -> do
-        pure ParamTag_ByUsersIds
-
-      "ParamTag_ByUserName" -> do
-        pure ParamTag_ByUserName
-
-      "ParamTag_ByUsersNames" -> do
-        pure ParamTag_ByUsersNames
-
-      "ParamTag_ByGlobalGroupId" -> do
-        pure ParamTag_ByGlobalGroupId
-
-      "ParamTag_ByGlobalGroupsIds" -> do
-        pure ParamTag_ByGlobalGroupsIds
-
-      "ParamTag_ByGroupId" -> do
-        pure ParamTag_ByGroupId
-
-      "ParamTag_ByGroupsIds" -> do
-        pure ParamTag_ByGroupsIds
-
-      "ParamTag_ByGroupMemberId" -> do
-        pure ParamTag_ByGroupMemberId
-
-      "ParamTag_ByGroupMembersIds" -> do
-        pure ParamTag_ByGroupMembersIds
-
-      "ParamTag_ByForumId" -> do
-        pure ParamTag_ByForumId
-
-      "ParamTag_ByForumsIds" -> do
-        pure ParamTag_ByForumsIds
-
-      "ParamTag_ByForumName" -> do
-        pure ParamTag_ByForumName
-
-      "ParamTag_ByBoardId" -> do
-        pure ParamTag_ByBoardId
-
-      "ParamTag_ByBoardsIds" -> do
-        pure ParamTag_ByBoardsIds
-
-      "ParamTag_ByBoardName" -> do
-        pure ParamTag_ByBoardName
-
-      "ParamTag_ByThreadId" -> do
-        pure ParamTag_ByThreadId
-
-      "ParamTag_ByThreadsIds" -> do
-        pure ParamTag_ByThreadsIds
-
-      "ParamTag_ByThreadName" -> do
-        pure ParamTag_ByThreadName
-
-      "ParamTag_ByThreadPostId" -> do
-        pure ParamTag_ByThreadPostId
-
-      "ParamTag_ByThreadPostsIds" -> do
-        pure ParamTag_ByThreadPostsIds
-
-      "ParamTag_ByThreadPostName" -> do
-        pure ParamTag_ByThreadPostName
-
-      "ParamTag_ByThreadPostLikeId" -> do
-        pure ParamTag_ByThreadPostLikeId
-
-      "ParamTag_ByThreadPostLikesIds" -> do
-        pure ParamTag_ByThreadPostLikesIds
-
-      "ParamTag_ByThreadPostStarId" -> do
-        pure ParamTag_ByThreadPostStarId
-
-      "ParamTag_ByThreadPostStarsIds" -> do
-        pure ParamTag_ByThreadPostStarsIds
-
-      "ParamTag_ByBucketId" -> do
-        pure ParamTag_ByBucketId
-
-      "ParamTag_ByBucketRoundId" -> do
-        pure ParamTag_ByBucketRoundId
-
-      "ParamTag_ByResourceId" -> do
-        pure ParamTag_ByResourceId
-
-      "ParamTag_ByResourcesIds" -> do
-        pure ParamTag_ByResourcesIds
-
-      "ParamTag_ByResourceName" -> do
-        pure ParamTag_ByResourceName
-
-      "ParamTag_ByLeuronId" -> do
-        pure ParamTag_ByLeuronId
-
-      "ParamTag_ByLeuronsIds" -> do
-        pure ParamTag_ByLeuronsIds
-
-      "ParamTag_ByPmId" -> do
-        pure ParamTag_ByPmId
-
-      "ParamTag_ByPmsIds" -> do
-        pure ParamTag_ByPmsIds
-
-      "ParamTag_ByReminderId" -> do
-        pure ParamTag_ByReminderId
-
-      "ParamTag_ByReminderFolderId" -> do
-        pure ParamTag_ByReminderFolderId
-
-      "ParamTag_ByParentId" -> do
-        pure ParamTag_ByParentId
-
-      "ParamTag_ByParentsIds" -> do
-        pure ParamTag_ByParentsIds
-
-      "ParamTag_ByParentName" -> do
-        pure ParamTag_ByParentName
-
-      "ParamTag_ByEmail" -> do
-        pure ParamTag_ByEmail
-
-      "ParamTag_BySelf" -> do
-        pure ParamTag_BySelf
-
-      "ParamTag_View" -> do
-        pure ParamTag_View
-
-      "ParamTag_Timestamp" -> do
-        pure ParamTag_Timestamp
-
-      "ParamTag_UnixTimestamp" -> do
-        pure ParamTag_UnixTimestamp
-
-      "ParamTag_CreatedAtTimestamp" -> do
-        pure ParamTag_CreatedAtTimestamp
-
-      "ParamTag_CreatedAtUnixTimestamp" -> do
-        pure ParamTag_CreatedAtUnixTimestamp
-
-      "ParamTag_RealIP" -> do
-        pure ParamTag_RealIP
-
-      "ParamTag_IP" -> do
-        pure ParamTag_IP
-
-      "ParamTag_WithOrganization" -> do
-        pure ParamTag_WithOrganization
-
-      "ParamTag_WithForum" -> do
-        pure ParamTag_WithForum
-
-      "ParamTag_WithBoard" -> do
-        pure ParamTag_WithBoard
-
-      "ParamTag_WithThread" -> do
-        pure ParamTag_WithThread
-
-      "ParamTag_WithThreadPosts" -> do
-        pure ParamTag_WithThreadPosts
-
-      "ParamTag_WithResource" -> do
-        pure ParamTag_WithResource
-
-      _ -> fail $ TypeMismatch "ParamTag" "Decode"
-
-
-
 instance paramTagEq :: Eq ParamTag where
   eq ParamTag_Limit ParamTag_Limit = true
   eq ParamTag_Offset ParamTag_Offset = true
@@ -3281,26 +2596,6 @@ instance sortOrderByRespondable :: Respondable SortOrderBy where
 
 
 
-instance sortOrderByDecode :: Decode SortOrderBy where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "SortOrderBy_Asc" -> do
-        pure SortOrderBy_Asc
-
-      "SortOrderBy_Dsc" -> do
-        pure SortOrderBy_Dsc
-
-      "SortOrderBy_Rnd" -> do
-        pure SortOrderBy_Rnd
-
-      "SortOrderBy_None" -> do
-        pure SortOrderBy_None
-
-      _ -> fail $ TypeMismatch "SortOrderBy" "Decode"
-
-
-
 instance sortOrderByEq :: Eq SortOrderBy where
   eq SortOrderBy_Asc SortOrderBy_Asc = true
   eq SortOrderBy_Dsc SortOrderBy_Dsc = true
@@ -3483,50 +2778,6 @@ instance orderByRespondable :: Respondable OrderBy where
         pure OrderBy_None
 
       _ -> fail $ TypeMismatch "OrderBy" "Respondable"
-
-
-
-instance orderByDecode :: Decode OrderBy where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "OrderBy_UserId" -> do
-        pure OrderBy_UserId
-
-      "OrderBy_CreatedAt" -> do
-        pure OrderBy_CreatedAt
-
-      "OrderBy_ModifiedAt" -> do
-        pure OrderBy_ModifiedAt
-
-      "OrderBy_ModifiedBy" -> do
-        pure OrderBy_ModifiedBy
-
-      "OrderBy_ActivityAt" -> do
-        pure OrderBy_ActivityAt
-
-      "OrderBy_OrganizationId" -> do
-        pure OrderBy_OrganizationId
-
-      "OrderBy_TeamId" -> do
-        pure OrderBy_TeamId
-
-      "OrderBy_ForumId" -> do
-        pure OrderBy_ForumId
-
-      "OrderBy_BoardId" -> do
-        pure OrderBy_BoardId
-
-      "OrderBy_ThreadId" -> do
-        pure OrderBy_ThreadId
-
-      "OrderBy_Id" -> do
-        pure OrderBy_Id
-
-      "OrderBy_None" -> do
-        pure OrderBy_None
-
-      _ -> fail $ TypeMismatch "OrderBy" "Decode"
 
 
 

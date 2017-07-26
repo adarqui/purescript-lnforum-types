@@ -2,17 +2,18 @@ module LN.T.Like where
 import LN.T.Ent
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -20,7 +21,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -87,23 +88,6 @@ instance likeOptRespondable :: Respondable LikeOpt where
         pure Dislike
 
       _ -> fail $ TypeMismatch "LikeOpt" "Respondable"
-
-
-
-instance likeOptDecode :: Decode LikeOpt where
-  decode json = do
-    tag <- readPropUnsafe "tag" json
-    case tag of
-      "Like" -> do
-        pure Like
-
-      "Neutral" -> do
-        pure Neutral
-
-      "Dislike" -> do
-        pure Dislike
-
-      _ -> fail $ TypeMismatch "LikeOpt" "Decode"
 
 
 
@@ -184,19 +168,7 @@ instance likeRequestRequestable :: Requestable LikeRequest where
 instance likeRequestRespondable :: Respondable LikeRequest where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLikeRequest
-      <$> readPropUnsafe "opt" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "reason" json)
-      <*> readPropUnsafe "guard" json
-
-
-instance likeRequestDecode :: Decode LikeRequest where
-  decode json =
-      mkLikeRequest
-      <$> readPropUnsafe "opt" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "reason" json)
-      <*> readPropUnsafe "guard" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype LikeResponse = LikeResponse {
@@ -320,35 +292,7 @@ instance likeResponseRequestable :: Requestable LikeResponse where
 instance likeResponseRespondable :: Respondable LikeResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLikeResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "ent" json
-      <*> readPropUnsafe "ent_id" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "opt" json
-      <*> readPropUnsafe "score" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "reason" json)
-      <*> readPropUnsafe "active" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
-
-
-instance likeResponseDecode :: Decode LikeResponse where
-  decode json =
-      mkLikeResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "ent" json
-      <*> readPropUnsafe "ent_id" json
-      <*> readPropUnsafe "user_id" json
-      <*> readPropUnsafe "opt" json
-      <*> readPropUnsafe "score" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "reason" json)
-      <*> readPropUnsafe "active" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+  fromResponse = fromResponseDecodeJson
 
 
 newtype LikeResponses = LikeResponses {
@@ -402,15 +346,7 @@ instance likeResponsesRequestable :: Requestable LikeResponses where
 instance likeResponsesRespondable :: Respondable LikeResponses where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLikeResponses
-      <$> readPropUnsafe "like_responses" json
-
-
-instance likeResponsesDecode :: Decode LikeResponses where
-  decode json =
-      mkLikeResponses
-      <$> readPropUnsafe "like_responses" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype LikeStatResponse = LikeStatResponse {
@@ -499,25 +435,7 @@ instance likeStatResponseRequestable :: Requestable LikeStatResponse where
 instance likeStatResponseRespondable :: Respondable LikeStatResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLikeStatResponse
-      <$> readPropUnsafe "ent" json
-      <*> readPropUnsafe "ent_id" json
-      <*> readPropUnsafe "score" json
-      <*> readPropUnsafe "like" json
-      <*> readPropUnsafe "neutral" json
-      <*> readPropUnsafe "dislike" json
-
-
-instance likeStatResponseDecode :: Decode LikeStatResponse where
-  decode json =
-      mkLikeStatResponse
-      <$> readPropUnsafe "ent" json
-      <*> readPropUnsafe "ent_id" json
-      <*> readPropUnsafe "score" json
-      <*> readPropUnsafe "like" json
-      <*> readPropUnsafe "neutral" json
-      <*> readPropUnsafe "dislike" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype LikeStatResponses = LikeStatResponses {
@@ -571,14 +489,6 @@ instance likeStatResponsesRequestable :: Requestable LikeStatResponses where
 instance likeStatResponsesRespondable :: Respondable LikeStatResponses where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkLikeStatResponses
-      <$> readPropUnsafe "like_stat_responses" json
-
-
-instance likeStatResponsesDecode :: Decode LikeStatResponses where
-  decode json =
-      mkLikeStatResponses
-      <$> readPropUnsafe "like_stat_responses" json
+  fromResponse = fromResponseDecodeJson
 
 -- footer

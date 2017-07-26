@@ -2,17 +2,18 @@ module LN.T.Star where
 import LN.T.Ent
 
 
+import Control.Monad.Except.Trans       (runExceptT)
 import Data.Argonaut.Core               (jsonEmptyObject, stringify)
 import Data.Argonaut.Decode             (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Combinators ((.?))
 import Data.Argonaut.Encode             (class EncodeJson, encodeJson)
 import Data.Argonaut.Encode.Combinators ((~>), (:=))
 import Data.Date.Helpers                (Date)
-import Data.Either                      (Either(..))
-import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign)
+import Data.Either                      (Either(..), either)
+import Data.Foreign                     (ForeignError(..), fail, unsafeFromForeign, toForeign)
 import Data.Foreign.NullOrUndefined     (unNullOrUndefined)
 import Data.Foreign.Class               (class Decode, decode)
-import Data.Foreign.Helpers             (readPropUnsafe)
+import Data.Foreign.Helpers
 import Data.Maybe                       (Maybe(..))
 import Data.Tuple                       (Tuple(..))
 import Purescript.Api.Helpers           (class QueryParam, qp)
@@ -20,7 +21,7 @@ import Network.HTTP.Affjax.Request      (class Requestable, toRequest)
 import Network.HTTP.Affjax.Response     (class Respondable, ResponseType(..))
 import Optic.Core                       ((^.), (..))
 import Optic.Types                      (Lens, Lens')
-import Prelude                          (class Show, show, class Eq, eq, pure, bind, ($), (<>), (<$>), (<*>), (==), (&&))
+import Prelude                          (class Show, show, class Eq, eq, pure, bind, const, ($), (<>), (<$>), (<*>), (==), (&&), (<<<))
 import Data.Default
 
 import Purescript.Api.Helpers
@@ -83,17 +84,7 @@ instance starRequestRequestable :: Requestable StarRequest where
 instance starRequestRespondable :: Respondable StarRequest where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkStarRequest
-      <$> (unNullOrUndefined <$> readPropUnsafe "reason" json)
-      <*> readPropUnsafe "guard" json
-
-
-instance starRequestDecode :: Decode StarRequest where
-  decode json =
-      mkStarRequest
-      <$> (unNullOrUndefined <$> readPropUnsafe "reason" json)
-      <*> readPropUnsafe "guard" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype StarResponse = StarResponse {
@@ -203,31 +194,7 @@ instance starResponseRequestable :: Requestable StarResponse where
 instance starResponseRespondable :: Respondable StarResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkStarResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "ent" json
-      <*> readPropUnsafe "ent_id" json
-      <*> readPropUnsafe "user_id" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "reason" json)
-      <*> readPropUnsafe "active" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
-
-
-instance starResponseDecode :: Decode StarResponse where
-  decode json =
-      mkStarResponse
-      <$> readPropUnsafe "id" json
-      <*> readPropUnsafe "ent" json
-      <*> readPropUnsafe "ent_id" json
-      <*> readPropUnsafe "user_id" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "reason" json)
-      <*> readPropUnsafe "active" json
-      <*> readPropUnsafe "guard" json
-      <*> (unNullOrUndefined <$> readPropUnsafe "created_at" json)
-      <*> (unNullOrUndefined <$> readPropUnsafe "modified_at" json)
+  fromResponse = fromResponseDecodeJson
 
 
 newtype StarResponses = StarResponses {
@@ -281,15 +248,7 @@ instance starResponsesRequestable :: Requestable StarResponses where
 instance starResponsesRespondable :: Respondable StarResponses where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkStarResponses
-      <$> readPropUnsafe "star_responses" json
-
-
-instance starResponsesDecode :: Decode StarResponses where
-  decode json =
-      mkStarResponses
-      <$> readPropUnsafe "star_responses" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype StarStatResponse = StarStatResponse {
@@ -357,19 +316,7 @@ instance starStatResponseRequestable :: Requestable StarStatResponse where
 instance starStatResponseRespondable :: Respondable StarStatResponse where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkStarStatResponse
-      <$> readPropUnsafe "ent" json
-      <*> readPropUnsafe "ent_id" json
-      <*> readPropUnsafe "stars" json
-
-
-instance starStatResponseDecode :: Decode StarStatResponse where
-  decode json =
-      mkStarStatResponse
-      <$> readPropUnsafe "ent" json
-      <*> readPropUnsafe "ent_id" json
-      <*> readPropUnsafe "stars" json
+  fromResponse = fromResponseDecodeJson
 
 
 newtype StarStatResponses = StarStatResponses {
@@ -423,14 +370,6 @@ instance starStatResponsesRequestable :: Requestable StarStatResponses where
 instance starStatResponsesRespondable :: Respondable StarStatResponses where
   responseType =
     Tuple Nothing JSONResponse
-  fromResponse json =
-      mkStarStatResponses
-      <$> readPropUnsafe "star_stat_responses" json
-
-
-instance starStatResponsesDecode :: Decode StarStatResponses where
-  decode json =
-      mkStarStatResponses
-      <$> readPropUnsafe "star_stat_responses" json
+  fromResponse = fromResponseDecodeJson
 
 -- footer

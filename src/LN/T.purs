@@ -10,8 +10,8 @@ import           LN.T.Count               as A
 import           LN.T.Ent                 as A
 import           LN.T.Error               as A
 import           LN.T.Id                  as A
-import           LN.T.Pack.Sanitized.User as A
 import           LN.T.Pack.Board          as A
+import           LN.T.Pack.Sanitized.User as A
 import           LN.T.Pack.User           as A
 import           LN.T.Param               as A
 import           LN.T.Permission          as A

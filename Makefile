@@ -13,3 +13,7 @@ tests:
 bower:
 	bower install
 	rsync -av ../purescript-foreign-extra/src/ ./bower_components/purescript-foreign/src/
+
+curtag:
+	git push origin :v0.11.0
+	git push origin v0.11.0

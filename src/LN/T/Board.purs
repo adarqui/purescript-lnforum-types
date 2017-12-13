@@ -1,5 +1,4 @@
 module LN.T.Board where
-import LN.T.DepList
 import LN.T.Visibility
 
 

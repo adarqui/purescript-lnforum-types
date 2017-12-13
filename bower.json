@@ -15,8 +15,8 @@
     "output"
   ],
   "dependencies": {
-    "purescript-api-helpers": "^1.2.3",
-    "purescript-date-helpers": "^1.2.0",
+    "purescript-api-helpers": "^0.11.0",
+    "purescript-date-helpers": "^0.11.0",
     "purescript-argonaut": "^3.0.0",
     "purescript-affjax": "^4.0.0",
     "purescript-lens": "^3.0.0",

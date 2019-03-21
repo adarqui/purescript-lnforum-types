@@ -497,8 +497,6 @@ newtype UserSanitizedStatResponse = UserSanitizedStatResponse {
   threads :: Int,
   threadPosts :: Int,
   respect :: Int,
-  resources :: Int,
-  leurons :: Int,
   workouts :: Int
 }
 
@@ -508,8 +506,6 @@ type UserSanitizedStatResponseR = {
   threads :: Int,
   threadPosts :: Int,
   respect :: Int,
-  resources :: Int,
-  leurons :: Int,
   workouts :: Int
 }
 
@@ -519,16 +515,14 @@ _UserSanitizedStatResponse :: Lens' UserSanitizedStatResponse {
   threads :: Int,
   threadPosts :: Int,
   respect :: Int,
-  resources :: Int,
-  leurons :: Int,
   workouts :: Int
 }
 _UserSanitizedStatResponse f (UserSanitizedStatResponse o) = UserSanitizedStatResponse <$> f o
 
 
-mkUserSanitizedStatResponse :: Int -> Int -> Int -> Int -> Int -> Int -> Int -> UserSanitizedStatResponse
-mkUserSanitizedStatResponse userId threads threadPosts respect resources leurons workouts =
-  UserSanitizedStatResponse{userId, threads, threadPosts, respect, resources, leurons, workouts}
+mkUserSanitizedStatResponse :: Int -> Int -> Int -> Int -> Int -> UserSanitizedStatResponse
+mkUserSanitizedStatResponse userId threads threadPosts respect workouts =
+  UserSanitizedStatResponse{userId, threads, threadPosts, respect, workouts}
 
 
 unwrapUserSanitizedStatResponse :: UserSanitizedStatResponse -> {
@@ -536,8 +530,6 @@ unwrapUserSanitizedStatResponse :: UserSanitizedStatResponse -> {
   threads :: Int,
   threadPosts :: Int,
   respect :: Int,
-  resources :: Int,
-  leurons :: Int,
   workouts :: Int
 }
 unwrapUserSanitizedStatResponse (UserSanitizedStatResponse r) = r
@@ -549,8 +541,6 @@ instance userSanitizedStatResponseEncodeJson :: EncodeJson UserSanitizedStatResp
     ~> "threads" := o.threads
     ~> "thread_posts" := o.threadPosts
     ~> "respect" := o.respect
-    ~> "resources" := o.resources
-    ~> "leurons" := o.leurons
     ~> "workouts" := o.workouts
     ~> jsonEmptyObject
 
@@ -562,16 +552,12 @@ instance userSanitizedStatResponseDecodeJson :: DecodeJson UserSanitizedStatResp
     threads <- obj .? "threads"
     threadPosts <- obj .? "thread_posts"
     respect <- obj .? "respect"
-    resources <- obj .? "resources"
-    leurons <- obj .? "leurons"
     workouts <- obj .? "workouts"
     pure $ UserSanitizedStatResponse {
       userId,
       threads,
       threadPosts,
       respect,
-      resources,
-      leurons,
       workouts
     }
 

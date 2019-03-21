@@ -629,50 +629,42 @@ instance boardResponsesRespondable :: Respondable BoardResponses where
 
 newtype BoardStatResponse = BoardStatResponse {
   boardId :: Int,
-  leurons :: Int,
   likes :: Int,
   neutral :: Int,
   dislikes :: Int,
-  stars :: Int,
   views :: Int
 }
 
 
 type BoardStatResponseR = {
   boardId :: Int,
-  leurons :: Int,
   likes :: Int,
   neutral :: Int,
   dislikes :: Int,
-  stars :: Int,
   views :: Int
 }
 
 
 _BoardStatResponse :: Lens' BoardStatResponse {
   boardId :: Int,
-  leurons :: Int,
   likes :: Int,
   neutral :: Int,
   dislikes :: Int,
-  stars :: Int,
   views :: Int
 }
 _BoardStatResponse f (BoardStatResponse o) = BoardStatResponse <$> f o
 
 
-mkBoardStatResponse :: Int -> Int -> Int -> Int -> Int -> Int -> Int -> BoardStatResponse
-mkBoardStatResponse boardId leurons likes neutral dislikes stars views =
-  BoardStatResponse{boardId, leurons, likes, neutral, dislikes, stars, views}
+mkBoardStatResponse :: Int -> Int -> Int -> Int -> Int -> BoardStatResponse
+mkBoardStatResponse boardId likes neutral dislikes views =
+  BoardStatResponse{boardId, likes, neutral, dislikes, views}
 
 
 unwrapBoardStatResponse :: BoardStatResponse -> {
   boardId :: Int,
-  leurons :: Int,
   likes :: Int,
   neutral :: Int,
   dislikes :: Int,
-  stars :: Int,
   views :: Int
 }
 unwrapBoardStatResponse (BoardStatResponse r) = r
@@ -681,11 +673,9 @@ instance boardStatResponseEncodeJson :: EncodeJson BoardStatResponse where
   encodeJson (BoardStatResponse o) =
        "tag" := "BoardStatResponse"
     ~> "board_id" := o.boardId
-    ~> "leurons" := o.leurons
     ~> "likes" := o.likes
     ~> "neutral" := o.neutral
     ~> "dislikes" := o.dislikes
-    ~> "stars" := o.stars
     ~> "views" := o.views
     ~> jsonEmptyObject
 
@@ -694,19 +684,15 @@ instance boardStatResponseDecodeJson :: DecodeJson BoardStatResponse where
   decodeJson o = do
     obj <- decodeJson o
     boardId <- obj .? "board_id"
-    leurons <- obj .? "leurons"
     likes <- obj .? "likes"
     neutral <- obj .? "neutral"
     dislikes <- obj .? "dislikes"
-    stars <- obj .? "stars"
     views <- obj .? "views"
     pure $ BoardStatResponse {
       boardId,
-      leurons,
       likes,
       neutral,
       dislikes,
-      stars,
       views
     }
 

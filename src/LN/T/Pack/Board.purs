@@ -3,7 +3,6 @@ import LN.T.Board
 import LN.T.User
 import LN.T.Permission
 import LN.T.Like
-import LN.T.Star
 
 
 import Control.Monad.Except.Trans       (runExceptT)
@@ -37,7 +36,6 @@ newtype BoardPackResponse = BoardPackResponse {
   userId :: Int,
   stat :: BoardStatResponse,
   like :: (Maybe LikeResponse),
-  star :: (Maybe StarResponse),
   permissions :: Permissions
 }
 
@@ -49,7 +47,6 @@ type BoardPackResponseR = {
   userId :: Int,
   stat :: BoardStatResponse,
   like :: (Maybe LikeResponse),
-  star :: (Maybe StarResponse),
   permissions :: Permissions
 }
 
@@ -61,15 +58,14 @@ _BoardPackResponse :: Lens' BoardPackResponse {
   userId :: Int,
   stat :: BoardStatResponse,
   like :: (Maybe LikeResponse),
-  star :: (Maybe StarResponse),
   permissions :: Permissions
 }
 _BoardPackResponse f (BoardPackResponse o) = BoardPackResponse <$> f o
 
 
-mkBoardPackResponse :: BoardResponse -> Int -> UserSanitizedResponse -> Int -> BoardStatResponse -> (Maybe LikeResponse) -> (Maybe StarResponse) -> Permissions -> BoardPackResponse
-mkBoardPackResponse board boardId user userId stat like star permissions =
-  BoardPackResponse{board, boardId, user, userId, stat, like, star, permissions}
+mkBoardPackResponse :: BoardResponse -> Int -> UserSanitizedResponse -> Int -> BoardStatResponse -> (Maybe LikeResponse) -> Permissions -> BoardPackResponse
+mkBoardPackResponse board boardId user userId stat like permissions =
+  BoardPackResponse{board, boardId, user, userId, stat, like, permissions}
 
 
 unwrapBoardPackResponse :: BoardPackResponse -> {
@@ -79,7 +75,6 @@ unwrapBoardPackResponse :: BoardPackResponse -> {
   userId :: Int,
   stat :: BoardStatResponse,
   like :: (Maybe LikeResponse),
-  star :: (Maybe StarResponse),
   permissions :: Permissions
 }
 unwrapBoardPackResponse (BoardPackResponse r) = r
@@ -93,7 +88,6 @@ instance boardPackResponseEncodeJson :: EncodeJson BoardPackResponse where
     ~> "user_id" := o.userId
     ~> "stat" := o.stat
     ~> "like" := o.like
-    ~> "star" := o.star
     ~> "permissions" := o.permissions
     ~> jsonEmptyObject
 
@@ -107,7 +101,6 @@ instance boardPackResponseDecodeJson :: DecodeJson BoardPackResponse where
     userId <- obj .? "user_id"
     stat <- obj .? "stat"
     like <- obj .? "like"
-    star <- obj .? "star"
     permissions <- obj .? "permissions"
     pure $ BoardPackResponse {
       board,
@@ -116,7 +109,6 @@ instance boardPackResponseDecodeJson :: DecodeJson BoardPackResponse where
       userId,
       stat,
       like,
-      star,
       permissions
     }
 

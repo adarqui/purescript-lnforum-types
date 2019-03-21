@@ -1,7 +1,6 @@
 module LN.T.Pack.Sanitized.User where
 import LN.T.User
 import LN.T.Like
-import LN.T.Star
 import LN.T.Profile
 
 
@@ -35,8 +34,7 @@ newtype UserSanitizedPackResponse = UserSanitizedPackResponse {
   profile :: ProfileResponse,
   profileId :: Int,
   stat :: UserSanitizedStatResponse,
-  like :: (Maybe LikeResponse),
-  star :: (Maybe StarResponse)
+  like :: (Maybe LikeResponse)
 }
 
 
@@ -46,8 +44,7 @@ type UserSanitizedPackResponseR = {
   profile :: ProfileResponse,
   profileId :: Int,
   stat :: UserSanitizedStatResponse,
-  like :: (Maybe LikeResponse),
-  star :: (Maybe StarResponse)
+  like :: (Maybe LikeResponse)
 }
 
 
@@ -57,15 +54,14 @@ _UserSanitizedPackResponse :: Lens' UserSanitizedPackResponse {
   profile :: ProfileResponse,
   profileId :: Int,
   stat :: UserSanitizedStatResponse,
-  like :: (Maybe LikeResponse),
-  star :: (Maybe StarResponse)
+  like :: (Maybe LikeResponse)
 }
 _UserSanitizedPackResponse f (UserSanitizedPackResponse o) = UserSanitizedPackResponse <$> f o
 
 
-mkUserSanitizedPackResponse :: UserSanitizedResponse -> Int -> ProfileResponse -> Int -> UserSanitizedStatResponse -> (Maybe LikeResponse) -> (Maybe StarResponse) -> UserSanitizedPackResponse
-mkUserSanitizedPackResponse user userId profile profileId stat like star =
-  UserSanitizedPackResponse{user, userId, profile, profileId, stat, like, star}
+mkUserSanitizedPackResponse :: UserSanitizedResponse -> Int -> ProfileResponse -> Int -> UserSanitizedStatResponse -> (Maybe LikeResponse) -> UserSanitizedPackResponse
+mkUserSanitizedPackResponse user userId profile profileId stat like =
+  UserSanitizedPackResponse{user, userId, profile, profileId, stat, like}
 
 
 unwrapUserSanitizedPackResponse :: UserSanitizedPackResponse -> {
@@ -74,8 +70,7 @@ unwrapUserSanitizedPackResponse :: UserSanitizedPackResponse -> {
   profile :: ProfileResponse,
   profileId :: Int,
   stat :: UserSanitizedStatResponse,
-  like :: (Maybe LikeResponse),
-  star :: (Maybe StarResponse)
+  like :: (Maybe LikeResponse)
 }
 unwrapUserSanitizedPackResponse (UserSanitizedPackResponse r) = r
 
@@ -88,7 +83,6 @@ instance userSanitizedPackResponseEncodeJson :: EncodeJson UserSanitizedPackResp
     ~> "profile_id" := o.profileId
     ~> "stat" := o.stat
     ~> "like" := o.like
-    ~> "star" := o.star
     ~> jsonEmptyObject
 
 
@@ -101,15 +95,13 @@ instance userSanitizedPackResponseDecodeJson :: DecodeJson UserSanitizedPackResp
     profileId <- obj .? "profile_id"
     stat <- obj .? "stat"
     like <- obj .? "like"
-    star <- obj .? "star"
     pure $ UserSanitizedPackResponse {
       user,
       userId,
       profile,
       profileId,
       stat,
-      like,
-      star
+      like
     }
 
 

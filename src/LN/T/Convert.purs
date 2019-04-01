@@ -27,27 +27,6 @@ apiResponseToApiRequest  (ApiResponse o) =
   }
 
 
-idRequestToIdResponse :: Int -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> IdRequest -> IdResponse
-idRequestToIdResponse id userId createdAt modifiedAt activityAt (IdRequest o) =
-  IdResponse {
-    id: id,
-    userId: userId,
-    targetId: o.targetId,
-    guard: o.guard,
-    createdAt: createdAt,
-    modifiedAt: modifiedAt,
-    activityAt: activityAt
-  }
-
-
-idResponseToIdRequest :: IdResponse -> IdRequest
-idResponseToIdRequest  (IdResponse o) =
-  IdRequest {
-    targetId: o.targetId,
-    guard: o.guard
-  }
-
-
 profileRequestToProfileResponse :: Int -> Ent -> Int -> Int -> Int -> (Maybe Date) -> (Maybe Date) -> ProfileRequest -> ProfileResponse
 profileRequestToProfileResponse id ent entId karmaGood karmaBad createdAt modifiedAt (ProfileRequest o) =
   ProfileResponse {
@@ -83,28 +62,67 @@ profileResponseToProfileRequest websites stateWebsites (ProfileResponse o) =
   }
 
 
-boardRequestToBoardResponse :: Int -> Int -> String -> Boolean -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> BoardRequest -> BoardResponse
-boardRequestToBoardResponse id userId name active createdAt modifiedAt activityAt (BoardRequest o) =
+forumRequestToForumResponse :: Int -> Int -> String -> (Maybe Date) -> (Maybe Int) -> (Maybe Date) -> (Maybe Date) -> ForumRequest -> ForumResponse
+forumRequestToForumResponse id userId name createdAt modifiedBy modifiedAt activityAt (ForumRequest o) =
+  ForumResponse {
+    id: id,
+    userId: userId,
+    name: name,
+    displayName: o.displayName,
+    description: o.description,
+    threadsPerBoard: o.threadsPerBoard,
+    threadPostsPerThread: o.threadPostsPerThread,
+    recentThreadsLimit: o.recentThreadsLimit,
+    recentPostsLimit: o.recentPostsLimit,
+    motwLimit: o.motwLimit,
+    icon: o.icon,
+    visibility: o.visibility,
+    tags: o.tags,
+    guard: o.guard,
+    createdAt: createdAt,
+    modifiedBy: modifiedBy,
+    modifiedAt: modifiedAt,
+    activityAt: activityAt
+  }
+
+
+forumResponseToForumRequest :: ForumResponse -> ForumRequest
+forumResponseToForumRequest  (ForumResponse o) =
+  ForumRequest {
+    displayName: o.displayName,
+    description: o.description,
+    threadsPerBoard: o.threadsPerBoard,
+    threadPostsPerThread: o.threadPostsPerThread,
+    recentThreadsLimit: o.recentThreadsLimit,
+    recentPostsLimit: o.recentPostsLimit,
+    motwLimit: o.motwLimit,
+    icon: o.icon,
+    tags: o.tags,
+    visibility: o.visibility,
+    guard: o.guard
+  }
+
+
+boardRequestToBoardResponse :: Int -> Int -> String -> (Maybe Date) -> (Maybe Date) -> (Maybe Int) -> (Maybe Date) -> BoardRequest -> BoardResponse
+boardRequestToBoardResponse id userId name createdAt modifiedAt modifiedBy activityAt (BoardRequest o) =
   BoardResponse {
     id: id,
     userId: userId,
     name: name,
     displayName: o.displayName,
     description: o.description,
-    source: o.source,
-    author: o.author,
-    prerequisites: o.prerequisites,
-    categories: o.categories,
+    boardType: o.boardType,
+    active: o.active,
+    isAnonymous: o.isAnonymous,
+    canCreateBoards: o.canCreateBoards,
+    canCreateThreads: o.canCreateThreads,
     visibility: o.visibility,
-    counter: o.counter,
-    version: o.version,
-    urls: o.urls,
     icon: o.icon,
     tags: o.tags,
-    active: active,
     guard: o.guard,
     createdAt: createdAt,
     modifiedAt: modifiedAt,
+    modifiedBy: modifiedBy,
     activityAt: activityAt
   }
 
@@ -114,17 +132,87 @@ boardResponseToBoardRequest  (BoardResponse o) =
   BoardRequest {
     displayName: o.displayName,
     description: o.description,
-    source: o.source,
-    author: o.author,
-    prerequisites: o.prerequisites,
-    categories: o.categories,
+    boardType: o.boardType,
+    active: o.active,
+    isAnonymous: o.isAnonymous,
+    canCreateBoards: o.canCreateBoards,
+    canCreateThreads: o.canCreateThreads,
     visibility: o.visibility,
-    counter: o.counter,
-    version: o.version,
-    urls: o.urls,
     icon: o.icon,
     tags: o.tags,
     guard: o.guard
+  }
+
+
+threadRequestToThreadResponse :: Int -> Int -> Int -> String -> Boolean -> (Maybe Date) -> (Maybe Int) -> (Maybe Date) -> (Maybe Date) -> ThreadRequest -> ThreadResponse
+threadRequestToThreadResponse id userId boardId name active createdAt modifiedBy modifiedAt activityAt (ThreadRequest o) =
+  ThreadResponse {
+    id: id,
+    userId: userId,
+    boardId: boardId,
+    name: name,
+    displayName: o.displayName,
+    description: o.description,
+    sticky: o.sticky,
+    locked: o.locked,
+    poll: o.poll,
+    icon: o.icon,
+    tags: o.tags,
+    active: active,
+    guard: o.guard,
+    createdAt: createdAt,
+    modifiedBy: modifiedBy,
+    modifiedAt: modifiedAt,
+    activityAt: activityAt
+  }
+
+
+threadResponseToThreadRequest :: (Maybe String) -> ThreadResponse -> ThreadRequest
+threadResponseToThreadRequest stateTag (ThreadResponse o) =
+  ThreadRequest {
+    displayName: o.displayName,
+    description: o.description,
+    sticky: o.sticky,
+    locked: o.locked,
+    poll: o.poll,
+    icon: o.icon,
+    tags: o.tags,
+    guard: o.guard,
+    stateTag: stateTag
+  }
+
+
+threadPostRequestToThreadPostResponse :: Int -> Int -> Int -> Int -> (Maybe Int) -> Boolean -> (Maybe Date) -> (Maybe Int) -> (Maybe Date) -> (Maybe Date) -> ThreadPostRequest -> ThreadPostResponse
+threadPostRequestToThreadPostResponse id userId boardId threadId parentId active createdAt modifiedBy modifiedAt activityAt (ThreadPostRequest o) =
+  ThreadPostResponse {
+    id: id,
+    userId: userId,
+    boardId: boardId,
+    threadId: threadId,
+    parentId: parentId,
+    title: o.title,
+    body: o.body,
+    tags: o.tags,
+    privateTags: o.privateTags,
+    active: active,
+    guard: o.guard,
+    createdAt: createdAt,
+    modifiedBy: modifiedBy,
+    modifiedAt: modifiedAt,
+    activityAt: activityAt
+  }
+
+
+threadPostResponseToThreadPostRequest :: (Maybe String) -> (Maybe String) -> ThreadPostResponse -> ThreadPostRequest
+threadPostResponseToThreadPostRequest stateTag statePrivateTag (ThreadPostResponse o) =
+  ThreadPostRequest {
+    title: o.title,
+    body: o.body,
+    tags: o.tags,
+    privateTags: o.privateTags,
+    guard: o.guard,
+    stateTag: stateTag,
+    statePrivateTag: statePrivateTag
   }
 
 

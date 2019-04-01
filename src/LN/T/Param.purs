@@ -35,6 +35,7 @@ data Param
   | ByUsersIds (Array Int)
   | ByUserName String
   | ByUsersNames (Array String)
+  | ByForumId Int
   | ByBoardId Int
   | ByBoardsIds (Array Int)
   | ByBoardName String
@@ -99,6 +100,10 @@ instance paramEncodeJson :: EncodeJson Param where
     ~> jsonEmptyObject
   encodeJson (ByUsersNames x0) =
        "tag" := "ByUsersNames"
+    ~> "contents" := [encodeJson x0]
+    ~> jsonEmptyObject
+  encodeJson (ByForumId x0) =
+       "tag" := "ByForumId"
     ~> "contents" := [encodeJson x0]
     ~> jsonEmptyObject
   encodeJson (ByBoardId x0) =
@@ -282,6 +287,13 @@ instance paramDecodeJson :: DecodeJson Param where
         case r of
           [x0] -> ByUsersNames <$> decodeJson x0
           _ -> Left $ "DecodeJson TypeMismatch for ByUsersNames"
+
+
+      "ByForumId" -> do
+        r <- obj .? "contents"
+        case r of
+          [x0] -> ByForumId <$> decodeJson x0
+          _ -> Left $ "DecodeJson TypeMismatch for ByForumId"
 
 
       "ByBoardId" -> do
@@ -566,6 +578,13 @@ instance paramRespondable :: Respondable Param where
           _ -> fail $ TypeMismatch "ByUsersNames" "Respondable"
 
 
+      "ByForumId" -> do
+        r <- readPropUnsafe "contents" json
+        case r of
+          [x0] -> ByForumId <$> exceptDecodeJsonRespondable x0
+          _ -> fail $ TypeMismatch "ByForumId" "Respondable"
+
+
       "ByBoardId" -> do
         r <- readPropUnsafe "contents" json
         case r of
@@ -789,6 +808,7 @@ instance paramEq :: Eq Param where
   eq (ByUsersIds x0a) (ByUsersIds x0b) = x0a == x0b
   eq (ByUserName x0a) (ByUserName x0b) = x0a == x0b
   eq (ByUsersNames x0a) (ByUsersNames x0b) = x0a == x0b
+  eq (ByForumId x0a) (ByForumId x0b) = x0a == x0b
   eq (ByBoardId x0a) (ByBoardId x0b) = x0a == x0b
   eq (ByBoardsIds x0a) (ByBoardsIds x0b) = x0a == x0b
   eq (ByBoardName x0a) (ByBoardName x0b) = x0a == x0b
@@ -830,6 +850,7 @@ instance paramShow :: Show Param where
   show (ByUsersIds x0) = "ByUsersIds: " <> show x0
   show (ByUserName x0) = "ByUserName: " <> show x0
   show (ByUsersNames x0) = "ByUsersNames: " <> show x0
+  show (ByForumId x0) = "ByForumId: " <> show x0
   show (ByBoardId x0) = "ByBoardId: " <> show x0
   show (ByBoardsIds x0) = "ByBoardsIds: " <> show x0
   show (ByBoardName x0) = "ByBoardName: " <> show x0
@@ -871,6 +892,7 @@ instance paramQueryParam :: QueryParam Param where
   qp (ByUsersIds x0) = Tuple "by_users_ids" (show x0)
   qp (ByUserName x0) = Tuple "by_user_name" x0
   qp (ByUsersNames x0) = Tuple "by_users_names" (show x0)
+  qp (ByForumId x0) = Tuple "by_forum_id" (show x0)
   qp (ByBoardId x0) = Tuple "by_board_id" (show x0)
   qp (ByBoardsIds x0) = Tuple "by_boards_ids" (show x0)
   qp (ByBoardName x0) = Tuple "by_board_name" x0

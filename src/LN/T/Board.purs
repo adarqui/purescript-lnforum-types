@@ -27,33 +27,13 @@ import Data.Default
 import Purescript.Api.Helpers
 
 data BoardType
-  = ISBN13 String
-  | ISBN10 String
-  | ISBN String
-  | URL String
-  | SourceNone 
+  = FixMe 
 
 
 
 instance boardTypeEncodeJson :: EncodeJson BoardType where
-  encodeJson (ISBN13 x0) =
-       "tag" := "ISBN13"
-    ~> "contents" := [encodeJson x0]
-    ~> jsonEmptyObject
-  encodeJson (ISBN10 x0) =
-       "tag" := "ISBN10"
-    ~> "contents" := [encodeJson x0]
-    ~> jsonEmptyObject
-  encodeJson (ISBN x0) =
-       "tag" := "ISBN"
-    ~> "contents" := [encodeJson x0]
-    ~> jsonEmptyObject
-  encodeJson (URL x0) =
-       "tag" := "URL"
-    ~> "contents" := [encodeJson x0]
-    ~> jsonEmptyObject
-  encodeJson (SourceNone ) =
-       "tag" := "SourceNone"
+  encodeJson (FixMe ) =
+       "tag" := "FixMe"
     ~> "contents" := ([] :: Array String)
     ~> jsonEmptyObject
 
@@ -63,36 +43,8 @@ instance boardTypeDecodeJson :: DecodeJson BoardType where
     obj <- decodeJson json
     tag <- obj .? "tag"
     case tag of
-      "ISBN13" -> do
-        r <- obj .? "contents"
-        case r of
-          [x0] -> ISBN13 <$> decodeJson x0
-          _ -> Left $ "DecodeJson TypeMismatch for ISBN13"
-
-
-      "ISBN10" -> do
-        r <- obj .? "contents"
-        case r of
-          [x0] -> ISBN10 <$> decodeJson x0
-          _ -> Left $ "DecodeJson TypeMismatch for ISBN10"
-
-
-      "ISBN" -> do
-        r <- obj .? "contents"
-        case r of
-          [x0] -> ISBN <$> decodeJson x0
-          _ -> Left $ "DecodeJson TypeMismatch for ISBN"
-
-
-      "URL" -> do
-        r <- obj .? "contents"
-        case r of
-          [x0] -> URL <$> decodeJson x0
-          _ -> Left $ "DecodeJson TypeMismatch for URL"
-
-
-      "SourceNone" -> do
-        pure SourceNone
+      "FixMe" -> do
+        pure FixMe
 
       _ -> Left $ "DecodeJson TypeMismatch for BoardType"
 
@@ -110,69 +62,21 @@ instance boardTypeRespondable :: Respondable BoardType where
   fromResponse json = do
     tag <- readPropUnsafe "tag" json
     case tag of
-      "ISBN13" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ISBN13 <$> exceptDecodeJsonRespondable x0
-          _ -> fail $ TypeMismatch "ISBN13" "Respondable"
-
-
-      "ISBN10" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ISBN10 <$> exceptDecodeJsonRespondable x0
-          _ -> fail $ TypeMismatch "ISBN10" "Respondable"
-
-
-      "ISBN" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> ISBN <$> exceptDecodeJsonRespondable x0
-          _ -> fail $ TypeMismatch "ISBN" "Respondable"
-
-
-      "URL" -> do
-        r <- readPropUnsafe "contents" json
-        case r of
-          [x0] -> URL <$> exceptDecodeJsonRespondable x0
-          _ -> fail $ TypeMismatch "URL" "Respondable"
-
-
-      "SourceNone" -> do
-        pure SourceNone
+      "FixMe" -> do
+        pure FixMe
 
       _ -> fail $ TypeMismatch "BoardType" "Respondable"
 
 
 
 data TyBoardType
-  = TyISBN13 
-  | TyISBN10 
-  | TyISBN 
-  | TyURL 
-  | TySourceNone 
+  = TyFixMe 
 
 
 
 instance tyBoardTypeEncodeJson :: EncodeJson TyBoardType where
-  encodeJson (TyISBN13 ) =
-       "tag" := "TyISBN13"
-    ~> "contents" := ([] :: Array String)
-    ~> jsonEmptyObject
-  encodeJson (TyISBN10 ) =
-       "tag" := "TyISBN10"
-    ~> "contents" := ([] :: Array String)
-    ~> jsonEmptyObject
-  encodeJson (TyISBN ) =
-       "tag" := "TyISBN"
-    ~> "contents" := ([] :: Array String)
-    ~> jsonEmptyObject
-  encodeJson (TyURL ) =
-       "tag" := "TyURL"
-    ~> "contents" := ([] :: Array String)
-    ~> jsonEmptyObject
-  encodeJson (TySourceNone ) =
-       "tag" := "TySourceNone"
+  encodeJson (TyFixMe ) =
+       "tag" := "TyFixMe"
     ~> "contents" := ([] :: Array String)
     ~> jsonEmptyObject
 
@@ -182,20 +86,8 @@ instance tyBoardTypeDecodeJson :: DecodeJson TyBoardType where
     obj <- decodeJson json
     tag <- obj .? "tag"
     case tag of
-      "TyISBN13" -> do
-        pure TyISBN13
-
-      "TyISBN10" -> do
-        pure TyISBN10
-
-      "TyISBN" -> do
-        pure TyISBN
-
-      "TyURL" -> do
-        pure TyURL
-
-      "TySourceNone" -> do
-        pure TySourceNone
+      "TyFixMe" -> do
+        pure TyFixMe
 
       _ -> Left $ "DecodeJson TypeMismatch for TyBoardType"
 
@@ -213,52 +105,30 @@ instance tyBoardTypeRespondable :: Respondable TyBoardType where
   fromResponse json = do
     tag <- readPropUnsafe "tag" json
     case tag of
-      "TyISBN13" -> do
-        pure TyISBN13
-
-      "TyISBN10" -> do
-        pure TyISBN10
-
-      "TyISBN" -> do
-        pure TyISBN
-
-      "TyURL" -> do
-        pure TyURL
-
-      "TySourceNone" -> do
-        pure TySourceNone
+      "TyFixMe" -> do
+        pure TyFixMe
 
       _ -> fail $ TypeMismatch "TyBoardType" "Respondable"
 
 
 
 instance tyBoardTypeEq :: Eq TyBoardType where
-  eq TyISBN13 TyISBN13 = true
-  eq TyISBN10 TyISBN10 = true
-  eq TyISBN TyISBN = true
-  eq TyURL TyURL = true
-  eq TySourceNone TySourceNone = true
-  eq _ _ = false
+  eq TyFixMe TyFixMe = true
+
 
 instance tyBoardTypeShow :: Show TyBoardType where
-  show TyISBN13 = "ty_isbn13"
-  show TyISBN10 = "ty_isbn10"
-  show TyISBN = "ty_isbn"
-  show TyURL = "ty_url"
-  show TySourceNone = "ty_source_none"
+  show TyFixMe = "ty_fix_me"
 
 
 newtype BoardRequest = BoardRequest {
   displayName :: String,
-  description :: String,
-  source :: BoardType,
-  author :: (Maybe (Array String)),
-  prerequisites :: (Array String),
-  categories :: (Array String),
+  description :: (Maybe String),
+  boardType :: BoardType,
+  active :: Boolean,
+  isAnonymous :: Boolean,
+  canCreateBoards :: Boolean,
+  canCreateThreads :: Boolean,
   visibility :: Visibility,
-  counter :: Int,
-  version :: (Maybe String),
-  urls :: (Maybe (Array String)),
   icon :: (Maybe String),
   tags :: (Array String),
   guard :: Int
@@ -267,15 +137,13 @@ newtype BoardRequest = BoardRequest {
 
 type BoardRequestR = {
   displayName :: String,
-  description :: String,
-  source :: BoardType,
-  author :: (Maybe (Array String)),
-  prerequisites :: (Array String),
-  categories :: (Array String),
+  description :: (Maybe String),
+  boardType :: BoardType,
+  active :: Boolean,
+  isAnonymous :: Boolean,
+  canCreateBoards :: Boolean,
+  canCreateThreads :: Boolean,
   visibility :: Visibility,
-  counter :: Int,
-  version :: (Maybe String),
-  urls :: (Maybe (Array String)),
   icon :: (Maybe String),
   tags :: (Array String),
   guard :: Int
@@ -284,15 +152,13 @@ type BoardRequestR = {
 
 _BoardRequest :: Lens' BoardRequest {
   displayName :: String,
-  description :: String,
-  source :: BoardType,
-  author :: (Maybe (Array String)),
-  prerequisites :: (Array String),
-  categories :: (Array String),
+  description :: (Maybe String),
+  boardType :: BoardType,
+  active :: Boolean,
+  isAnonymous :: Boolean,
+  canCreateBoards :: Boolean,
+  canCreateThreads :: Boolean,
   visibility :: Visibility,
-  counter :: Int,
-  version :: (Maybe String),
-  urls :: (Maybe (Array String)),
   icon :: (Maybe String),
   tags :: (Array String),
   guard :: Int
@@ -300,22 +166,20 @@ _BoardRequest :: Lens' BoardRequest {
 _BoardRequest f (BoardRequest o) = BoardRequest <$> f o
 
 
-mkBoardRequest :: String -> String -> BoardType -> (Maybe (Array String)) -> (Array String) -> (Array String) -> Visibility -> Int -> (Maybe String) -> (Maybe (Array String)) -> (Maybe String) -> (Array String) -> Int -> BoardRequest
-mkBoardRequest displayName description source author prerequisites categories visibility counter version urls icon tags guard =
-  BoardRequest{displayName, description, source, author, prerequisites, categories, visibility, counter, version, urls, icon, tags, guard}
+mkBoardRequest :: String -> (Maybe String) -> BoardType -> Boolean -> Boolean -> Boolean -> Boolean -> Visibility -> (Maybe String) -> (Array String) -> Int -> BoardRequest
+mkBoardRequest displayName description boardType active isAnonymous canCreateBoards canCreateThreads visibility icon tags guard =
+  BoardRequest{displayName, description, boardType, active, isAnonymous, canCreateBoards, canCreateThreads, visibility, icon, tags, guard}
 
 
 unwrapBoardRequest :: BoardRequest -> {
   displayName :: String,
-  description :: String,
-  source :: BoardType,
-  author :: (Maybe (Array String)),
-  prerequisites :: (Array String),
-  categories :: (Array String),
+  description :: (Maybe String),
+  boardType :: BoardType,
+  active :: Boolean,
+  isAnonymous :: Boolean,
+  canCreateBoards :: Boolean,
+  canCreateThreads :: Boolean,
   visibility :: Visibility,
-  counter :: Int,
-  version :: (Maybe String),
-  urls :: (Maybe (Array String)),
   icon :: (Maybe String),
   tags :: (Array String),
   guard :: Int
@@ -327,14 +191,12 @@ instance boardRequestEncodeJson :: EncodeJson BoardRequest where
        "tag" := "BoardRequest"
     ~> "display_name" := o.displayName
     ~> "description" := o.description
-    ~> "source" := o.source
-    ~> "author" := o.author
-    ~> "prerequisites" := o.prerequisites
-    ~> "categories" := o.categories
+    ~> "board_type" := o.boardType
+    ~> "active" := o.active
+    ~> "is_anonymous" := o.isAnonymous
+    ~> "can_create_boards" := o.canCreateBoards
+    ~> "can_create_threads" := o.canCreateThreads
     ~> "visibility" := o.visibility
-    ~> "counter" := o.counter
-    ~> "version" := o.version
-    ~> "urls" := o.urls
     ~> "icon" := o.icon
     ~> "tags" := o.tags
     ~> "guard" := o.guard
@@ -346,28 +208,24 @@ instance boardRequestDecodeJson :: DecodeJson BoardRequest where
     obj <- decodeJson o
     displayName <- obj .? "display_name"
     description <- obj .? "description"
-    source <- obj .? "source"
-    author <- obj .? "author"
-    prerequisites <- obj .? "prerequisites"
-    categories <- obj .? "categories"
+    boardType <- obj .? "board_type"
+    active <- obj .? "active"
+    isAnonymous <- obj .? "is_anonymous"
+    canCreateBoards <- obj .? "can_create_boards"
+    canCreateThreads <- obj .? "can_create_threads"
     visibility <- obj .? "visibility"
-    counter <- obj .? "counter"
-    version <- obj .? "version"
-    urls <- obj .? "urls"
     icon <- obj .? "icon"
     tags <- obj .? "tags"
     guard <- obj .? "guard"
     pure $ BoardRequest {
       displayName,
       description,
-      source,
-      author,
-      prerequisites,
-      categories,
+      boardType,
+      active,
+      isAnonymous,
+      canCreateBoards,
+      canCreateThreads,
       visibility,
-      counter,
-      version,
-      urls,
       icon,
       tags,
       guard
@@ -391,21 +249,19 @@ newtype BoardResponse = BoardResponse {
   userId :: Int,
   name :: String,
   displayName :: String,
-  description :: String,
-  source :: BoardType,
-  author :: (Maybe (Array String)),
-  prerequisites :: (Array String),
-  categories :: (Array String),
+  description :: (Maybe String),
+  boardType :: BoardType,
+  active :: Boolean,
+  isAnonymous :: Boolean,
+  canCreateBoards :: Boolean,
+  canCreateThreads :: Boolean,
   visibility :: Visibility,
-  counter :: Int,
-  version :: (Maybe String),
-  urls :: (Maybe (Array String)),
   icon :: (Maybe String),
   tags :: (Array String),
-  active :: Boolean,
   guard :: Int,
   createdAt :: (Maybe Date),
   modifiedAt :: (Maybe Date),
+  modifiedBy :: (Maybe Int),
   activityAt :: (Maybe Date)
 }
 
@@ -415,21 +271,19 @@ type BoardResponseR = {
   userId :: Int,
   name :: String,
   displayName :: String,
-  description :: String,
-  source :: BoardType,
-  author :: (Maybe (Array String)),
-  prerequisites :: (Array String),
-  categories :: (Array String),
+  description :: (Maybe String),
+  boardType :: BoardType,
+  active :: Boolean,
+  isAnonymous :: Boolean,
+  canCreateBoards :: Boolean,
+  canCreateThreads :: Boolean,
   visibility :: Visibility,
-  counter :: Int,
-  version :: (Maybe String),
-  urls :: (Maybe (Array String)),
   icon :: (Maybe String),
   tags :: (Array String),
-  active :: Boolean,
   guard :: Int,
   createdAt :: (Maybe Date),
   modifiedAt :: (Maybe Date),
+  modifiedBy :: (Maybe Int),
   activityAt :: (Maybe Date)
 }
 
@@ -439,29 +293,27 @@ _BoardResponse :: Lens' BoardResponse {
   userId :: Int,
   name :: String,
   displayName :: String,
-  description :: String,
-  source :: BoardType,
-  author :: (Maybe (Array String)),
-  prerequisites :: (Array String),
-  categories :: (Array String),
+  description :: (Maybe String),
+  boardType :: BoardType,
+  active :: Boolean,
+  isAnonymous :: Boolean,
+  canCreateBoards :: Boolean,
+  canCreateThreads :: Boolean,
   visibility :: Visibility,
-  counter :: Int,
-  version :: (Maybe String),
-  urls :: (Maybe (Array String)),
   icon :: (Maybe String),
   tags :: (Array String),
-  active :: Boolean,
   guard :: Int,
   createdAt :: (Maybe Date),
   modifiedAt :: (Maybe Date),
+  modifiedBy :: (Maybe Int),
   activityAt :: (Maybe Date)
 }
 _BoardResponse f (BoardResponse o) = BoardResponse <$> f o
 
 
-mkBoardResponse :: Int -> Int -> String -> String -> String -> BoardType -> (Maybe (Array String)) -> (Array String) -> (Array String) -> Visibility -> Int -> (Maybe String) -> (Maybe (Array String)) -> (Maybe String) -> (Array String) -> Boolean -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Date) -> BoardResponse
-mkBoardResponse id userId name displayName description source author prerequisites categories visibility counter version urls icon tags active guard createdAt modifiedAt activityAt =
-  BoardResponse{id, userId, name, displayName, description, source, author, prerequisites, categories, visibility, counter, version, urls, icon, tags, active, guard, createdAt, modifiedAt, activityAt}
+mkBoardResponse :: Int -> Int -> String -> String -> (Maybe String) -> BoardType -> Boolean -> Boolean -> Boolean -> Boolean -> Visibility -> (Maybe String) -> (Array String) -> Int -> (Maybe Date) -> (Maybe Date) -> (Maybe Int) -> (Maybe Date) -> BoardResponse
+mkBoardResponse id userId name displayName description boardType active isAnonymous canCreateBoards canCreateThreads visibility icon tags guard createdAt modifiedAt modifiedBy activityAt =
+  BoardResponse{id, userId, name, displayName, description, boardType, active, isAnonymous, canCreateBoards, canCreateThreads, visibility, icon, tags, guard, createdAt, modifiedAt, modifiedBy, activityAt}
 
 
 unwrapBoardResponse :: BoardResponse -> {
@@ -469,21 +321,19 @@ unwrapBoardResponse :: BoardResponse -> {
   userId :: Int,
   name :: String,
   displayName :: String,
-  description :: String,
-  source :: BoardType,
-  author :: (Maybe (Array String)),
-  prerequisites :: (Array String),
-  categories :: (Array String),
+  description :: (Maybe String),
+  boardType :: BoardType,
+  active :: Boolean,
+  isAnonymous :: Boolean,
+  canCreateBoards :: Boolean,
+  canCreateThreads :: Boolean,
   visibility :: Visibility,
-  counter :: Int,
-  version :: (Maybe String),
-  urls :: (Maybe (Array String)),
   icon :: (Maybe String),
   tags :: (Array String),
-  active :: Boolean,
   guard :: Int,
   createdAt :: (Maybe Date),
   modifiedAt :: (Maybe Date),
+  modifiedBy :: (Maybe Int),
   activityAt :: (Maybe Date)
 }
 unwrapBoardResponse (BoardResponse r) = r
@@ -496,20 +346,18 @@ instance boardResponseEncodeJson :: EncodeJson BoardResponse where
     ~> "name" := o.name
     ~> "display_name" := o.displayName
     ~> "description" := o.description
-    ~> "source" := o.source
-    ~> "author" := o.author
-    ~> "prerequisites" := o.prerequisites
-    ~> "categories" := o.categories
+    ~> "board_type" := o.boardType
+    ~> "active" := o.active
+    ~> "is_anonymous" := o.isAnonymous
+    ~> "can_create_boards" := o.canCreateBoards
+    ~> "can_create_threads" := o.canCreateThreads
     ~> "visibility" := o.visibility
-    ~> "counter" := o.counter
-    ~> "version" := o.version
-    ~> "urls" := o.urls
     ~> "icon" := o.icon
     ~> "tags" := o.tags
-    ~> "active" := o.active
     ~> "guard" := o.guard
     ~> "created_at" := o.createdAt
     ~> "modified_at" := o.modifiedAt
+    ~> "modified_by" := o.modifiedBy
     ~> "activity_at" := o.activityAt
     ~> jsonEmptyObject
 
@@ -522,20 +370,18 @@ instance boardResponseDecodeJson :: DecodeJson BoardResponse where
     name <- obj .? "name"
     displayName <- obj .? "display_name"
     description <- obj .? "description"
-    source <- obj .? "source"
-    author <- obj .? "author"
-    prerequisites <- obj .? "prerequisites"
-    categories <- obj .? "categories"
+    boardType <- obj .? "board_type"
+    active <- obj .? "active"
+    isAnonymous <- obj .? "is_anonymous"
+    canCreateBoards <- obj .? "can_create_boards"
+    canCreateThreads <- obj .? "can_create_threads"
     visibility <- obj .? "visibility"
-    counter <- obj .? "counter"
-    version <- obj .? "version"
-    urls <- obj .? "urls"
     icon <- obj .? "icon"
     tags <- obj .? "tags"
-    active <- obj .? "active"
     guard <- obj .? "guard"
     createdAt <- obj .? "created_at"
     modifiedAt <- obj .? "modified_at"
+    modifiedBy <- obj .? "modified_by"
     activityAt <- obj .? "activity_at"
     pure $ BoardResponse {
       id,
@@ -543,20 +389,18 @@ instance boardResponseDecodeJson :: DecodeJson BoardResponse where
       name,
       displayName,
       description,
-      source,
-      author,
-      prerequisites,
-      categories,
+      boardType,
+      active,
+      isAnonymous,
+      canCreateBoards,
+      canCreateThreads,
       visibility,
-      counter,
-      version,
-      urls,
       icon,
       tags,
-      active,
       guard,
       createdAt,
       modifiedAt,
+      modifiedBy,
       activityAt
     }
 
@@ -629,42 +473,38 @@ instance boardResponsesRespondable :: Respondable BoardResponses where
 
 newtype BoardStatResponse = BoardStatResponse {
   boardId :: Int,
-  likes :: Int,
-  neutral :: Int,
-  dislikes :: Int,
+  threads :: Int,
+  threadPosts :: Int,
   views :: Int
 }
 
 
 type BoardStatResponseR = {
   boardId :: Int,
-  likes :: Int,
-  neutral :: Int,
-  dislikes :: Int,
+  threads :: Int,
+  threadPosts :: Int,
   views :: Int
 }
 
 
 _BoardStatResponse :: Lens' BoardStatResponse {
   boardId :: Int,
-  likes :: Int,
-  neutral :: Int,
-  dislikes :: Int,
+  threads :: Int,
+  threadPosts :: Int,
   views :: Int
 }
 _BoardStatResponse f (BoardStatResponse o) = BoardStatResponse <$> f o
 
 
-mkBoardStatResponse :: Int -> Int -> Int -> Int -> Int -> BoardStatResponse
-mkBoardStatResponse boardId likes neutral dislikes views =
-  BoardStatResponse{boardId, likes, neutral, dislikes, views}
+mkBoardStatResponse :: Int -> Int -> Int -> Int -> BoardStatResponse
+mkBoardStatResponse boardId threads threadPosts views =
+  BoardStatResponse{boardId, threads, threadPosts, views}
 
 
 unwrapBoardStatResponse :: BoardStatResponse -> {
   boardId :: Int,
-  likes :: Int,
-  neutral :: Int,
-  dislikes :: Int,
+  threads :: Int,
+  threadPosts :: Int,
   views :: Int
 }
 unwrapBoardStatResponse (BoardStatResponse r) = r
@@ -673,9 +513,8 @@ instance boardStatResponseEncodeJson :: EncodeJson BoardStatResponse where
   encodeJson (BoardStatResponse o) =
        "tag" := "BoardStatResponse"
     ~> "board_id" := o.boardId
-    ~> "likes" := o.likes
-    ~> "neutral" := o.neutral
-    ~> "dislikes" := o.dislikes
+    ~> "threads" := o.threads
+    ~> "thread_posts" := o.threadPosts
     ~> "views" := o.views
     ~> jsonEmptyObject
 
@@ -684,15 +523,13 @@ instance boardStatResponseDecodeJson :: DecodeJson BoardStatResponse where
   decodeJson o = do
     obj <- decodeJson o
     boardId <- obj .? "board_id"
-    likes <- obj .? "likes"
-    neutral <- obj .? "neutral"
-    dislikes <- obj .? "dislikes"
+    threads <- obj .? "threads"
+    threadPosts <- obj .? "thread_posts"
     views <- obj .? "views"
     pure $ BoardStatResponse {
       boardId,
-      likes,
-      neutral,
-      dislikes,
+      threads,
+      threadPosts,
       views
     }
 

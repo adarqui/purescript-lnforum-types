@@ -3,6 +3,8 @@ import LN.T.Board
 import LN.T.User
 import LN.T.Permission
 import LN.T.Like
+import LN.T.Thread
+import LN.T.ThreadPost
 
 
 import Control.Monad.Except.Trans       (runExceptT)
@@ -32,50 +34,62 @@ import Purescript.Api.Helpers
 newtype BoardPackResponse = BoardPackResponse {
   board :: BoardResponse,
   boardId :: Int,
-  user :: UserSanitizedResponse,
-  userId :: Int,
+  user :: (Maybe UserSanitizedResponse),
+  userId :: (Maybe Int),
   stat :: BoardStatResponse,
   like :: (Maybe LikeResponse),
-  permissions :: Permissions
+  permissions :: Permissions,
+  latestThread :: (Maybe ThreadResponse),
+  latestThreadPost :: (Maybe ThreadPostResponse),
+  latestThreadPostUser :: (Maybe UserSanitizedResponse)
 }
 
 
 type BoardPackResponseR = {
   board :: BoardResponse,
   boardId :: Int,
-  user :: UserSanitizedResponse,
-  userId :: Int,
+  user :: (Maybe UserSanitizedResponse),
+  userId :: (Maybe Int),
   stat :: BoardStatResponse,
   like :: (Maybe LikeResponse),
-  permissions :: Permissions
+  permissions :: Permissions,
+  latestThread :: (Maybe ThreadResponse),
+  latestThreadPost :: (Maybe ThreadPostResponse),
+  latestThreadPostUser :: (Maybe UserSanitizedResponse)
 }
 
 
 _BoardPackResponse :: Lens' BoardPackResponse {
   board :: BoardResponse,
   boardId :: Int,
-  user :: UserSanitizedResponse,
-  userId :: Int,
+  user :: (Maybe UserSanitizedResponse),
+  userId :: (Maybe Int),
   stat :: BoardStatResponse,
   like :: (Maybe LikeResponse),
-  permissions :: Permissions
+  permissions :: Permissions,
+  latestThread :: (Maybe ThreadResponse),
+  latestThreadPost :: (Maybe ThreadPostResponse),
+  latestThreadPostUser :: (Maybe UserSanitizedResponse)
 }
 _BoardPackResponse f (BoardPackResponse o) = BoardPackResponse <$> f o
 
 
-mkBoardPackResponse :: BoardResponse -> Int -> UserSanitizedResponse -> Int -> BoardStatResponse -> (Maybe LikeResponse) -> Permissions -> BoardPackResponse
-mkBoardPackResponse board boardId user userId stat like permissions =
-  BoardPackResponse{board, boardId, user, userId, stat, like, permissions}
+mkBoardPackResponse :: BoardResponse -> Int -> (Maybe UserSanitizedResponse) -> (Maybe Int) -> BoardStatResponse -> (Maybe LikeResponse) -> Permissions -> (Maybe ThreadResponse) -> (Maybe ThreadPostResponse) -> (Maybe UserSanitizedResponse) -> BoardPackResponse
+mkBoardPackResponse board boardId user userId stat like permissions latestThread latestThreadPost latestThreadPostUser =
+  BoardPackResponse{board, boardId, user, userId, stat, like, permissions, latestThread, latestThreadPost, latestThreadPostUser}
 
 
 unwrapBoardPackResponse :: BoardPackResponse -> {
   board :: BoardResponse,
   boardId :: Int,
-  user :: UserSanitizedResponse,
-  userId :: Int,
+  user :: (Maybe UserSanitizedResponse),
+  userId :: (Maybe Int),
   stat :: BoardStatResponse,
   like :: (Maybe LikeResponse),
-  permissions :: Permissions
+  permissions :: Permissions,
+  latestThread :: (Maybe ThreadResponse),
+  latestThreadPost :: (Maybe ThreadPostResponse),
+  latestThreadPostUser :: (Maybe UserSanitizedResponse)
 }
 unwrapBoardPackResponse (BoardPackResponse r) = r
 
@@ -89,6 +103,9 @@ instance boardPackResponseEncodeJson :: EncodeJson BoardPackResponse where
     ~> "stat" := o.stat
     ~> "like" := o.like
     ~> "permissions" := o.permissions
+    ~> "latest_thread" := o.latestThread
+    ~> "latest_thread_post" := o.latestThreadPost
+    ~> "latest_thread_post_user" := o.latestThreadPostUser
     ~> jsonEmptyObject
 
 
@@ -102,6 +119,9 @@ instance boardPackResponseDecodeJson :: DecodeJson BoardPackResponse where
     stat <- obj .? "stat"
     like <- obj .? "like"
     permissions <- obj .? "permissions"
+    latestThread <- obj .? "latest_thread"
+    latestThreadPost <- obj .? "latest_thread_post"
+    latestThreadPostUser <- obj .? "latest_thread_post_user"
     pure $ BoardPackResponse {
       board,
       boardId,
@@ -109,7 +129,10 @@ instance boardPackResponseDecodeJson :: DecodeJson BoardPackResponse where
       userId,
       stat,
       like,
-      permissions
+      permissions,
+      latestThread,
+      latestThreadPost,
+      latestThreadPostUser
     }
 
 
